@@ -1,5 +1,4 @@
 import { RefObject, useId } from "react";
-import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 interface InputProps{
@@ -60,14 +59,14 @@ const Input:React.FC<InputProps> = ({
                 diasbled:opacity-70
                 disabled:cursor-not-allowed
                 disabled:bg-gray-200
-                ${type === 'password' && !showPassword ? 'font-bold text-2xl' : ''}
+                ${type === 'password' && !showPassword && value ? 'font-bold text-2xl' : ''}
                 ${errors ? 'border-red-500' : 'border-neutral-500'}
                 ${errors ? 'focus:border-red-500' : 'focus:border-[#2B5A9E]'}
         `}
         />
         {label === 'Password' && (
         <div
-          className="absolute top-4 right-4 cursor-pointer transition duration-150"
+          className="absolute top-4 right-4 cursor-pointer transition duration-150 peer-focus:block hidden"
           onClick={handleTogglePassword}
         >
           {!showPassword ? (
@@ -97,8 +96,8 @@ const Input:React.FC<InputProps> = ({
             ${errors ? 'peer-focus:text-red-500' : 'peer-focus:text-[#2B5A9E]'}`}>
             {label}
         </label>
-        <div className={`${errors ? 'mt-2' : '' }`}>
-            {errors && <span className="text-red-400 bg-rose-100 rounded-xl p-1 text-sm px-2 mx-3 flex justify-start items-center gap-1"><AiOutlineExclamationCircle size={22}/> {errors}</span>}
+        <div className={`${errors ? '-mb-3' : '' }`}>
+            {errors && <span className="text-rose-500 rounded-xl p-1 px-2 mx-1 font-medium flex justify-start items-center gap-1">{errors}</span>}
         </div>
     </div>
   )

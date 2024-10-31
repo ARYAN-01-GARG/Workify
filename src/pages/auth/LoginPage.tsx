@@ -17,11 +17,6 @@ const RegisterPage = () => {
 
   const [errors , setErrors] = useState<Errors>({ nameError: '', contactError: '', passwordError: ''});
 
-  const [name, setName] = useState<string>('');
-  const NAME_REGEX = /^[a-zA-Z ]{3,22}$/;
-  const nameRef = useRef<HTMLInputElement>(null);
-
-
   const [contact, setContact] = useState<string>('');
   const contactRef = useRef<HTMLInputElement>(null);
   const PHONE_REGEX = /^[0-9]{10}$/;
@@ -32,30 +27,30 @@ const RegisterPage = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    nameRef.current?.focus();
+    contactRef.current?.focus();
   },[])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isContactValid = EMAIL_REGEX.test(contact) || PHONE_REGEX.test(contact);
-    if(!NAME_REGEX.test(name) || !isContactValid || password.length < 6){
+    if(!isContactValid || password.length < 6){
       setErrors({
-        nameError: (name.length < 3) && /[a-zA-Z]/.test(name) ? 'Name is invalid must be between 2 to 22 characters' : (!NAME_REGEX.test(name)) ? 'Name is invalid!' : '',
-        contactError: (!isContactValid) ?  /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : 'Email is invalid!' : '',
+        ...errors,
+        contactError: (!isContactValid) ?  /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid' : 'Email is invalid.' : '',
         passwordError: (password.length < 6) ? 'Password must be at least 6 characters' : ''
       })
     }
-    if(!name || !contact || !password){
+    if(!contact || !password){
       setErrors({
-        nameError: !name ? 'Name is required!' : '',
-        contactError: !contact ? 'Email or Phone Number is required!' : '',
-        passwordError: !password ? 'Password is required!' : ''
+        ...errors,
+        contactError: !contact ? 'Email or Phone Number is required' : '',
+        passwordError: !password ? 'Password is required' : ''
       })
       return;
     }
-    else if(NAME_REGEX.test(name) || isContactValid || password.length > 6){
+    else if(isContactValid || password.length > 6){
       setErrors({
-        nameError: '',
+        ...errors,
         contactError: '',
         passwordError: ''
       })
@@ -75,9 +70,9 @@ const RegisterPage = () => {
 
   const footer = (
     <p className="text-sm -mt-7">
-      Already have an account?{" "}
-      <Link to="/auth/login" className={`text-[.95rem] text-[#2B5A9E] font-semibold ${isLoading ? 'opacity-70' : ''}`}>
-        Log in
+      Don't have an account?{" "}
+      <Link to="/auth/register" className={`text-[.95rem] text-[#2B5A9E] font-semibold ${isLoading ? 'opacity-70' : ''}`}>
+        Sign Up
       </Link>
     </p>
   )
@@ -86,21 +81,13 @@ const RegisterPage = () => {
       <Modal
         disabled={isLoading}
         backURL="/"
-        title="Create Your Account"
-        subTitlte="Join the Workify community to find your ideal job fit."
-        actionLabel="Create Account"
+        title="Login"
+        subTitlte="To explore opportunities and take the next step in your career"
+        actionLabel="Log in"
         onSubmit={handleSubmit}
         footer={footer}
       >
         <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
-          <Input
-            ref={nameRef}
-            label='Name'
-            value={name}
-            onChange={setName}
-            disabled={isLoading}
-            errors={errors.nameError}
-          />
           <Input
             ref={contactRef}
             label={/[0-9]/.test(contact) && !/[a-zA-Z]/.test(contact) ? 'Phone number' : /[a-zA-Z]/.test(contact) ? 'Email' : 'Enter Email/Phone number'}
@@ -121,6 +108,15 @@ const RegisterPage = () => {
             showPassword={showPassword}
             setShowPassword={setShowPassword}
             />
+            <div className="flex justify-between items-center font-medium">
+                <div className="flex items-center gap-1">
+                    <input type="checkbox" id="remember" className="bg-neutral-800 outline-none border-none"/>
+                    <label htmlFor="remember">Remember me</label>
+                </div>
+                <div>
+                    <Link to="/auth/forgot-password">Forgot password?</Link>
+                </div>
+            </div>
         </form>
       </Modal>
     </>

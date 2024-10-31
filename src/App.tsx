@@ -1,7 +1,8 @@
 import { Route, Routes } from "react-router-dom"
 import LandingPage from "./pages/LandingPage"
-import AuthPage from "./pages/auth/AuthPage"
-import RegisterPage from "./pages/auth/RegisterPage"
+import AuthPage from "./pages/Auth/AuthPage"
+import RegisterPage from "./pages/Auth/RegisterPage"
+import LoginPage from "./pages/Auth/LoginPage"
 
 const App = () => {
   return (
@@ -12,7 +13,7 @@ const App = () => {
       {/* Auth routes  */}
       <Route path="/auth" element={<AuthPage/>}>
         <Route path="register" element={<RegisterPage/>} />
-        <Route path="login" element={<div>Login</div>} />
+        <Route path="login" element={<LoginPage/>} />
       </Route>
 
       {/* Protected routes */}

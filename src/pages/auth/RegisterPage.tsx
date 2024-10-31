@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
-import Modal from "../../components/Auth/Modal"
 import axios from "axios";
-import Input from "../../components/Auth/Input";
 import { useState, useRef, useEffect } from "react";
+import Modal from "../../components/auth/Modal";
+import Input from "../../components/auth/Input";
 
 
 interface Errors{

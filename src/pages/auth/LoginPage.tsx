@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
-import Modal from "../../components/Auth/Modal"
+import Modal from "../../components/auth/Modal"
 import axios from "axios";
-import Input from "../../components/Auth/Input";
+import Input from "../../components/auth/Input";
 import { useState, useRef, useEffect } from "react";
 
 
@@ -11,7 +11,7 @@ interface Errors{
   passwordError: string
 }
 
-const RegisterPage = () => {
+const LoginPage = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -123,4 +123,4 @@ const RegisterPage = () => {
   )
 }
 
-export default RegisterPage
+export default LoginPage

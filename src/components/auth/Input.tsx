@@ -3,6 +3,7 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 interface InputProps{
     type? : string;
+    charSize? : number;
     ref : RefObject<HTMLInputElement>;
     label : string;
     value : string;
@@ -18,6 +19,7 @@ interface InputProps{
 const Input:React.FC<InputProps> = ({
     type = 'text',
     label,
+    charSize,
     ref,
     value,
     onChange,
@@ -43,6 +45,7 @@ const Input:React.FC<InputProps> = ({
             type={showPassword ? 'text' : type}
             disabled={disabled}
             value={value}
+            maxLength={charSize}
             onChange={e => onChange(e.target.value)}
             placeholder=""
             className={`
@@ -50,7 +53,6 @@ const Input:React.FC<InputProps> = ({
                 w-full
                 p-3
                 pt-4
-                font-light
                 bg-white
                 border-2
                 rounded-lg
@@ -58,15 +60,15 @@ const Input:React.FC<InputProps> = ({
                 transition
                 diasbled:opacity-70
                 disabled:cursor-not-allowed
-                disabled:bg-gray-200
-                ${type === 'password' && !showPassword && value ? 'font-bold text-2xl' : ''}
+                disabled:bg-gray-100
+                ${type === 'password' && !showPassword && value ? 'font-bold text-2xl' : 'font-light'}
                 ${errors ? 'border-red-500' : 'border-neutral-500'}
                 ${errors ? 'focus:border-red-500' : 'focus:border-[#2B5A9E]'}
         `}
         />
         {label === 'Password' && (
         <div
-          className="absolute top-4 right-4 cursor-pointer transition duration-150 peer-focus:block hidden"
+          className="absolute top-4 right-4 cursor-pointer transition duration-150 peer-placeholder-shown:hidden"
           onClick={handleTogglePassword}
         >
           {!showPassword ? (

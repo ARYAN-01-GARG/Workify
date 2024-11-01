@@ -37,7 +37,7 @@ const Modal:React.FC<ModalProps> = ({
     <div className="relative h-full w-full p-8 flex justify-center items-center">
       <div
         className="flex flex-col justify-center items-center gap-12 max-w-[385px]">
-          <div className={`hidden lg:block absolute top-10 right-20 text-4xl ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+          <div className={`hidden lg:block absolute top-5 right-20 text-4xl ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
             <Link aria-disabled={disabled} to={backURL}>←</Link>
           </div>
           <div className="flex flex-col gap-2 text-center md:text-left">

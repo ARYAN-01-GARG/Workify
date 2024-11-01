@@ -3,6 +3,8 @@ import Modal from "../../components/auth/Modal"
 import axios from "axios";
 import Input from "../../components/auth/Input";
 import { useState, useRef, useEffect } from "react";
+import { toast } from "react-hot-toast";
+
 
 
 interface Errors{
@@ -57,16 +59,33 @@ const LoginPage = () => {
     }
     // Api logic
     setIsLoading(true);
+    toast.loading('Creating account...');
     try{
       // API call
-      const response = await axios.post('http://localhost:3000/auth/login', {contact, password});
-      console.log(response.data);
+
+      await axios.post('http://localhost:3000/auth/login', {contact, password})
+      .then(() => toast.success('Account created successfully!'));
+      toast.dismiss();
     } catch (error){
       console.log(error);
+      toast.dismiss();
+      toast.error('Something went wrong.');
     } finally{
       setIsLoading(false);
+      console.log('Account created successfully!');
     }
   }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, nextRef?: React.RefObject<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (nextRef) {
+        nextRef.current?.focus();
+      } else {
+        handleSubmit(e as unknown as React.FormEvent);
+      }
+    }
+  };
 
   const footer = (
     <p className="text-sm -mt-7">
@@ -89,16 +108,17 @@ const LoginPage = () => {
       >
         <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
           <Input
-            ref={contactRef}
+            inputRef={contactRef}
             label={/[0-9]/.test(contact) && !/[a-zA-Z]/.test(contact) ? 'Phone number' : /[a-zA-Z]/.test(contact) ? 'Email' : 'Enter Email/Phone number'}
             value={contact}
             onChange={setContact}
             disabled={isLoading}
             type="text"
             errors={errors.contactError}
+            onKeyDown={(e) => handleKeyDown(e, passwordRef)}
           />
           <Input
-            ref={passwordRef}
+            inputRef={passwordRef}
             label='Password'
             value={password}
             onChange={setPassword}
@@ -107,16 +127,17 @@ const LoginPage = () => {
             errors={errors.passwordError}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
-            />
-            <div className="flex justify-between items-center font-medium">
-                <div className="flex items-center gap-1">
-                    <input type="checkbox" id="remember" className="bg-neutral-800 outline-none border-none"/>
-                    <label htmlFor="remember">Remember me</label>
-                </div>
-                <div>
-                    <Link to="/auth/forgot-password">Forgot password?</Link>
-                </div>
+            onKeyDown={(e) => handleKeyDown(e)}
+          />
+          <div className="flex justify-between items-center font-medium">
+            <div className="flex items-center gap-1">
+              <input type="checkbox" id="remember" className="bg-neutral-800 outline-none border-none"/>
+              <label htmlFor="remember">Remember me</label>
             </div>
+            <div>
+              <Link to="/auth/forgot-password">Forgot password?</Link>
+            </div>
+          </div>
         </form>
       </Modal>
     </>

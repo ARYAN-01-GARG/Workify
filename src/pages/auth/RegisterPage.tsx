@@ -75,6 +75,17 @@ const RegisterPage = () => {
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, nextRef?: React.RefObject<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (nextRef) {
+        nextRef.current?.focus();
+      } else {
+        handleSubmit(e as unknown as React.FormEvent);
+      }
+    }
+  };
+
   const footer = (
     <p className="text-sm -mt-7">
       Already have an account?{" "}
@@ -96,16 +107,17 @@ const RegisterPage = () => {
       >
         <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
           <Input
-            ref={nameRef}
+            inputRef={nameRef}
             label='Name'
             charSize={22}
             value={name}
             onChange={setName}
             disabled={isLoading}
             errors={errors.nameError}
+            onKeyDown={(e) => handleKeyDown(e, contactRef)}
           />
           <Input
-            ref={contactRef}
+            inputRef={contactRef}
             label={/[0-9]/.test(contact) && !/[a-zA-Z]/.test(contact) ? 'Phone number' : /[a-zA-Z]/.test(contact) ? 'Email' : 'Enter Email/Phone number'}
             value={contact}
             charSize={50}
@@ -113,9 +125,10 @@ const RegisterPage = () => {
             disabled={isLoading}
             type="text"
             errors={errors.contactError}
+            onKeyDown={(e) => handleKeyDown(e, passwordRef)}
           />
           <Input
-            ref={passwordRef}
+            inputRef={passwordRef}
             label='Password'
             value={password}
             charSize={50}
@@ -125,7 +138,8 @@ const RegisterPage = () => {
             errors={errors.passwordError}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
-            />
+            onKeyDown={(e) => handleKeyDown(e)}
+          />
         </form>
       </Modal>
     </>

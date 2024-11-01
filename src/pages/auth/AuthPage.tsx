@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom"
+import RenderImage from "../../components/auth/RenderImage"
 
 const AuthPage = () => {
   return (
@@ -9,12 +10,12 @@ const AuthPage = () => {
         bg-[#C8D8EF]
 
     ">
-      <div className="flex justify-center items-center flex-grow min-h-[12vh] md:h-full p-6 bg-[#C8D8EF] md:max-w-[52vw] text-4xl">
+      <div className="flex flex-col justify-center items-center flex-grow min-h-[12vh] md:min-h-screen p-6 bg-[#C8D8EF] md:max-w-[52vw] text-4xl">
         <div>
           logo
         </div>
         <div className="hidden md:block">
-          Images
+          <RenderImage/>
         </div>
         <div className="hidden md:block">
           1-2-3

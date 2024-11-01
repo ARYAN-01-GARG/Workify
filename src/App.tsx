@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom"
 import LandingPage from "./pages/LandingPage"
-import AuthPage from "./pages/Auth/AuthPage"
-import RegisterPage from "./pages/Auth/RegisterPage"
-import LoginPage from "./pages/Auth/LoginPage"
+import AuthPage from "./pages/auth/AuthPage"
+import RegisterPage from "./pages/auth/RegisterPage"
+import LoginPage from "./pages/auth/LoginPage"
 
 const App = () => {
   return (

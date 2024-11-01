@@ -4,6 +4,7 @@ import AuthPage from "./pages/auth/AuthPage"
 import RegisterPage from "./pages/auth/RegisterPage"
 import LoginPage from "./pages/auth/LoginPage"
 import ToastProvider from "./components/ToastProvider"
+import VerifyOTP from "./pages/auth/VerifyOTP"
 
 const App = () => {
   return (
@@ -17,6 +18,8 @@ const App = () => {
         <Route path="/auth" element={<AuthPage/>}>
           <Route path="register" element={<RegisterPage/>} />
           <Route path="login" element={<LoginPage/>} />
+          <Route path="forgot-password" element={<>Forgot route</>} />
+          <Route path="verify" element={<VerifyOTP/>} />
         </Route>
 
         {/* Protected routes */}

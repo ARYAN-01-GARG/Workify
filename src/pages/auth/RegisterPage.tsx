@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link , useNavigate } from "react-router-dom"
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import Modal from "../../components/auth/Modal";
@@ -14,6 +14,8 @@ interface Errors{
 
 const RegisterPage = () => {
 
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [errors , setErrors] = useState<Errors>({ nameError: '', contactError: '', passwordError: ''});
@@ -26,7 +28,7 @@ const RegisterPage = () => {
   const [contact, setContact] = useState<string>('');
   const contactRef = useRef<HTMLInputElement>(null);
   const PHONE_REGEX = /^[0-9]{10}$/;
-  const EMAIL_REGEX = /^[a-zA-Z]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  const EMAIL_REGEX = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
@@ -60,20 +62,23 @@ const RegisterPage = () => {
     setIsLoading(true);
     toast.loading('Creating account...');
     try{
-      // API call
-
-      await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/register', {
+      // API cal
+      const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/register', {
         firstName: name.split(' ')[0],
         lastName: name.split(' ')[1],
-        username: name + Math.floor(Math.random() * 100000),
-        email: EMAIL_REGEX.test(contact) ? contact : '',
-        mobile: PHONE_REGEX.test(contact) ? contact : '',
+        username: name.split(' ')[0] + Math.floor(Math.random() * 1000),
+        email: EMAIL_REGEX.test(contact) ? contact : null,
+        mobile: PHONE_REGEX.test(contact) ? contact : null,
         password: password
-      }).then((res) => {
-        toast.success('Account created successfully!')
-        console.log(res.data);
       });
-      toast.dismiss();
+      toast.success('Account created successfully!');
+      console.log(response.data);
+      setTimeout(() => {
+        toast.dismiss();
+      })
+      setTimeout(() => {
+        navigate('/auth/verify');
+      },10000)
     } catch (error){
       console.log(error);
       toast.dismiss();

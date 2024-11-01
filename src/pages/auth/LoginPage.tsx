@@ -22,7 +22,7 @@ const LoginPage = () => {
   const [contact, setContact] = useState<string>('');
   const contactRef = useRef<HTMLInputElement>(null);
   const PHONE_REGEX = /^[0-9]{10}$/;
-  const EMAIL_REGEX = /^[a-zA-Z]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  const EMAIL_REGEX = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');

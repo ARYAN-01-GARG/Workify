@@ -59,12 +59,12 @@ const LoginPage = () => {
     }
     // Api logic
     setIsLoading(true);
-    toast.loading('Creating account...');
+    toast.loading('Please wait...');
     try{
       // API call
 
       await axios.post('http://localhost:3000/auth/login', {contact, password})
-      .then(() => toast.success('Account created successfully!'));
+      .then(() => toast.success('Login Successful!'));
       toast.dismiss();
     } catch (error){
       console.log(error);
@@ -72,7 +72,7 @@ const LoginPage = () => {
       toast.error('Something went wrong.');
     } finally{
       setIsLoading(false);
-      console.log('Account created successfully!');
+      console.log('Login Successfull!');
     }
   }
 

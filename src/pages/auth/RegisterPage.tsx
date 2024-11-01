@@ -62,8 +62,17 @@ const RegisterPage = () => {
     try{
       // API call
 
-      await axios.post('http://localhost:3000/auth/login', {contact, password})
-      .then(() => toast.success('Account created successfully!'));
+      await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/register', {
+        firstName: name.split(' ')[0],
+        lastName: name.split(' ')[1],
+        username: name + Math.floor(Math.random() * 100000),
+        email: EMAIL_REGEX.test(contact) ? contact : '',
+        mobile: PHONE_REGEX.test(contact) ? contact : '',
+        password: password
+      }).then((res) => {
+        toast.success('Account created successfully!')
+        console.log(res.data);
+      });
       toast.dismiss();
     } catch (error){
       console.log(error);

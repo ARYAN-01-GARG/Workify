@@ -34,14 +34,14 @@ const Modal:React.FC<ModalProps> = ({
 
 
   return (
-    <div className="relative h-full w-full flex justify-center items-center">
+    <div className="relative h-full w-full p-8 flex justify-center items-center">
       <div
         className="flex flex-col justify-center items-center gap-12 max-w-[385px]">
-          <div className={`absolute top-10 right-20 text-4xl ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+          <div className={`hidden lg:block absolute top-10 right-20 text-4xl ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
             <Link aria-disabled={disabled} to={backURL}>←</Link>
           </div>
-          <div className="flex flex-col gap-2">
-            <h1 className="text-4xl font-semibold">{title}</h1>
+          <div className="flex flex-col gap-2 text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-semibold">{title}</h1>
             <h2 className="text-[.95rem] font-medium pl-1 pr-4">{subTitlte}</h2>
           </div>
           <div className="w-full">

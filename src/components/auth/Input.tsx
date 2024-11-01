@@ -1,54 +1,55 @@
-import { RefObject, useId } from "react";
+import { RefObject, useId, forwardRef } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-interface InputProps{
-    type? : string;
-    charSize? : number;
-    ref : RefObject<HTMLInputElement>;
-    label : string;
-    value : string;
-    onChange : (value : string) => void;
-    disabled? : boolean;
-    errors : string | undefined;
-    showPassword? : boolean;
-    setShowPassword? : (value : boolean) => void;
+interface InputProps {
+    type?: string;
+    charSize?: number;
+    inputRef?: RefObject<HTMLInputElement>;
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    disabled?: boolean;
+    errors: string | undefined;
+    showPassword?: boolean;
+    setShowPassword?: (value: boolean) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-
-
-const Input:React.FC<InputProps> = ({
+const Input = forwardRef<HTMLInputElement, InputProps>(({
     type = 'text',
     label,
     charSize,
-    ref,
     value,
     onChange,
-    disabled=false,
+    disabled = false,
     errors,
     showPassword,
-    setShowPassword
-}) => {
+    setShowPassword,
+    inputRef,
+    onKeyDown
+}, ref) => {
 
     const handleTogglePassword = () => {
-        if(setShowPassword){
+        if (setShowPassword) {
             setShowPassword(!showPassword);
         }
     };
 
     const id = useId();
 
-  return (
-    <div className="w-full relative">
-        <input
-            ref={ref}
-            id={id}
-            type={showPassword ? 'text' : type}
-            disabled={disabled}
-            value={value}
-            maxLength={charSize}
-            onChange={e => onChange(e.target.value)}
-            placeholder=""
-            className={`
+    return (
+        <div className="w-full relative">
+            <input
+                ref={ref || inputRef}
+                id={id}
+                type={showPassword ? 'text' : type}
+                disabled={disabled}
+                value={value}
+                maxLength={charSize}
+                onChange={e => onChange(e.target.value)}
+                onKeyDown={onKeyDown}
+                placeholder=""
+                className={`
                 peer
                 w-full
                 p-3
@@ -65,20 +66,20 @@ const Input:React.FC<InputProps> = ({
                 ${errors ? 'border-red-500' : 'border-neutral-500'}
                 ${errors ? 'focus:border-red-500' : 'focus:border-[#2B5A9E]'}
         `}
-        />
-        {label === 'Password' && (
-        <div
-          className="absolute top-4 right-4 cursor-pointer transition duration-150 peer-placeholder-shown:hidden"
-          onClick={handleTogglePassword}
-        >
-          {!showPassword ? (
-            <BsEyeSlash size={22} />
-          ) : (
-            <BsEye size={22} />
-          )}
-        </div>
-      )}
-        <label htmlFor={id} className={`
+            />
+            {label === 'Password' && (
+                <div
+                    className="absolute top-4 right-4 cursor-pointer transition duration-150 peer-placeholder-shown:hidden"
+                    onClick={handleTogglePassword}
+                >
+                    {!showPassword ? (
+                        <BsEyeSlash size={22} />
+                    ) : (
+                        <BsEye size={22} />
+                    )}
+                </div>
+            )}
+            <label htmlFor={id} className={`
             absolute
             text-sm
             text-neutral-600
@@ -96,13 +97,13 @@ const Input:React.FC<InputProps> = ({
             peer-focus:-translate-y-7
             ${errors ? 'text-red-500' : 'text-zinc-500'}
             ${errors ? 'peer-focus:text-red-500' : 'peer-focus:text-[#2B5A9E]'}`}>
-            {label}
-        </label>
-        <div className={`${errors ? '-mb-3' : '' }`}>
-            {errors && <span className="text-rose-500 rounded-xl p-1 px-2 mx-1 font-medium flex justify-start items-center gap-1">{errors}</span>}
+                {label}
+            </label>
+            <div className={`${errors ? '-mb-3' : ''}`}>
+                {errors && <span className="text-rose-500 rounded-xl p-1 px-2 mx-1 font-medium flex justify-start items-center gap-1">{errors}</span>}
+            </div>
         </div>
-    </div>
-  )
-}
+    )
+});
 
-export default Input
+export default Input;

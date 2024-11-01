@@ -38,15 +38,15 @@ const LoginPage = () => {
     if(!isContactValid || password.length < 6){
       setErrors({
         ...errors,
-        contactError: (!isContactValid) ?  /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid' : 'Email is invalid.' : '',
+        contactError: (!isContactValid) ?  /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : 'Email is invalid!' : '',
         passwordError: (password.length < 6) ? 'Password must be at least 6 characters' : ''
       })
     }
     if(!contact || !password){
       setErrors({
         ...errors,
-        contactError: !contact ? 'Email or Phone Number is required' : '',
-        passwordError: !password ? 'Password is required' : ''
+        contactError: !contact ? 'Email or Phone Number is required!' : '',
+        passwordError: !password ? 'Password is required!' : ''
       })
       return;
     }
@@ -63,13 +63,17 @@ const LoginPage = () => {
     try{
       // API call
 
-      await axios.post('http://localhost:3000/auth/login', {contact, password})
+      await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/authenticate', {
+        email: EMAIL_REGEX.test(contact) ? contact : '',
+        mobile: PHONE_REGEX.test(contact) ? contact : '',
+        password
+      })
       .then(() => toast.success('Login Successful!'));
       toast.dismiss();
     } catch (error){
       console.log(error);
       toast.dismiss();
-      toast.error('Something went wrong.');
+      toast.error('Invalid Password or Email/Phone number');
     } finally{
       setIsLoading(false);
       console.log('Login Successfull!');

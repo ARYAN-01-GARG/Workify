@@ -11,7 +11,7 @@ interface Errors{
   passwordError: string
 }
 
-const RegisterPage = () => {
+const LoginPage = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -123,4 +123,4 @@ const RegisterPage = () => {
   )
 }
 
-export default RegisterPage
+export default LoginPage

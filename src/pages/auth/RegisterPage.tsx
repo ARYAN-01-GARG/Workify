@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom"
-import Modal from "../../components/auth/Modal"
 import axios from "axios";
-import Input from "../../components/auth/Input";
 import { useState, useRef, useEffect } from "react";
+import Modal from "../../components/auth/Modal";
+import Input from "../../components/auth/Input";
+import { toast } from "react-hot-toast";
 
 
 interface Errors{
@@ -30,6 +31,7 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
   const passwordRef = useRef<HTMLInputElement>(null);
+  const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
   useEffect(() => {
     nameRef.current?.focus();
@@ -38,22 +40,16 @@ const RegisterPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isContactValid = EMAIL_REGEX.test(contact) || PHONE_REGEX.test(contact);
-    if(!NAME_REGEX.test(name) || !isContactValid || password.length < 6){
+    const isPasswordValid = PASSWORD_REGEX.test(password);
+    if(!NAME_REGEX.test(name) || !isContactValid || !isPasswordValid){
       setErrors({
-        nameError: (name.length < 3) && /[a-zA-Z]/.test(name) ? 'Name is invalid must be between 2 to 22 characters' : (!NAME_REGEX.test(name)) ? 'Name is invalid!' : '',
-        contactError: (!isContactValid) ?  /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : 'Email is invalid!' : '',
-        passwordError: (password.length < 6) ? 'Password must be at least 6 characters' : ''
-      })
-    }
-    if(!name || !contact || !password){
-      setErrors({
-        nameError: !name ? 'Name is required!' : '',
-        contactError: !contact ? 'Email or Phone Number is required!' : '',
-        passwordError: !password ? 'Password is required!' : ''
+        nameError: (name.length < 3) && /[a-zA-Z]/.test(name) ? 'Name is invalid must be between 2 to 22 characters' : !name ? 'Name is required!' : (!NAME_REGEX.test(name)) ? 'Name is invalid!' : '',
+        contactError: (!isContactValid) ?  /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : !contact ? 'Email or Phone Number is required!' : 'Email is invalid!' : '',
+        passwordError: (!isPasswordValid) ? !password ? 'Password is required!' : 'Password must be at least 6 characters and include uppercase, lowercase, digit, and special character' :  ''
       })
       return;
     }
-    else if(NAME_REGEX.test(name) || isContactValid || password.length > 6){
+    else if(NAME_REGEX.test(name) || isContactValid || isPasswordValid){
       setErrors({
         nameError: '',
         contactError: '',
@@ -62,14 +58,20 @@ const RegisterPage = () => {
     }
     // Api logic
     setIsLoading(true);
+    toast.loading('Creating account...');
     try{
       // API call
-      const response = await axios.post('http://localhost:3000/auth/login', {contact, password});
-      console.log(response.data);
+
+      await axios.post('http://localhost:3000/auth/login', {contact, password})
+      .then(() => toast.success('Account created successfully!'));
+      toast.dismiss();
     } catch (error){
       console.log(error);
+      toast.dismiss();
+      toast.error('Something went wrong.');
     } finally{
       setIsLoading(false);
+      console.log('Account created successfully!');
     }
   }
 
@@ -96,6 +98,7 @@ const RegisterPage = () => {
           <Input
             ref={nameRef}
             label='Name'
+            charSize={22}
             value={name}
             onChange={setName}
             disabled={isLoading}
@@ -105,6 +108,7 @@ const RegisterPage = () => {
             ref={contactRef}
             label={/[0-9]/.test(contact) && !/[a-zA-Z]/.test(contact) ? 'Phone number' : /[a-zA-Z]/.test(contact) ? 'Email' : 'Enter Email/Phone number'}
             value={contact}
+            charSize={50}
             onChange={setContact}
             disabled={isLoading}
             type="text"
@@ -114,6 +118,7 @@ const RegisterPage = () => {
             ref={passwordRef}
             label='Password'
             value={password}
+            charSize={50}
             onChange={setPassword}
             type="password"
             disabled={isLoading}

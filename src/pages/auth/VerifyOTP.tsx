@@ -46,7 +46,7 @@ const VerifyOTP = () => {
         setLoading(true);
         try {
             const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/validate', {
-                contact: contact,
+                contact: "contact",
                 otp: otpValue
             });
             console.log(response.data);

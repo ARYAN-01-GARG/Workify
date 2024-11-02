@@ -1,10 +1,13 @@
 import { useState, useRef } from "react"
 import Modal from "../../components/auth/Modal"
 import InputOTP from "../../components/auth/InputOTP"
+import axios from "axios";
+import toast from "react-hot-toast";
+
 
 const VerifyOTP = () => {
 
-    const [otp, setOtp] = useState<string[]>(['', '', '', ''])
+    const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [error, setError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -32,13 +35,32 @@ const VerifyOTP = () => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit =  async () => {
+        const otpValue = otp.join('');
+        if (otpValue.length !== 6) {
+            setError(true);
+            return;
+        }
+        setError(false);
+        toast.loading('Verifying OTP...');
         setLoading(true);
-        setError(error => !error);
-        console.log('Verify');
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+        try {
+            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/validate', {
+                contact: contact,
+                otp: otpValue
+            });
+            console.log(response.data);
+            toast.dismiss();
+            toast.success('OTP verified successfully!');
+        } catch (error) {
+            toast.dismiss();
+            toast.error('Invalid OTP!');
+            console.log(error);
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 2000);
+        }
     };
 
     const footer = (
@@ -52,7 +74,7 @@ const VerifyOTP = () => {
 
     return (
         <Modal
-            backURL={'auth/register'}
+            backURL={'../../auth/register'}
             disabled={loading}
             title="Enter the code"
             subTitlte="Enter the OTP code we have sent to abc@gmail.com"

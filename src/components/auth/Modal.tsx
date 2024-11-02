@@ -40,7 +40,7 @@ const Modal:React.FC<ModalProps> = ({
       <div
         className="flex flex-col justify-center items-center gap-12 max-w-[385px]">
           <div className={`hidden lg:block absolute top-5 right-20 text-4xl ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
-            <button aria-disabled={disabled} onClick={() => navigate(backURL)}>←</button>
+            <button disabled={disabled} onClick={() => navigate(backURL)}>←</button>
           </div>
           <div className="flex flex-col gap-2 text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-semibold">{title}</h1>

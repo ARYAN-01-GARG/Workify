@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Input from "../../components/auth/Input";
 import Modal from "../../components/auth/Modal"
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+    const navigate = useNavigate();
     const [contact, setContact] = useState<string>('');
     const contactRef = useRef<HTMLInputElement>(null);
     const PHONE_REGEX = /^[0-9]{10}$/;
@@ -41,7 +43,9 @@ const ForgotPassword = () => {
         try {
             await setTimeout(() => {
                 console.log('Forgot Password',isLoading);
+                navigate('/auth/new-password');
             }, 2000);
+
         } catch (error) {
             console.log(error);
         } finally {

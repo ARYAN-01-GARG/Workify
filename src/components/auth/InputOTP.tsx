@@ -29,7 +29,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>(({
                 ref={ref}
                 type='text'
                 maxLength={1}
-                className={`peer bg-[#F6F6F6] max-w-12 md:max-w-12 lg:max-w-14 min-h-20 rounded-xl text-3xl font-semibold px-4 caret-transparent outline-none focus:border-2 focus:border-[#2B5A9E] ${error ? 'border-2 border-red-500' : ''}`}
+                className={`peer bg-[#F6F6F6] max-w-12 md:max-w-12 lg:max-w-14 min-h-20 rounded-xl text-3xl font-semibold px-4 caret-transparent outline-none focus:border-2 focus:border-[#2ec15a] ${error ? 'border-2 border-red-500' : value.length === 1 ? 'border-2 border-[#2B5A9E]' : 'border-2 border-[#F6F6F6]'} ${disabled ? 'cursor-not-allowed' : 'cursor-text'}`}
                 placeholder=""
                 disabled={disabled}
                 value={value}

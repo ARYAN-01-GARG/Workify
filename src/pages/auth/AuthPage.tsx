@@ -1,8 +1,44 @@
 import { Outlet, useNavigate } from "react-router-dom"
 import RenderImage from "../../components/auth/RenderImage"
+import { useState, useEffect } from "react"
 
 const AuthPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const images =[
+    {
+      image: "/images/image1.svg",
+      title: "Welcome to Workify!",
+      subTitle: "Where your career journey begins!",
+      width:'500'
+    },
+    {
+      image: "/images/image3.svg",
+      title: "Unlock your potential with Workify!",
+      subTitle: "Connecting talent and opportunities!",
+      width : '550'
+    },
+    {
+      image: "/images/image2.svg",
+      title: "Step into your Future Today",
+      subTitle: "Unlock potential, embrace opportunity, and shape your future .",
+      width : '420'
+    }
+  ]
+  const [currentImage, setCurrentImage] = useState(0);
+
+  const handleImageChange = (val:number) => {
+    setCurrentImage(val)
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage(prev => (prev + 1) % images.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   return (
     <div
       className="
@@ -20,15 +56,18 @@ const AuthPage = () => {
         </button>
         <div className="hidden md:block w-full h-[80%] mt-10">
           <RenderImage
-            image="/images/image1.svg"
+            image={images[currentImage].image}
+            width={images[currentImage].width}
             alt="Description of SVG"
             className=""
-            title="Welcome to Workify!"
-            subTitle="Where your career journey begins!"
+            title={images[currentImage].title}
+            subTitle={images[currentImage].subTitle}
           />
         </div>
-        <div className="hidden md:block">
-          1-2-3
+        <div className="hidden md:flex justify-center items-center gap-2 w-full">
+          <div onClick={() => {handleImageChange(0)}} className={`border-[0.25rem] ${currentImage === 0 ? 'border-[#2B5A9E] transition duration-500 w-12' : 'border-white w-7'} rounded-xl`}></div>
+          <div onClick={() => {handleImageChange(1)}} className={`border-[0.25rem] ${currentImage === 1 ? 'border-[#2B5A9E] transition duration-500 w-12' : 'border-white w-7'} rounded-xl`}></div>
+          <div onClick={() => {handleImageChange(2)}} className={`border-[0.25rem] ${currentImage === 2 ? 'border-[#2B5A9E] transition duration-500 w-12' : 'border-white w-7'} rounded-xl`}></div>
         </div>
       </div>
       <div

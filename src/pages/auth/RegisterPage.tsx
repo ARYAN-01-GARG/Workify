@@ -67,7 +67,7 @@ const RegisterPage = () => {
         firstName: name.split(' ')[0],
         lastName: name.split(' ')[1],
         email: EMAIL_REGEX.test(contact) ? contact : null,
-        mobile: PHONE_REGEX.test(contact) ? contact : null,
+        mobile: PHONE_REGEX.test(contact) ? `+91${contact}` : null,
         password: password
       });
       toast.dismiss();

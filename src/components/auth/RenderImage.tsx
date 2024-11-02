@@ -1,7 +1,33 @@
+import React from 'react';
 
-const RenderImage = () => {
+interface RenderImageProps {
+  image: string,
+  alt: string,
+  className?: string,
+  title: string,
+  subTitle: string
+}
+
+const RenderImage: React.FC<RenderImageProps> = ({
+  image,
+  alt,
+  className,
+  title,
+  subTitle
+}: RenderImageProps) => {
   return (
-    <div>RenderImage</div>
+    <div className={`flex flex-col justify-start items-center ${className}`}>
+      <div className="text-center mt-3">
+        <h1 className="text-4xl font-semibold mb-1">{title}</h1>
+        <p className="text-lg font-semibold ">{subTitle}</p>
+      </div>
+      <div className="mt-4">
+        <img
+          src={image}
+          alt={alt}
+          width={500}/>
+      </div>
+    </div>
   )
 }
 

@@ -1,7 +1,8 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import RenderImage from "../../components/auth/RenderImage"
 
 const AuthPage = () => {
+  const navigate = useNavigate()
   return (
     <div
       className="
@@ -10,12 +11,21 @@ const AuthPage = () => {
         bg-[#C8D8EF]
 
     ">
-      <div className="flex flex-col justify-center items-center flex-grow min-h-[12vh] md:min-h-screen p-6 bg-[#C8D8EF] md:max-w-[52vw] text-4xl">
-        <div>
-          logo
-        </div>
-        <div className="hidden md:block">
-          <RenderImage/>
+      <div className="relative flex flex-col justify-center items-center  gap-3 flex-grow min-h-[12vh] md:min-h-screen p-6 bg-[#C8D8EF] md:max-w-[52vw] text-4xl">
+        <button
+          className="absolute top-10 left-8 md:top-5 md:left-14"
+          onClick={() => navigate("/")}
+        >
+          <img src="/images/Workify.svg" alt="Logo" />
+        </button>
+        <div className="hidden md:block w-full h-[80%] mt-10">
+          <RenderImage
+            image="/images/image1.svg"
+            alt="Description of SVG"
+            className=""
+            title="Welcome to Workify!"
+            subTitle="Where your career journey begins!"
+          />
         </div>
         <div className="hidden md:block">
           1-2-3
@@ -30,4 +40,4 @@ const AuthPage = () => {
   )
 }
 
-export default AuthPage
+export default AuthPage;

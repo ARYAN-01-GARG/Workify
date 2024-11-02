@@ -66,19 +66,16 @@ const RegisterPage = () => {
       const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/register', {
         firstName: name.split(' ')[0],
         lastName: name.split(' ')[1],
-        username: name.split(' ')[0] + Math.floor(Math.random() * 1000),
         email: EMAIL_REGEX.test(contact) ? contact : null,
         mobile: PHONE_REGEX.test(contact) ? contact : null,
         password: password
       });
+      toast.dismiss();
       toast.success('Account created successfully!');
       console.log(response.data);
       setTimeout(() => {
-        toast.dismiss();
-      })
-      setTimeout(() => {
         navigate('/auth/verify');
-      },10000)
+      },2000)
     } catch (error){
       console.log(error);
       toast.dismiss();

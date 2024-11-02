@@ -63,13 +63,13 @@ const LoginPage = () => {
     try{
       // API call
 
-      await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/authenticate', {
-        email: EMAIL_REGEX.test(contact) ? contact : '',
-        mobile: PHONE_REGEX.test(contact) ? contact : '',
+      const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/authenticate', {
+        contact : contact,
         password
-      })
-      .then(() => toast.success('Login Successful!'));
+      });
+      console.log(response.data);
       toast.dismiss();
+      toast.success('Login Successfull!');
     } catch (error){
       console.log(error);
       toast.dismiss();

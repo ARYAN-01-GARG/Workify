@@ -1,57 +1,45 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Input from "../../components/auth/Input";
 import Modal from "../../components/auth/Modal"
 import { useNavigate } from "react-router-dom";
+import { useSelector , useDispatch } from "react-redux";
+import { ForgotPasswordState } from "../../store/features/auth/ForgotPasswordState";
+import { setContact } from "../../store/features/auth/ForgotPasswordSlice";
+import { setIsAllowed, setSendBy } from "../../store/features/auth/VerifyOTPSlice";
+import { validateContact } from "../../store/features/auth/ForgotPasswordSlice";
+import { AppDispatch } from "../../store/store";
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
-    const [contact, setContact] = useState<string>('');
+    const dispatch = useDispatch<AppDispatch>();
+
+    const contact = useSelector((state: { forgot : ForgotPasswordState} ) => state.forgot.contact);
+    const isLoading = useSelector((state: { forgot : ForgotPasswordState} ) => state.forgot.isLoading);
+    const error = useSelector((state: { forgot : ForgotPasswordState} ) => state.forgot.errors);
+    const isAuthenticated = useSelector((state: { user: { isAuthenticated: boolean; }; }) => state.user.isAuthenticated);
+
     const contactRef = useRef<HTMLInputElement>(null);
-    const PHONE_REGEX = /^[0-9]{10}$/;
-    const EMAIL_REGEX = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const [errors, setErrors] = useState<{ contactError: string }>({ contactError: '' });
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        contactRef.current?.focus();
-    }, []);
+        if(isAuthenticated){
+            navigate('/dashboard');
+        } else {
+        contactRef.current?.focus();}
+    }, [ dispatch, isAuthenticated , navigate ]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const isContactValid = EMAIL_REGEX.test(contact) || PHONE_REGEX.test(contact);
-        if (!isContactValid) {
-            setErrors({
-                ...errors,
-                contactError: (!isContactValid) ? /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : 'Email is invalid!' : '',
-            })
-        }
-        if (!contact) {
-            setErrors({
-                ...errors,
-                contactError: !contact ? 'Email or Phone Number is required!' : '',
-            })
-            return;
-        }
-        else if (isContactValid) {
-            setErrors({
-                ...errors,
-                contactError: '',
-            })
-        }
-        // Api logic
-        setIsLoading(true);
         try {
-            await setTimeout(() => {
-                console.log('Forgot Password',isLoading);
-                navigate('/auth/new-password');
-            }, 2000);
-
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 2000);
+            dispatch(validateContact(contact))
+            .then((res) => {
+                if(res.type === 'forgotPassword/validateContact/fulfilled'){
+                    dispatch(setIsAllowed(true));
+                    dispatch(setSendBy('forgot'));
+                    navigate('/auth/verify');
+                }
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
   return (
@@ -69,14 +57,14 @@ const ForgotPassword = () => {
             inputRef={contactRef}
             label={/[0-9]/.test(contact) && !/[a-zA-Z]/.test(contact) ? 'Phone number' : /[a-zA-Z]/.test(contact) ? 'Email' : 'Enter Email/Phone number'}
             value={contact}
-            onChange={setContact}
+            onChange={(value) => dispatch(setContact(value))}
             disabled={isLoading}
             type="text"
-            errors={errors.contactError}
+            errors={error}
           />
         </form>
     </Modal>
   )
 }
 
-export default ForgotPassword
+export default ForgotPassword;

@@ -6,9 +6,10 @@ import { setIsAllowed, setOTP, verifyOTP } from "../../store/features/auth/Verif
 import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
 import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
-import { setContact, setName, setPassword } from "../../store/features/auth/AuthSlice";
+import { registerUser, setContact, setName, setPassword } from "../../store/features/auth/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";
+import { validateContact } from "../../store/features/auth/ForgotPasswordSlice";
 
 const VerifyOTP = () => {
 
@@ -17,10 +18,15 @@ const VerifyOTP = () => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+    const [timer, setTimer] = useState<number>(29);
+    const [showResend, setShowResend] = useState<boolean>(false);
     const error = useSelector((state: { verifyOTP: { error: boolean; }; }) => state.verifyOTP.error);
     const loading = useSelector((state: { verifyOTP: { isLoading: boolean; }; }) => state.verifyOTP.isLoading);
     const contact = useSelector((state: { auth: AuthState }) => state.auth.contact);
     const name = useSelector((state: { auth: AuthState }) => state.auth.name);
+    const password = useSelector((state: { auth: AuthState }) => state.auth.password);
+    const sendBy = useSelector((state: { verifyOTP: VerifyOTPState }) => state.verifyOTP.sendBy);
+    const contactOfForgot = useSelector((state: { forgot: { contact: string; }; }) => state.forgot.contact);
 
     const otpRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
@@ -44,9 +50,15 @@ const VerifyOTP = () => {
             }
         }
     };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const otpValue = otp.join('');
+        dispatch(setOTP(otpValue));
+        if(sendBy === 'forgot'){
+            navigate('/auth/new-password');
+            return;
+        }
         try {
             dispatch(verifyOTP({
                 contact,
@@ -74,25 +86,63 @@ const VerifyOTP = () => {
         }
     };
 
+    const handleResend = () => {
+        setTimer(29);
+        setShowResend(false);
+        if(sendBy === 'forgot'){
+            dispatch(validateContact(contactOfForgot))
+        }
+        else {
+            dispatch(registerUser({
+                name,
+                contact,
+                password,
+            }))
+        }
+    };
+
     const footer = (
         <p className="text-lg font-medium -mt-3">
             Didn't receive the code?{" "}
-            <button className={`text-lg text-[#2B5A9E] font-medium`}>
-                Resend Code
-            </button>
+            {showResend ? (
+                <button className={`text-lg text-[#2B5A9E] font-medium`} onClick={handleResend}>
+                    Resend Code
+                </button>
+            ) : (
+                <span className="text-lg text-[#4b7cc1]">Resend in {timer}s</span>
+            )}
         </p>
     );
 
     useEffect(() => {
         if (!isAllowed) {
-            navigate('/dashboard');
+            if(sendBy === 'forgot'){
+                navigate('/auth/new-password');
+            }else {
+                navigate('/dashboard');
+            }
         }
-    }, [isAllowed , navigate ]);
+    }, [isAllowed , navigate, sendBy]);
+
+    useEffect(() => {
+        let interval: ReturnType<typeof setInterval> | undefined;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        } else {
+            setShowResend(true);
+            if (interval) clearInterval(interval);
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [timer]);
 
     return (
         <>
             <Modal
-                backURL={'../../auth/register'}
+                backURL={ sendBy === 'forgot' ? '/auth/forgot-password' : '../../auth/register'}
                 disabled={loading}
                 title="Enter the code"
                 subTitlte={`Enter the OTP code we have sent to ${contact}`}

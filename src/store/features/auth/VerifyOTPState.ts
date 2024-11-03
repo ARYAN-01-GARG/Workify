@@ -3,4 +3,5 @@ export interface VerifyOTPState {
     error: boolean;
     otp: string;
     isAllowed: boolean;
+    sendBy: string;
 }

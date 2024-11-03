@@ -1,67 +1,65 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Input from "../../components/auth/Input"
 import Modal from "../../components/auth/Modal"
+import { useDispatch, useSelector } from "react-redux";
+import { changePassword, setConfirmPassword, setPassword, SetPasswordPageState } from "../../store/features/auth/SetPasswordPageSlice";
+import { AuthState } from "../../store/features/auth/AuthState";
+import { AppDispatch } from "../../store/store";
+import { useNavigate } from "react-router-dom";
+import { setShowPassword } from "../../store/features/auth/AuthSlice";
+import { ForgotPasswordState } from "../../store/features/auth/ForgotPasswordState";
+import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";
+import { setIsAllowed, setSendBy } from "../../store/features/auth/VerifyOTPSlice";
+import { setContact } from "../../store/features/auth/ForgotPasswordSlice";
 
 
 
 const SetPasswordPage = () => {
 
-  const [password, setPassword] = useState<string>('');
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const password = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.password);
+  const showPassword = useSelector((state : { auth : AuthState }) => state.auth.showPassword);
+  const contact = useSelector((state : { forgot : ForgotPasswordState }) => state.forgot.contact);
+  const otp = useSelector((state : { verifyOTP : VerifyOTPState }) => state.verifyOTP.otp);
+  const confirmPassword = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.confirmPassword);
+
+  const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const [errors , setErrors] = useState<{ passwordError: string, confirmPasswordError: string }>({ passwordError: '', confirmPasswordError: '' });
+  const isLoading = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.isLoading);
+  const errors = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.errors);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isPasswordValid = password.length >= 6;
-    if(!isPasswordValid || password !== confirmPassword){
-      setErrors({
-        ...errors,
-        passwordError: (password.length < 6) ? 'Password must be at least 6 characters' : '',
-        confirmPasswordError: (password !== confirmPassword) ? 'Passwords do not match' : ''
+    try{
+      dispatch(changePassword({
+        contact,
+        otp,
+        password,
+        confirmPassword
+      }))
+      .then((res) => {
+        if(res.type === 'newPassword/setPassword/fulfilled'){
+            dispatch(setSendBy(''));
+            dispatch(setIsAllowed(false));
+            dispatch(setPassword(''));
+            dispatch(setConfirmPassword(''));
+            dispatch(setContact(''));
+            navigate('/auth/login');
+        }
       })
-    }
-    if(!password || !confirmPassword){
-      setErrors({
-        ...errors,
-        passwordError: !password ? 'Password is required!' : '',
-        confirmPasswordError: !confirmPassword ? 'Confirm Password is required!' : ''
-      })
-      return;
-    }
-    else if(isPasswordValid && password === confirmPassword){
-      setErrors({
-        ...errors,
-        passwordError: '',
-        confirmPasswordError: ''
-      })
-    }
-    // Api logic
-    setIsLoading(true);
-    try {
-      await setTimeout(() => {
-        console.log('Set Password',isLoading);
-      }, 2000);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
+    } catch (err) {
+      console.log(err);
     }
   }
 
   return (
     <Modal
-        backURL="auth/forgot-password"
-        title="Forgot Password"
-        subTitlte=""
+        backURL="/auth/verify"
+        title="Set New Password"
+        subTitlte="Please make sure your password is secure"
         disabled={isLoading}
         footer={<></>}
         onSubmit={handleSubmit}
@@ -72,23 +70,23 @@ const SetPasswordPage = () => {
             inputRef={passwordRef}
             label='New Password'
             value={password}
-            onChange={setPassword}
+            onChange={(value) => dispatch(setPassword(value))}
             type="password"
             disabled={isLoading}
             errors={errors.passwordError}
             showPassword={showPassword}
-            setShowPassword={setShowPassword}
+            setShowPassword={(value) => dispatch(setShowPassword(value))}
           />
           <Input
             inputRef={confirmPasswordRef}
             label='Confirm Password'
             value={confirmPassword}
-            onChange={setConfirmPassword}
+            onChange={(value) => dispatch(setConfirmPassword(value))}
             type="password"
             disabled={isLoading}
             errors={errors.confirmPasswordError}
             showPassword={showPassword}
-            setShowPassword={setShowPassword}
+            setShowPassword={(value) => dispatch(setShowPassword(value))}
           />
         </form>
     </Modal>

@@ -10,10 +10,9 @@ import { useSelector, useDispatch } from "react-redux";
 import Modal from "../../components/auth/Modal";
 import Input from "../../components/auth/Input";
 import { useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../store/store";
 import { setIsAllowed } from "../../store/features/auth/VerifyOTPSlice";
-import ActiveUserEffect from "../../components/ActiveUserEffect";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -31,23 +30,24 @@ const RegisterPage = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    dispatch({ type: 'auth/activeUser' });
     nameRef.current?.focus();
-  }, []);
+  },[ dispatch ]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
+    try{
       dispatch(registerUser({
         name: name,
         contact: contact,
         password: password
       }))
-        .then((res) => {
-          if (res.type === 'auth/registerUser/fulfilled') {
-            dispatch(setIsAllowed(true));
-            navigate('/auth/verify');
-          }
-        });
+      .then((res) => {
+        if(res.type === 'auth/registerUser/fulfilled'){
+        dispatch(setIsAllowed(true));
+        navigate('/auth/verify');
+        }
+      });
     } catch (err) {
       console.log(err);
     }
@@ -75,7 +75,6 @@ const RegisterPage = () => {
 
   return (
     <>
-      <ActiveUserEffect />
       <Modal
         disabled={isLoading}
         backURL="/"

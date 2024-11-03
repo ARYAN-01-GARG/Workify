@@ -9,7 +9,6 @@ import { setIsAuthenticated, setToken, setUserData } from "../../store/features/
 import { setContact, setName, setPassword } from "../../store/features/auth/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";
-import ActiveUserEffect from "../../components/ActiveUserEffect";
 
 const VerifyOTP = () => {
 
@@ -90,7 +89,6 @@ const VerifyOTP = () => {
 
     return (
         <>
-            <ActiveUserEffect />
             <Modal
                 backURL={'../../auth/register'}
                 disabled={loading}

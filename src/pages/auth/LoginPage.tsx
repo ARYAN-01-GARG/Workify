@@ -8,7 +8,6 @@ import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
 import { UserState } from "../../store/features/auth/UserState";
 import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
-import ActiveUserEffect from "../../components/ActiveUserEffect";
 
 const LoginPage = () => {
 
@@ -79,7 +78,6 @@ const LoginPage = () => {
 
   return (
     <>
-      <ActiveUserEffect />
       <Modal
         disabled={isLoading}
         backURL="/"

@@ -1,81 +1,50 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Modal from "../../components/auth/Modal"
-import axios from "axios";
 import Input from "../../components/auth/Input";
-import { useState, useRef, useEffect } from "react";
-import { toast } from "react-hot-toast";
-
-
-
-interface Errors{
-  nameError: string
-  contactError: string
-  passwordError: string
-}
+import { useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setContact, setPassword, setShowPassword ,loginUser } from "../../store/features/auth/AuthSlice";
+import { AuthState } from "../../store/features/auth/AuthState";
+import { AppDispatch } from "../../store/store";
+import { UserState } from "../../store/features/auth/UserState";
+import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
+import ActiveUserEffect from "../../components/ActiveUserEffect";
 
 const LoginPage = () => {
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-  const [errors , setErrors] = useState<Errors>({ nameError: '', contactError: '', passwordError: ''});
+  const isLoading = useSelector((state: { auth : AuthState}) => state.auth.isLoading);
+  const errors = useSelector((state: { auth : AuthState}) => state.auth.errors);
+  const contact = useSelector((state: { auth : AuthState}) => state.auth.contact);
+  const password = useSelector((state: { auth : AuthState}) => state.auth.password);
+  const showPassword = useSelector((state: { auth : AuthState}) => state.auth.showPassword);
+  const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
+  const userData = useSelector((state: { user : UserState}) => state.user.userData);
 
-  const [contact, setContact] = useState<string>('');
   const contactRef = useRef<HTMLInputElement>(null);
-  const PHONE_REGEX = /^[0-9]{10}$/;
-  const EMAIL_REGEX = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [password, setPassword] = useState<string>('');
   const passwordRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    contactRef.current?.focus();
-  },[])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isContactValid = EMAIL_REGEX.test(contact) || PHONE_REGEX.test(contact);
-    if(!isContactValid || password.length < 6){
-      setErrors({
-        ...errors,
-        contactError: (!isContactValid) ?  /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : 'Email is invalid!' : '',
-        passwordError: (password.length < 6) ? 'Password must be at least 6 characters' : ''
+    try {
+      dispatch(loginUser({contact, password}))
+      .then((res) => {
+        const newUserData = {
+            ...userData,
+            firstName: res.payload.firstName,
+            lastName: res.payload.lastName,
+            contact : contact
+        }
+        dispatch(setUserData(newUserData));
+        dispatch(setIsAuthenticated(true));
+        dispatch(setToken(res.payload.token));
+        dispatch(setPassword(''));
+        dispatch(setContact(''));
       })
-    }
-    if(!contact || !password){
-      setErrors({
-        ...errors,
-        contactError: !contact ? 'Email or Phone Number is required!' : '',
-        passwordError: !password ? 'Password is required!' : ''
-      })
-      return;
-    }
-    else if(isContactValid || password.length > 6){
-      setErrors({
-        ...errors,
-        contactError: '',
-        passwordError: ''
-      })
-    }
-    // Api logic
-    setIsLoading(true);
-    toast.loading('Please wait...');
-    try{
-      // API call
-
-      const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/authenticate', {
-        contact : contact,
-        password
-      });
-      console.log(response.data);
-      toast.dismiss();
-      toast.success('Login Successfull!');
-    } catch (error){
+    } catch (error) {
       console.log(error);
-      toast.dismiss();
-      toast.error('Invalid Password or Email/Phone number');
-    } finally{
-      setIsLoading(false);
     }
   }
 
@@ -98,8 +67,19 @@ const LoginPage = () => {
       </Link>
     </p>
   )
+
+  useEffect(() => {
+    if(IsAuthenticated){
+      navigate('/dashboard');
+    }
+    else {
+      contactRef.current?.focus();
+    }
+  },[ IsAuthenticated , navigate ]);
+
   return (
     <>
+      <ActiveUserEffect />
       <Modal
         disabled={isLoading}
         backURL="/"
@@ -114,7 +94,7 @@ const LoginPage = () => {
             inputRef={contactRef}
             label={/[0-9]/.test(contact) && !/[a-zA-Z]/.test(contact) ? 'Phone number' : /[a-zA-Z]/.test(contact) ? 'Email' : 'Enter Email/Phone number'}
             value={contact}
-            onChange={setContact}
+            onChange={(e) => dispatch(setContact(e))}
             disabled={isLoading}
             type="text"
             errors={errors.contactError}
@@ -124,12 +104,12 @@ const LoginPage = () => {
             inputRef={passwordRef}
             label='Password'
             value={password}
-            onChange={setPassword}
+            onChange={(e) => dispatch(setPassword(e))}
             type="password"
             disabled={isLoading}
             errors={errors.passwordError}
             showPassword={showPassword}
-            setShowPassword={setShowPassword}
+            setShowPassword={(value) => dispatch(setShowPassword(value))}
             onKeyDown={(e) => handleKeyDown(e)}
           />
           <div className="flex justify-between items-center font-medium">

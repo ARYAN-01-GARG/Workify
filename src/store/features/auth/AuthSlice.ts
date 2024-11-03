@@ -59,6 +59,43 @@ export const registerUser = createAsyncThunk(
     }
 );
 
+export const loginUser = createAsyncThunk(
+    'auth/loginUser',
+    async ({ contact, password }: { contact: string, password: string }, { rejectWithValue, dispatch }) => {
+        const isContactValid = EMAIL_REGEX.test(contact) || PHONE_REGEX.test(contact);
+        if (!isContactValid || password.length < 8) {
+            return rejectWithValue({
+                ...initialState.errors,
+                contactError: (!isContactValid) ? /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : !contact ? 'Email or Phone Number is required!' : 'Email is invalid!' : '',
+                passwordError: (password.length < 8) ? !password ? 'Password is required!' : 'Password must be at least 6 characters' : ''
+            });
+        } else if (isContactValid && password.length > 8) {
+            dispatch(setErrors({
+                ...initialState.errors,
+                contactError: '',
+                passwordError: ''
+            }));
+        }
+        dispatch(setIsLoading(true));
+        toast.loading('Please wait...');
+        try {
+            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/authenticate', {
+                contact: contact,
+                password
+            });
+            toast.dismiss();
+            toast.success('Login Successfull!');
+            return response.data;
+        } catch (error) {
+            toast.dismiss();
+            toast.error('Something went wrong.');
+            return rejectWithValue(console.log(error));
+        } finally{
+            dispatch(setIsLoading(false));
+        }
+    }
+);
+
 const AuthSlice = createSlice({
     name: 'auth',
     initialState,
@@ -91,6 +128,20 @@ const AuthSlice = createSlice({
                 state.isLoading = false;
             })
             .addCase(registerUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errors = action.payload as {
+                    nameError: string;
+                    contactError: string;
+                    passwordError: string;
+                };
+            })
+            .addCase(loginUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(loginUser.fulfilled, (state) => {
+                state.isLoading = false;
+            })
+            .addCase(loginUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.errors = action.payload as {
                     nameError: string;

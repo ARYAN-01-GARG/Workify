@@ -7,6 +7,7 @@ const initialState: VerifyOTPState = {
     isLoading: false,
     error: false,
     otp: '',
+    isAllowed: false
 };
 
 export const verifyOTP = createAsyncThunk(
@@ -49,6 +50,9 @@ const VerifyOTPSlice = createSlice({
         },
         setOTP(state, action: PayloadAction<string>) {
             state.otp = action.payload;
+        },
+        setIsAllowed(state, action: PayloadAction<boolean>){
+            state.isAllowed = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -68,6 +72,6 @@ const VerifyOTPSlice = createSlice({
     }
 });
 
-export const { setIsLoading, setError, setOTP } = VerifyOTPSlice.actions;
+export const { setIsLoading, setError, setOTP, setIsAllowed } = VerifyOTPSlice.actions;
 
 export default VerifyOTPSlice.reducer;

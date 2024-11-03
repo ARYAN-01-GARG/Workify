@@ -1,18 +1,27 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Modal from "../../components/auth/Modal";
 import InputOTP from "../../components/auth/InputOTP";
 import { useSelector, useDispatch } from "react-redux";
-import { verifyOTP } from "../../store/features/auth/VerifyOTPSlice";
+import { setIsAllowed, setOTP, verifyOTP } from "../../store/features/auth/VerifyOTPSlice";
 import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
+import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
+import { setContact, setName, setPassword } from "../../store/features/auth/AuthSlice";
+import { useNavigate } from "react-router-dom";
+import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";
+import ActiveUserEffect from "../../components/ActiveUserEffect";
 
 const VerifyOTP = () => {
+
+    const isAllowed = useSelector((state: { verifyOTP : VerifyOTPState }) => state.verifyOTP.isAllowed);
+
+    const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
-
     const error = useSelector((state: { verifyOTP: { error: boolean; }; }) => state.verifyOTP.error);
     const loading = useSelector((state: { verifyOTP: { isLoading: boolean; }; }) => state.verifyOTP.isLoading);
     const contact = useSelector((state: { auth: AuthState }) => state.auth.contact);
+    const name = useSelector((state: { auth: AuthState }) => state.auth.name);
 
     const otpRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
@@ -24,7 +33,6 @@ const VerifyOTP = () => {
             otpRefs[index + 1].current?.focus();
         }
     };
-
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
             otpRefs[index - 1].current?.focus();
@@ -37,14 +45,32 @@ const VerifyOTP = () => {
             }
         }
     };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const otpValue = otp.join('');
-        dispatch(verifyOTP({
-            contact,
-            otp: otpValue
-        }));
+        try {
+            dispatch(verifyOTP({
+                contact,
+                otp: otpValue
+            })).then((res) => {
+                const newUserData = {
+                    firstName: name.split(' ')[0],
+                    lastName: name.split(' ')[1],
+                    contact : contact,
+                    emailVerified: true
+                }
+                dispatch(setIsAllowed(false));
+                dispatch(setUserData(newUserData));
+                dispatch(setIsAuthenticated(true));
+                dispatch(setToken(res.payload.token));
+                dispatch(setName(''));
+                dispatch(setOTP(''));
+                dispatch(setPassword(''));
+                dispatch(setContact(''));
+            });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const footer = (
@@ -56,29 +82,38 @@ const VerifyOTP = () => {
         </p>
     );
 
+    useEffect(() => {
+        if (!isAllowed) {
+            navigate('/dashboard');
+        }
+    }, [isAllowed , navigate]);
+
     return (
-        <Modal
-            backURL={'../../auth/register'}
-            disabled={loading}
-            title="Enter the code"
-            subTitlte="Enter the OTP code we have sent to abc@gmail.com"
-            actionLabel="Verify"
-            onSubmit={handleSubmit}
-            footer={footer}
-        >
-            <form className="flex items-center justify-around gap-2" onSubmit={handleSubmit}>
-                {otpRefs.map((ref, index) => (
-                    <InputOTP
-                        key={index}
-                        ref={ref}
-                        value={otp[index]}
-                        onChange={(value) => handleOTPChange(value, index)}
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        error={error}
-                    />
-                ))}
-            </form>
-        </Modal>
+        <>
+            <ActiveUserEffect />
+            <Modal
+                backURL={'../../auth/register'}
+                disabled={loading}
+                title="Enter the code"
+                subTitlte="Enter the OTP code we have sent to abc@gmail.com"
+                actionLabel="Verify"
+                onSubmit={handleSubmit}
+                footer={footer}
+            >
+                <form className="flex items-center justify-around gap-2" onSubmit={handleSubmit}>
+                    {otpRefs.map((ref, index) => (
+                        <InputOTP
+                            key={index}
+                            ref={ref}
+                            value={otp[index]}
+                            onChange={(value) => handleOTPChange(value, index)}
+                            onKeyDown={(e) => handleKeyDown(e, index)}
+                            error={error}
+                        />
+                    ))}
+                </form>
+            </Modal>
+        </>
     );
 };
 

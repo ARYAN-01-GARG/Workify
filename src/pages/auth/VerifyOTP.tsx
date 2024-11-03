@@ -52,20 +52,22 @@ const VerifyOTP = () => {
                 contact,
                 otp: otpValue
             })).then((res) => {
-                const newUserData = {
-                    firstName: name.split(' ')[0],
-                    lastName: name.split(' ')[1],
-                    contact : contact,
-                    emailVerified: true
+                if (res.type === 'verifyOTP/verifyOTP/fulfilled') {
+                    const newUserData = {
+                        firstName: name.split(' ')[0],
+                        lastName: name.split(' ')[1],
+                        contact : contact,
+                        emailVerified: true
+                    }
+                    dispatch(setIsAllowed(false));
+                    dispatch(setUserData(newUserData));
+                    dispatch(setIsAuthenticated(true));
+                    dispatch(setToken(res.payload.token));
+                    dispatch(setName(''));
+                    dispatch(setOTP(''));
+                    dispatch(setPassword(''));
+                    dispatch(setContact(''));
                 }
-                dispatch(setIsAllowed(false));
-                dispatch(setUserData(newUserData));
-                dispatch(setIsAuthenticated(true));
-                dispatch(setToken(res.payload.token));
-                dispatch(setName(''));
-                dispatch(setOTP(''));
-                dispatch(setPassword(''));
-                dispatch(setContact(''));
             });
         } catch (error) {
             console.log(error);
@@ -85,7 +87,7 @@ const VerifyOTP = () => {
         if (!isAllowed) {
             navigate('/dashboard');
         }
-    }, [isAllowed , navigate]);
+    }, [isAllowed , navigate ]);
 
     return (
         <>
@@ -93,7 +95,7 @@ const VerifyOTP = () => {
                 backURL={'../../auth/register'}
                 disabled={loading}
                 title="Enter the code"
-                subTitlte="Enter the OTP code we have sent to abc@gmail.com"
+                subTitlte={`Enter the OTP code we have sent to ${contact}`}
                 actionLabel="Verify"
                 onSubmit={handleSubmit}
                 footer={footer}

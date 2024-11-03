@@ -30,17 +30,19 @@ const LoginPage = () => {
     try {
       dispatch(loginUser({contact, password}))
       .then((res) => {
-        const newUserData = {
-            ...userData,
-            firstName: res.payload.firstName,
-            lastName: res.payload.lastName,
-            contact : contact
+        if (res.type === 'auth/loginUser/fulfilled') {
+            const newUserData = {
+                ...userData,
+                firstName: res.payload.firstName,
+                lastName: res.payload.lastName,
+                contact : contact
+            }
+            dispatch(setUserData(newUserData));
+            dispatch(setIsAuthenticated(true));
+            dispatch(setToken(res.payload.token));
+            dispatch(setPassword(''));
+            dispatch(setContact(''));
         }
-        dispatch(setUserData(newUserData));
-        dispatch(setIsAuthenticated(true));
-        dispatch(setToken(res.payload.token));
-        dispatch(setPassword(''));
-        dispatch(setContact(''));
       })
     } catch (error) {
       console.log(error);

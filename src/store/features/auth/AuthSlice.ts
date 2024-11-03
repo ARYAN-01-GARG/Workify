@@ -40,6 +40,7 @@ export const registerUser = createAsyncThunk(
             }));
         }
         toast.loading('Creating account...');
+        console.log(`+91${contact}`)
         try {
             const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/register', {
                 firstName: name.split(' ')[0],
@@ -54,6 +55,7 @@ export const registerUser = createAsyncThunk(
         } catch (err) {
             toast.dismiss();
             toast.error('Something went wrong.');
+            return rejectWithValue('Registration failed');
             console.log(err);
         }
     }
@@ -88,8 +90,9 @@ export const loginUser = createAsyncThunk(
             return response.data;
         } catch (error) {
             toast.dismiss();
-            toast.error('Something went wrong.');
-            return rejectWithValue(console.log(error));
+            toast.error('Invalid credentials!');
+            return rejectWithValue('Login failed');
+            console.log(error);
         } finally{
             dispatch(setIsLoading(false));
         }

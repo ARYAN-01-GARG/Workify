@@ -24,6 +24,19 @@ const UserSlice = createSlice({
       if (token) state.token = token;
       if (isAuthenticated) state.isAuthenticated = JSON.parse(isAuthenticated);
     },
+    logout(state) {
+      state.userData = {
+        firstName: '',
+        lastName: '',
+        contact: '',
+        emailVerified: false,
+      };
+      state.token = '';
+      state.isAuthenticated = false;
+      localStorage.removeItem('userData');
+      localStorage.removeItem('token');
+      localStorage.removeItem('isAuthenticated');
+    },
     setUserData(state, action) {
       state.userData = action.payload;
       localStorage.setItem('userData', JSON.stringify(action.payload));
@@ -39,6 +52,6 @@ const UserSlice = createSlice({
   },
 });
 
-export const { activeUser, setUserData, setToken, setIsAuthenticated } = UserSlice.actions;
+export const { activeUser, setUserData, setToken, setIsAuthenticated , logout } = UserSlice.actions;
 
 export default UserSlice.reducer;

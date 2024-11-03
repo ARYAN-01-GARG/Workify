@@ -24,6 +24,7 @@ const RegisterPage = () => {
   const contact = useSelector((state: { auth: AuthState }) => state.auth.contact);
   const password = useSelector((state: { auth: AuthState }) => state.auth.password);
   const showPassword = useSelector((state: { auth: AuthState }) => state.auth.showPassword);
+  const isAuthenticated = useSelector((state: { user: { isAuthenticated: boolean; }; }) => state.user.isAuthenticated);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const contactRef = useRef<HTMLInputElement>(null);
@@ -82,7 +83,7 @@ const RegisterPage = () => {
         subTitlte="Join the Workify community to find your ideal job fit."
         actionLabel="Create Account"
         onSubmit={handleSubmit}
-        footer={footer}
+        footer={isAuthenticated ? <></> : footer}
       >
         <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
           <Input

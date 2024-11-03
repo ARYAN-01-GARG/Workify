@@ -31,6 +31,7 @@ export const verifyOTP = createAsyncThunk(
         } catch (error) {
             toast.dismiss();
             toast.error('Invalid OTP!');
+            return rejectWithValue('Invalid OTP');
             console.log(error);
         } finally {
             dispatch(setIsLoading(false));

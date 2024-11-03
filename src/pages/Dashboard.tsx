@@ -18,7 +18,6 @@ const Dashboard = () => {
   }, [dispatch]);
 
   const isAuthenticated = useSelector((state: { user: UserState }) => state.user.isAuthenticated);
-  const token = useSelector((state: { user: UserState }) => state.user.token);
 
   useEffect(() => {
     if (!isAuthenticated) {

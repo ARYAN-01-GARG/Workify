@@ -1,15 +1,18 @@
-import { useState, useRef } from "react"
-import Modal from "../../components/auth/Modal"
-import InputOTP from "../../components/auth/InputOTP"
-import axios from "axios";
-import toast from "react-hot-toast";
-
+import { useState, useRef } from "react";
+import Modal from "../../components/auth/Modal";
+import InputOTP from "../../components/auth/InputOTP";
+import { useSelector, useDispatch } from "react-redux";
+import { verifyOTP } from "../../store/features/auth/VerifyOTPSlice";
+import { AuthState } from "../../store/features/auth/AuthState";
+import { AppDispatch } from "../../store/store";
 
 const VerifyOTP = () => {
-
+    const dispatch: AppDispatch = useDispatch();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
-    const [error, setError] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
+
+    const error = useSelector((state: { verifyOTP: { error: boolean; }; }) => state.verifyOTP.error);
+    const loading = useSelector((state: { verifyOTP: { isLoading: boolean; }; }) => state.verifyOTP.isLoading);
+    const contact = useSelector((state: { auth: AuthState }) => state.auth.contact);
 
     const otpRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
@@ -28,49 +31,30 @@ const VerifyOTP = () => {
         } else if (e.key === 'Enter') {
             e.preventDefault();
             if (index === otpRefs.length - 1) {
-                handleSubmit();
+                handleSubmit(e);
             } else if (index < otpRefs.length - 1) {
                 otpRefs[index + 1].current?.focus();
             }
         }
     };
 
-    const handleSubmit =  async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         const otpValue = otp.join('');
-        if (otpValue.length !== 6) {
-            setError(true);
-            return;
-        }
-        setError(false);
-        toast.loading('Verifying OTP...');
-        setLoading(true);
-        try {
-            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/validate', {
-                contact: "contact",
-                otp: otpValue
-            });
-            console.log(response.data);
-            toast.dismiss();
-            toast.success('OTP verified successfully!');
-        } catch (error) {
-            toast.dismiss();
-            toast.error('Invalid OTP!');
-            console.log(error);
-        } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 2000);
-        }
+        dispatch(verifyOTP({
+            contact,
+            otp: otpValue
+        }));
     };
 
     const footer = (
         <p className="text-lg font-medium -mt-3">
-            Didn't recieve the code?{" "}
+            Didn't receive the code?{" "}
             <button className={`text-lg text-[#2B5A9E] font-medium`}>
                 Resend Code
             </button>
         </p>
-    )
+    );
 
     return (
         <Modal
@@ -95,7 +79,7 @@ const VerifyOTP = () => {
                 ))}
             </form>
         </Modal>
-    )
-}
+    );
+};
 
-export default VerifyOTP
+export default VerifyOTP;

@@ -76,7 +76,6 @@ const LoginPage = () => {
       toast.error('Invalid Password or Email/Phone number');
     } finally{
       setIsLoading(false);
-      console.log('Login Successfull!');
     }
   }
 

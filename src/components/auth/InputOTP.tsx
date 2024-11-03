@@ -33,7 +33,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>(({
                 placeholder=""
                 disabled={disabled}
                 value={value}
-                onChange={handleInput} // Use handleInput to filter input
+                onChange={handleInput}
                 onKeyDown={onKeyDown}
             />
             <label htmlFor={id} className="peer-placeholder-shown:block hidden">

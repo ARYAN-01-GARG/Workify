@@ -58,7 +58,7 @@ const AuthPage = () => {
           <RenderImage
             image={images[currentImage].image}
             width={images[currentImage].width}
-            alt="Description of SVG"
+            alt="Image"
             className=""
             title={images[currentImage].title}
             subTitle={images[currentImage].subTitle}

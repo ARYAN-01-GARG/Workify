@@ -7,6 +7,7 @@ import ToastProvider from "./components/ToastProvider"
 import VerifyOTP from "./pages/auth/VerifyOTP"
 import ForgotPassword from "./pages/auth/ForgotPassword"
 import SetPasswordPage from "./pages/auth/SetPasswordPage"
+import Dashboard from "./pages/Dashboard"
 
 const App = () => {
   return (
@@ -26,7 +27,7 @@ const App = () => {
         </Route>
 
         {/* Protected routes */}
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </>
   )

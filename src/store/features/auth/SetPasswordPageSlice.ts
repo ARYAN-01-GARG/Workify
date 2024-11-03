@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 export interface SetPasswordPageState {
     password: string;
     confirmPassword: string;
@@ -25,29 +26,21 @@ const initialState = {
 export const changePassword = createAsyncThunk(
     'newPassword/setPassword',
     async ({ contact , otp ,password , confirmPassword }: { contact : string , otp:string , password: string, confirmPassword: string }, { rejectWithValue, dispatch }) => {
-    const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password);
+    const isPasswordValid = PASSWORD_REGEX.test(password);
     if(!isPasswordValid || password !== confirmPassword){
       dispatch(setErrors({
-        passwordError: (password.length < 8) ? 'Password must be at least 8 characters' : '',
-        confirmPasswordError: (password !== confirmPassword) ? 'Passwords do not match' : ''
-      }))
-    }
-    if(!password || !confirmPassword){
-      dispatch(setErrors({
-        passwordError: !password ? 'Password is required!' : '',
-        confirmPasswordError: !confirmPassword ? 'Confirm Password is required!' : ''
-      }))
-    
-      return rejectWithValue('Password is required!');
-    }
-    else if(isPasswordValid && password === confirmPassword){
+        passwordError: (!isPasswordValid) ? !password ? 'Password is required!' : 'Password must be at least 8 characters and include uppercase, lowercase, digit, and special character' : '',
+        confirmPasswordError: !confirmPassword ? 'Confirm password is Required!' : (password !== confirmPassword) ? 'Passwords do not match' : ''
+      }));
+      return rejectWithValue('Validation errors');
+    } else if(isPasswordValid && password === confirmPassword){
       dispatch(setErrors({
         passwordError: '',
         confirmPasswordError: ''
-      }))
+      }));
     }
     // Api logic
-    setIsLoading(true);
+    dispatch(setIsLoading(true));
     toast.loading('Setting Password...');
     try {
       const response = await axios.put('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/verify-otp', {
@@ -55,7 +48,7 @@ export const changePassword = createAsyncThunk(
         otp,
         password,
         confirmPassword
-      })
+      });
         toast.dismiss();
         toast.success('Password changed successfully');
         return response.data;
@@ -65,10 +58,10 @@ export const changePassword = createAsyncThunk(
         return rejectWithValue('Invalid OTP');
         console.log(error);
     } finally {
-        setIsLoading(false);
+        dispatch(setIsLoading(false));
     }
     }
-)
+);
 
 const SetPasswordPageSlice = createSlice({
     name: 'setPasswordPage',

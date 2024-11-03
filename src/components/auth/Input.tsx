@@ -67,7 +67,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
                 ${errors ? 'focus:border-red-500' : 'focus:border-[#2B5A9E]'}
         `}
             />
-            {label === 'Password' && (
+            {(label === 'Password' || label === 'Confirm Password') && (
                 <div
                     className="absolute top-4 right-4 cursor-pointer transition duration-150 peer-placeholder-shown:hidden"
                     onClick={handleTogglePassword}

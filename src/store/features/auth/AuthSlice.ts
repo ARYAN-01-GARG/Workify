@@ -125,12 +125,15 @@ const AuthSlice = createSlice({
         builder
             .addCase(registerUser.pending, (state) => {
                 state.isLoading = true;
+                state.showPassword = false;
             })
             .addCase(registerUser.fulfilled, (state) => {
                 state.isLoading = false;
+                state.showPassword = false;
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.isLoading = false;
+                state.showPassword = false;
                 state.errors = action.payload as {
                     nameError: string;
                     contactError: string;

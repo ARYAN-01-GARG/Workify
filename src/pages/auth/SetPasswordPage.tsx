@@ -66,11 +66,11 @@ const SetPasswordPage = () => {
   };
 
   useEffect(() => {
-    // if (!isAllowed || isAuthenticated) {
-    //   navigate('/auth/login');
-    // } else {
+    if (!isAllowed || isAuthenticated) {
+      navigate('/auth/login');
+    } else {
       passwordRef.current?.focus();
-    // }
+    }
   }, [dispatch , isAllowed , isAuthenticated , navigate]);
 
   return (

@@ -27,10 +27,10 @@ const Dashboard = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="flex flex-col justify-center items-center text-2xl max-w-[1000px} min-h-screen gap-3">
+    <div className="flex flex-col justify-center items-center text-2xl max-w-[1000px} min-h-screen gap-3 text-white bg-slate-700">
       <h1>Dashboard</h1>
-      <h2>Welcome {token?.slice(0,10)}</h2>
-      <button onClick={handleLogout} className="bg-red-500 text-white p-4 rounded-xl ">Log Out</button>
+      <h2>Welcome To Our Website's Dashboard</h2>
+      <button onClick={handleLogout} className="bg-red-500 text-white p-4 rounded-xl hover:opacity-80">Log Out</button>
     </div>
   );
 }

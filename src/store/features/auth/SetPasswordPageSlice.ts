@@ -46,7 +46,7 @@ export const changePassword = createAsyncThunk(
       const response = await axios.put('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/verify-otp', {
         contact,
         otp,
-        password,
+        newPassword : password,
         confirmPassword
       });
         toast.dismiss();

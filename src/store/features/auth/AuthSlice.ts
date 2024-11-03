@@ -44,7 +44,7 @@ export const registerUser = createAsyncThunk(
             const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/register', {
                 firstName: name.split(' ')[0],
                 lastName: name.split(' ')[1] || name.split(' ')[0],
-                email: EMAIL_REGEX.test(contact) ? contact : null,
+                email: EMAIL_REGEX.test(contact) ? contact.toLowerCase() : null,
                 mobile: PHONE_REGEX.test(contact) ? `+91${contact}` : null,
                 password: password
             });
@@ -81,7 +81,7 @@ export const loginUser = createAsyncThunk(
         toast.loading('Please wait...');
         try {
             const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/authenticate', {
-                contact: contact,
+                contact: contact.toLowerCase(),
                 password
             });
             toast.dismiss();

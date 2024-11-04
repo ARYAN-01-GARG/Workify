@@ -10,19 +10,19 @@ const AuthPage = () => {
       image: "/images/image1.svg",
       title: "Welcome to Workify!",
       subTitle: "Where your career journey begins!",
-      width:'500'
+      width:'450'
     },
     {
       image: "/images/image3.svg",
       title: "Unlock your potential with Workify!",
       subTitle: "Connecting talent and opportunities!",
-      width : '550'
+      width : '450'
     },
     {
       image: "/images/image2.svg",
       title: "Step into your Future Today",
       subTitle: "Unlock potential, embrace opportunity, and shape your future .",
-      width : '420'
+      width : '350'
     }
   ]
   const [currentImage, setCurrentImage] = useState(0);

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { AuthState } from './AuthState';
 import { toast } from 'react-hot-toast';
 
@@ -51,11 +51,11 @@ export const registerUser = createAsyncThunk(
             toast.dismiss();
             toast.success('OTP sent successfully!');
             return response.data;
-        } catch (err) {
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message: string }>;
             toast.dismiss();
-            toast.error('Something went wrong.');
-            return rejectWithValue('Registration failed');
-            console.log(err);
+            toast.error(error.response?.data?.message || 'Registration failed');
+            return rejectWithValue(error.response?.data?.message || 'Registration failed');
         }
     }
 );
@@ -68,9 +68,9 @@ export const loginUser = createAsyncThunk(
             return rejectWithValue({
                 ...initialState.errors,
                 contactError: (!isContactValid) ? /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : !contact ? 'Email or Phone Number is required!' : 'Email is invalid!' : '',
-                passwordError: (password.length < 8) ? !password ? 'Password is required!' : 'Password must be at least 6 characters' : ''
+                passwordError: (password.length < 8) ? !password ? 'Password is required!' : 'Password must be at least 8 characters' : ''
             });
-        } else if (isContactValid && password.length > 8) {
+        } else if (isContactValid && password.length >= 8) {
             dispatch(setErrors({
                 ...initialState.errors,
                 contactError: '',
@@ -87,11 +87,16 @@ export const loginUser = createAsyncThunk(
             toast.dismiss();
             toast.success('Login Successfull!');
             return response.data;
-        } catch (error) {
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message: string }>;
             toast.dismiss();
-            toast.error('Invalid credentials!');
-            return rejectWithValue('Login failed');
-            console.log(error);
+            toast.error((error.response?.data?.message === 'User does not exist') ? /^[0-9]{10}$/.test(contact) ? 'Phone number is not registered!' : 'Email is not registered!' : 'Incorrect password');
+            dispatch(setErrors({
+                ...initialState.errors,
+                contactError: (error.response?.data?.message === 'User does not exist') ? /^[0-9]{10}$/.test(contact) ? 'Phone number is not registered!' : 'Email is not registered!' : '',
+                passwordError: (error.response?.data?.message === 'Incorrect password') ? 'Invalid Password!' : ''
+            }))
+            return rejectWithValue(error.response?.data?.message || 'Login failed');
         } finally{
             dispatch(setIsLoading(false));
         }

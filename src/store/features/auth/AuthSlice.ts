@@ -67,7 +67,7 @@ export const loginUser = createAsyncThunk(
         if (!isContactValid || password.length < 8) {
             return rejectWithValue({
                 ...initialState.errors,
-                contactError: (!isContactValid) ? /^[0-9]{10}$/.test(contact) ? 'Phone number is invalid!' : !contact ? 'Email or Phone Number is required!' : 'Email is invalid!' : '',
+                contactError: (!isContactValid) ? /^[0-9]{0,10}$/.test(contact) ? 'Phone number is invalid!' : !contact ? 'Email or Phone Number is required!' : 'Email is invalid!' : '',
                 passwordError: (password.length < 8) ? !password ? 'Password is required!' : 'Password must be at least 8 characters' : ''
             });
         } else if (isContactValid && password.length >= 8) {

@@ -25,11 +25,16 @@ const AuthPage = () => {
       width : '350'
     }
   ]
+
   const [currentImage, setCurrentImage] = useState(0);
 
   const handleImageChange = (val:number) => {
     setCurrentImage(val)
   }
+
+  useEffect(() => {
+    
+  },[])
 
   useEffect(() => {
     const interval = setInterval(() => {

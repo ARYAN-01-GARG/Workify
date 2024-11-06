@@ -31,9 +31,13 @@ const RegisterPage = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if(isAuthenticated){
+      navigate('/dashboard');
+      return;
+    }
     dispatch({ type: 'auth/activeUser' });
     nameRef.current?.focus();
-  },[ dispatch ]);
+  },[ dispatch , navigate , isAuthenticated ]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +77,8 @@ const RegisterPage = () => {
       </Link>
     </p>
   );
+
+  
 
   return (
     <>

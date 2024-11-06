@@ -81,7 +81,7 @@ const SetPasswordPage = () => {
         disabled={isLoading}
         footer={<></>}
         onSubmit={handleSubmit}
-        actionLabel="Get OTP"
+        actionLabel="Update Password"
     >
         <form className="flex flex-col gap-5 w-full mt-3 -mb-5" onSubmit={handleSubmit}>
           <Input

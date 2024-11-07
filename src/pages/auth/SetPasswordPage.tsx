@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import Input from "../../components/auth/Input";
 import Modal from "../../components/auth/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { changePassword, setConfirmPassword, setPassword, SetPasswordPageState } from "../../store/features/auth/SetPasswordPageSlice";
+import { changePassword, setConfirmPassword, setPassword, SetPasswordPageState, setShowConfirmPassword } from "../../store/features/auth/SetPasswordPageSlice";
 import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
 import { useNavigate } from "react-router-dom";
@@ -19,9 +19,11 @@ const SetPasswordPage = () => {
   const password = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.password);
   const isAuthenticated = useSelector((state : { user : { isAuthenticated : boolean } }) => state.user.isAuthenticated);
   const isAllowed = useSelector((state : { verifyOTP : VerifyOTPState }) => state.verifyOTP.isAllowed);
+  const sendBy = useSelector((state : { verifyOTP : VerifyOTPState }) => state.verifyOTP.sendBy);
   const showPassword = useSelector((state : { auth : AuthState }) => state.auth.showPassword);
   const contact = useSelector((state : { forgot : ForgotPasswordState }) => state.forgot.contact);
   const confirmPassword = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.confirmPassword);
+  const showConfirmPassword = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.showConfirmPassword);
 
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
@@ -64,12 +66,12 @@ const SetPasswordPage = () => {
   };
 
   useEffect(() => {
-    if (!isAllowed || isAuthenticated) {
+    if ((sendBy !== 'forgot') || isAuthenticated) {
       navigate('/auth/login');
     } else {
       passwordRef.current?.focus();
     }
-  }, [dispatch , isAllowed , isAuthenticated , navigate]);
+  }, [dispatch , isAllowed , isAuthenticated , navigate , sendBy]);
 
   return (
     <Modal
@@ -104,8 +106,8 @@ const SetPasswordPage = () => {
             type="password"
             disabled={isLoading}
             errors={errors.confirmPasswordError}
-            showPassword={showPassword}
-            setShowPassword={(value) => dispatch(setShowPassword(value))}
+            showPassword={showConfirmPassword}
+            setShowPassword={(value) => dispatch(setShowConfirmPassword(value))}
             onKeyDown={(e) => handleKeyDown(e)}
           />
         </form>

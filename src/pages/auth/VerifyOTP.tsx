@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Modal from "../../components/auth/Modal";
 import InputOTP from "../../components/auth/InputOTP";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsAllowed, setOTP, verifyOTP , verifyForgotOTP } from "../../store/features/auth/VerifyOTPSlice";
+import { setIsAllowed, setOTP, verifyOTP , verifyForgotOTP, setSendBy } from "../../store/features/auth/VerifyOTPSlice";
 import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
 import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
@@ -19,9 +19,10 @@ const VerifyOTP = () => {
     const dispatch: AppDispatch = useDispatch();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [timer, setTimer] = useState<number>(29);
+    const [resendLoading , setResendLoading] = useState<boolean>(false);
     const [showResend, setShowResend] = useState<boolean>(false);
     const error = useSelector((state: { verifyOTP: { error: boolean; }; }) => state.verifyOTP.error);
-    const loading = useSelector((state: { verifyOTP: { isLoading: boolean; }; }) => state.verifyOTP.isLoading);
+    const isLoading = useSelector((state: { verifyOTP: { isLoading: boolean; }; }) => state.verifyOTP.isLoading);
     const contact = useSelector((state: { auth: AuthState }) => state.auth.contact);
     const name = useSelector((state: { auth: AuthState }) => state.auth.name);
     const password = useSelector((state: { auth: AuthState }) => state.auth.password);
@@ -65,48 +66,57 @@ const VerifyOTP = () => {
                         dispatch(setIsAllowed(false));
                         dispatch(setOTP(''));
                         dispatch(setContact(''));
+                        dispatch(setSendBy('forgot'));
+                        navigate('/auth/new-password');
                     }
                 });
             } else {
-            dispatch(verifyOTP({
-                contact,
-                otp: otpValue
-            })).then((res) => {
-                if (res.type === 'verifyOTP/verifyOTP/fulfilled') {
-                    const newUserData = {
-                        firstName: name.split(' ')[0],
-                        lastName: name.split(' ')[1],
-                        contact : contact,
-                        emailVerified: true
+                dispatch(verifyOTP({
+                    contact,
+                    otp: otpValue
+                })).then((res) => {
+                    if (res.type === 'verifyOTP/verifyOTP/fulfilled') {
+                        const newUserData = {
+                            firstName: name.split(' ')[0],
+                            lastName: name.split(' ')[1],
+                            contact : contact,
+                            emailVerified: true
+                        }
+                        dispatch(setIsAllowed(false));
+                        dispatch(setUserData(newUserData));
+                        dispatch(setIsAuthenticated(true));
+                        dispatch(setToken(res.payload.token));
+                        dispatch(setName(''));
+                        dispatch(setOTP(''));
+                        dispatch(setPassword(''));
+                        dispatch(setContact(''));
                     }
-                    dispatch(setIsAllowed(false));
-                    dispatch(setUserData(newUserData));
-                    dispatch(setIsAuthenticated(true));
-                    dispatch(setToken(res.payload.token));
-                    dispatch(setName(''));
-                    dispatch(setOTP(''));
-                    dispatch(setPassword(''));
-                    dispatch(setContact(''));
-                }
-            });
-        }
+                });
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const handleResend = () => {
+    const handleResend = async () => {
         setTimer(29);
+        setResendLoading(true);
         setShowResend(false);
-        if(sendBy === 'forgot'){
-            dispatch(validateContact(contactOfForgot))
+        try{
+            if(sendBy === 'forgot'){
+            await dispatch(validateContact(contactOfForgot))
         }
         else {
-            dispatch(registerUser({
+            await dispatch(registerUser({
                 name,
                 contact,
                 password,
             }))
+        };
+        } catch (error) {
+            console.log(error);
+        } finally{
+            setResendLoading(false);
         }
     };
 
@@ -152,7 +162,7 @@ const VerifyOTP = () => {
         <>
             <Modal
                 backURL={ sendBy === 'forgot' ? '/auth/forgot-password' : '../../auth/register'}
-                disabled={loading}
+                disabled={isLoading || resendLoading}
                 title="Enter the code"
                 subTitlte={`Enter the OTP code we have sent to ${contact}`}
                 actionLabel="Verify"

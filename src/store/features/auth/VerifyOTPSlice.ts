@@ -47,6 +47,7 @@ export const verifyForgotOTP = createAsyncThunk(
             dispatch(setError(true));
             return rejectWithValue('Invalid OTP');
         }
+        dispatch(setSendBy('forgot'));
         dispatch(setError(false));
         toast.loading('Verifying OTP...');
         dispatch(setIsLoading(true));

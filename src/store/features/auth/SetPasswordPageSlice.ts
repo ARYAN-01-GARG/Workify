@@ -11,6 +11,7 @@ export interface SetPasswordPageState {
         confirmPasswordError: string;
     };
     isLoading: boolean;
+    showConfirmPassword: boolean;
 }
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
         confirmPasswordError: ''
     },
     isLoading: false,
+    showConfirmPassword: false
 } as SetPasswordPageState;
 
 export const changePassword = createAsyncThunk(
@@ -43,7 +45,7 @@ export const changePassword = createAsyncThunk(
     dispatch(setIsLoading(true));
     toast.loading('Setting Password...');
     try {
-      const response = await axios.put('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/verify-otp', {
+      const response = await axios.put('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/change-password', {
         contact,
         newPassword : password,
         confirmPassword
@@ -78,10 +80,13 @@ const SetPasswordPageSlice = createSlice({
         setIsLoading: (state, action) => {
             state.isLoading = action.payload;
         },
+        setShowConfirmPassword: (state, action) => {
+            state.showConfirmPassword = action.payload;
+        },
     }
 });
 
-export const { setPassword, setConfirmPassword, setErrors, setIsLoading } = SetPasswordPageSlice.actions;
+export const { setPassword, setConfirmPassword, setErrors, setIsLoading , setShowConfirmPassword } = SetPasswordPageSlice.actions;
 
 export default SetPasswordPageSlice.reducer;
 

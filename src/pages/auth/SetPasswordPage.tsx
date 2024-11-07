@@ -21,7 +21,6 @@ const SetPasswordPage = () => {
   const isAllowed = useSelector((state : { verifyOTP : VerifyOTPState }) => state.verifyOTP.isAllowed);
   const showPassword = useSelector((state : { auth : AuthState }) => state.auth.showPassword);
   const contact = useSelector((state : { forgot : ForgotPasswordState }) => state.forgot.contact);
-  const otp = useSelector((state : { verifyOTP : VerifyOTPState }) => state.verifyOTP.otp);
   const confirmPassword = useSelector((state : { newPassword : SetPasswordPageState }) => state.newPassword.confirmPassword);
 
   const passwordRef = useRef<HTMLInputElement>(null);

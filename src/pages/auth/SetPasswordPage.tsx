@@ -35,7 +35,6 @@ const SetPasswordPage = () => {
     try{
       dispatch(changePassword({
         contact,
-        otp,
         password,
         confirmPassword
       }))

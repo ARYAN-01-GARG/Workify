@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Modal from "../../components/auth/Modal";
 import InputOTP from "../../components/auth/InputOTP";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsAllowed, setOTP, verifyOTP } from "../../store/features/auth/VerifyOTPSlice";
+import { setIsAllowed, setOTP, verifyOTP , verifyForgotOTP } from "../../store/features/auth/VerifyOTPSlice";
 import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
 import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
@@ -55,11 +55,19 @@ const VerifyOTP = () => {
         e.preventDefault();
         const otpValue = otp.join('');
         dispatch(setOTP(otpValue));
-        if(sendBy === 'forgot'){
-            navigate('/auth/new-password');
-            return;
-        }
         try {
+            if(sendBy === 'forgot'){
+                dispatch(verifyForgotOTP({
+                    contact: contactOfForgot,
+                    otp: otpValue
+                })).then((res) => {
+                    if (res.type === 'verifyOTP/verifyForgotOTP/fulfilled') {
+                        dispatch(setIsAllowed(false));
+                        dispatch(setOTP(''));
+                        dispatch(setContact(''));
+                    }
+                });
+            } else {
             dispatch(verifyOTP({
                 contact,
                 otp: otpValue
@@ -81,6 +89,7 @@ const VerifyOTP = () => {
                     dispatch(setContact(''));
                 }
             });
+        }
         } catch (error) {
             console.log(error);
         }

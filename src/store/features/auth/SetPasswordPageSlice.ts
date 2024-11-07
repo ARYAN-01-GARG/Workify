@@ -25,7 +25,7 @@ const initialState = {
 
 export const changePassword = createAsyncThunk(
     'newPassword/setPassword',
-    async ({ contact , otp ,password , confirmPassword }: { contact : string , otp:string , password: string, confirmPassword: string }, { rejectWithValue, dispatch }) => {
+    async ({ contact ,password , confirmPassword }: { contact : string , password: string, confirmPassword: string }, { rejectWithValue, dispatch }) => {
     const isPasswordValid = PASSWORD_REGEX.test(password);
     if(!isPasswordValid || password !== confirmPassword){
       dispatch(setErrors({
@@ -45,7 +45,6 @@ export const changePassword = createAsyncThunk(
     try {
       const response = await axios.put('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/verify-otp', {
         contact,
-        otp,
         newPassword : password,
         confirmPassword
       });
@@ -54,8 +53,8 @@ export const changePassword = createAsyncThunk(
         return response.data;
     } catch (error) {
         toast.dismiss();
-        toast.error('Invalid OTP! Try Again');
-        return rejectWithValue('Invalid OTP');
+        toast.error('Please try again some error occured!');
+        return rejectWithValue('backend error');
         console.log(error);
     } finally {
         dispatch(setIsLoading(false));

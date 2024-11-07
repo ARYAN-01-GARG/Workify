@@ -40,6 +40,35 @@ export const verifyOTP = createAsyncThunk(
     }
 );
 
+export const verifyForgotOTP = createAsyncThunk(
+    'verifyOTP/verifyForgotOTP',
+    async ({ contact, otp }:{ contact : string , otp : string}, { rejectWithValue, dispatch }) => {
+        if (otp.length !== 6) {
+            dispatch(setError(true));
+            return rejectWithValue('Invalid OTP');
+        }
+        dispatch(setError(false));
+        toast.loading('Verifying OTP...');
+        dispatch(setIsLoading(true));
+        try {
+            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/verify-otp-forgotpassword', {
+                contact,
+                otp
+            });
+            toast.dismiss();
+            toast.success('OTP verified successfully!');
+            return response.data;
+        } catch (error) {
+            toast.dismiss();
+            toast.error('Invalid OTP!');
+            return rejectWithValue('Invalid OTP');
+            console.log(error);
+        } finally {
+            dispatch(setIsLoading(false));
+        }
+    }
+);
+
 const VerifyOTPSlice = createSlice({
     name: 'verifyOTP',
     initialState,
@@ -71,6 +100,18 @@ const VerifyOTPSlice = createSlice({
                 state.otp = action.payload;
             })
             .addCase(verifyOTP.rejected, (state) => {
+                state.isLoading = false;
+                state.error = true;
+            })
+            .addCase(verifyForgotOTP.pending, (state) => {
+                state.isLoading = true;
+                state.error = false;
+            })
+            .addCase(verifyForgotOTP.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.otp = action.payload;
+            })
+            .addCase(verifyForgotOTP.rejected, (state) => {
                 state.isLoading = false;
                 state.error = true;
             });

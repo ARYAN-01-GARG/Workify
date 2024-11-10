@@ -50,7 +50,7 @@ const VerifyOTP = () => {
                 otpRefs[index + 1].current?.focus();
             }
         }
-    };
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

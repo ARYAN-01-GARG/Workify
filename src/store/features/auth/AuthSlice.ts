@@ -41,7 +41,7 @@ export const registerUser = createAsyncThunk(
         }
         toast.loading('Sending OTP...');
         try {
-            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/register', {
+            const response = await axios.post('http://35.154.88.120:8081/api/v1/auth/register', {
                 firstName: name.split(' ')[0],
                 lastName: name.split(' ')[1] || name.split(' ')[0],
                 email: EMAIL_REGEX.test(contact) ? contact.toLowerCase() : null,
@@ -80,7 +80,7 @@ export const loginUser = createAsyncThunk(
         dispatch(setIsLoading(true));
         toast.loading('Please wait...');
         try {
-            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/authenticate', {
+            const response = await axios.post('http://35.154.88.120:8081/api/v1/auth/authenticate', {
                 contact: contact.toLowerCase(),
                 password
             });

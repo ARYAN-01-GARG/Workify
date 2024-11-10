@@ -31,7 +31,7 @@ export const validateContact = createAsyncThunk(
         dispatch(setIsLoading(true));
         toast.loading('Sending OTP...');
         try {
-            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/forgot-password', { contact });
+            const response = await axios.post('http://35.154.88.120:8081/api/v1/auth/forgot-password', { contact });
             toast.dismiss();
             toast.success('Enter OTP sent to your email/phone');
             return response.data;

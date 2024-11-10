@@ -78,8 +78,6 @@ const RegisterPage = () => {
     </p>
   );
 
-  
-
   return (
     <>
       <Modal

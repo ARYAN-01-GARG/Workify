@@ -22,7 +22,7 @@ export const verifyOTP = createAsyncThunk(
         toast.loading('Verifying OTP...');
         dispatch(setIsLoading(true));
         try {
-            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/validate', {
+            const response = await axios.post('http://35.154.88.120:8081/api/v1/auth/validate', {
                 contact,
                 otp
             });
@@ -52,7 +52,7 @@ export const verifyForgotOTP = createAsyncThunk(
         toast.loading('Verifying OTP...');
         dispatch(setIsLoading(true));
         try {
-            const response = await axios.post('https://workify-springboot-1-sinj.onrender.com/api/v1/auth/verify-otp-forgotpassword', {
+            const response = await axios.post('http://35.154.88.120:8081/api/v1/auth/verify-otp-forgotpassword', {
                 contact,
                 otp
             });

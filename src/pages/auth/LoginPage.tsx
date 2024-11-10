@@ -7,7 +7,7 @@ import { setContact, setPassword, setShowPassword ,loginUser } from "../../store
 import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
 import { UserState } from "../../store/features/auth/UserState";
-import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
+import { setIsAuthenticated, setToken, setUserData } from "../../store/features/UserSlice";
 
 const LoginPage = () => {
 

@@ -11,7 +11,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import SetPasswordPage from "./pages/auth/SetPasswordPage";
 import Dashboard from "./pages/Dashboard";
 import { AppDispatch } from "./store/store";
-import { activeUser } from "./store/features/auth/UserSlice";
+import { activeUser } from "./store/features/UserSlice";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();

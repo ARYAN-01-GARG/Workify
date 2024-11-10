@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setIsAllowed, setOTP, verifyOTP , verifyForgotOTP, setSendBy } from "../../store/features/auth/VerifyOTPSlice";
 import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
-import { setIsAuthenticated, setToken, setUserData } from "../../store/features/auth/UserSlice";
+import { setIsAuthenticated, setToken, setUserData } from "../../store/features/UserSlice";
 import { registerUser, setContact, setName, setPassword } from "../../store/features/auth/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";

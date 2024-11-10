@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserState } from "../store/features/auth/UserState";
 import { useEffect } from "react";
 import { AppDispatch } from "../store/store";
-import { activeUser, logout } from "../store/features/auth/UserSlice";
+import { activeUser, logout } from "../store/features/UserSlice";
 
 const Dashboard = () => {
 

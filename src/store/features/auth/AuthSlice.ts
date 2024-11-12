@@ -90,6 +90,7 @@ export const loginUser = createAsyncThunk(
         } catch (err: unknown) {
             const error = err as AxiosError<{ message: string }>;
             toast.dismiss();
+            console.log(error.response?.data?.message);
             toast.error((error.response?.data?.message === 'User does not exist') ? /^[0-9]{10}$/.test(contact) ? 'Phone number is not registered!' : 'Email is not registered!' : 'Incorrect password');
             dispatch(setErrors({
                 ...initialState.errors,

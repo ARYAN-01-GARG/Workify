@@ -1,10 +1,19 @@
-import { Link } from "react-router-dom"
+import Footer from "../components/landingPage/Footer"
+import Header from "../components/landingPage/Header"
 
 const LandingPage = () => {
   return (
-    <div className="bg-sky-600 flex flex-col justify-center items-center text-white min-h-screen text-xl gap-5">
-      <p className="font-bold text-4xl">Welcome to Workify 👋</p>
-      <Link to="/auth/register" className="bg-black text-white p-4 rounded-xl hover:opacity-80">Sign Up</Link>
+    <div className="
+        flex flex-col
+        relative
+        min-h-screen
+      bg-[#E7EDF8]
+      ">
+      <Header />
+      <main className="flex-grow">
+        <div>Content</div>
+      </main>
+      <Footer/>
     </div>
   )
 }

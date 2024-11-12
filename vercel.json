@@ -7,9 +7,8 @@
   ],
   "redirects": [
     {
-      "source": "/api/:path*",
-      "destination": "https://35.154.88.120:8081/api/:path*",
-      "permanent": true
+      "source": "/src/:path*",
+      "destination": "http://35.154.88.120:8081/api/:path*"
     }
   ]
 }

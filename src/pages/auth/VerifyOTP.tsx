@@ -29,7 +29,16 @@ const VerifyOTP = () => {
     const sendBy = useSelector((state: { verifyOTP: VerifyOTPState }) => state.verifyOTP.sendBy);
     const contactOfForgot = useSelector((state: { forgot: { contact: string; }; }) => state.forgot.contact);
 
-    const otpRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
+
+
+    const otpRefs = [
+        useRef<HTMLInputElement>(null),
+        useRef<HTMLInputElement>(null),
+        useRef<HTMLInputElement>(null),
+        useRef<HTMLInputElement>(null),
+        useRef<HTMLInputElement>(null),
+        useRef<HTMLInputElement>(null)
+    ];
 
     const handleOTPChange = (value: string, index: number) => {
         const newOtp = [...otp];

@@ -45,7 +45,7 @@ export const changePassword = createAsyncThunk(
     dispatch(setIsLoading(true));
     toast.loading('Setting Password...');
     try {
-      const response = await axios.put('http://35.154.88.120:8081/api/v1/auth/change-password', {
+      const response = await axios.put('https://naitikjain.me/api/v1/auth/change-password', {
         contact,
         newPassword : password,
         confirmPassword

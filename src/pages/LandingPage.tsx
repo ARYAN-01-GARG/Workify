@@ -48,14 +48,14 @@ const LandingPage = () => {
               <span> Video</span>,
               <span> Animation</span>.
             </div>
-            <div className="flex justify-between gap-3 items-center">
-              <button className="bg-[#C8D8EF] text-[#2B5A9E] font-medium px-3 py-2 rounded-xl flex gap-2 items-center">
+            <div className="flex justify-evenly lg:justify-between gap-2 lg:gap-3 items-center flex-wrap md:flex-nowrap">
+              <button className="bg-[#C8D8EF] text-[#2B5A9E] text-sm lg:text-[1rem] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
                 <FaRegCircle size={20} className="text-[#213E6B]"/>Full Time
               </button>
-              <button className="bg-[#C8D8EF] text-[#2B5A9E] font-medium px-3 py-2 rounded-xl flex gap-2 items-center">
+              <button className="bg-[#C8D8EF] text-[#2B5A9E] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
                 <FaRegCircle size={20} className="text-[#213E6B]"/>Part Time
               </button>
-              <button className="bg-[#C8D8EF] text-[#2B5A9E] font-medium px-3 py-2 rounded-xl flex gap-2 items-center">
+              <button className="bg-[#C8D8EF] text-[#2B5A9E] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
                 <FaRegCircle size={20} className="text-[#213E6B]"/>Remote
               </button>
             </div>
@@ -65,7 +65,7 @@ const LandingPage = () => {
           </div>
         </section>
         <section className="my-10">
-          <div className="flex justify-center items-center gap-8 flex-wrap">
+          <div className="flex justify-center items-center gap-8 flex-wrap px-2">
             <Card imageURL="/images/landing-page/briefcase.svg" count={'2,38,324'} description="Live Job"/>
             <Card imageURL="/images/landing-page/company.svg" count={'97,354'} description="Companies"/>
             <Card imageURL="/images/landing-page/users.svg" count={'38,47,154'} description="Candidates"/>
@@ -82,13 +82,13 @@ const LandingPage = () => {
             </div>
             <div className="flex justify-evenly items-center px-3 lg:px-16 flex-wrap gap-3 lg:gap-10 pb-20 shadow-md">
               <Card2 imageURL={'/images/landing-page/pen.png'} title={'Graphics & Design'} description="357 Open position"/>
-              <Card2 imageURL={'/images/landing-page/code.png'} title={'Graphics & Design'} description="357 Open position"/>
-              <Card2 imageURL={'/images/landing-page/megaphone.png'} title={'Graphics & Design'} description="357 Open position"/>
-              <Card2 imageURL={'/images/landing-page/monitor.png'} title={'Graphics & Design'} description="357 Open position"/>
-              <Card2 imageURL={'/images/landing-page/music.png'} title={'Graphics & Design'} description="357 Open position" className={'lg:flex hidden'}/>
-              <Card2 imageURL={'/images/landing-page/chart-bar.png'} title={'Graphics & Design'} description="357 Open position" className={'lg:flex hidden'}/>
-              <Card2 imageURL={'/images/landing-page/first-aid.png'} title={'Graphics & Design'} description="357 Open position" className={'lg:flex hidden'}/>
-              <Card2 imageURL={'/images/landing-page/database.png'} title={'Graphics & Design'} description="357 Open position" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/code.png'} title={'Code & Programing'} description="312 Open position"/>
+              <Card2 imageURL={'/images/landing-page/megaphone.png'} title={'Digital Marketing'} description="297 Open position"/>
+              <Card2 imageURL={'/images/landing-page/monitor.png'} title={'Video & Animation'} description="247 Open position"/>
+              <Card2 imageURL={'/images/landing-page/music.png'} title={'Music & Audio'} description="204 Open position" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/chart-bar.png'} title={'Account & Finance'} description="167 Open position" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/first-aid.png'} title={'Health & Care'} description="125 Open position" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/database.png'} title={'Data & Science'} description="57 Open position" className={'lg:flex hidden'}/>
             </div>
           </div>
         </section>
@@ -106,8 +106,8 @@ const LandingPage = () => {
           </div>
         </section>
         <section className="lg:flex items-center gap-10 justify-center w-full hidden">
-          <img src="/images/landing-page/card4.png" alt="image" className="max-w-[45%]" />
-          <img src="/images/landing-page/card5.png" alt="image" width={650} className="max-w-[45%]"/>
+          <img src="/images/landing-page/card4.png" alt="image" className="max-w-[43%] cursor-pointer transition hover:scale-105" />
+          <img src="/images/landing-page/card5.png" alt="image" width={650} className="max-w-[45%] cursor-pointer transition hover:scale-105"/>
         </section>
         <section className="py-16 lg:py-32 text-center px-10 -mt-16 lg:mt-0">
           <h6 className="text-xl lg:text-[2.5rem] font-medium ">Get ahead with <span className="text-[#2B5A9E]">Workify</span></h6>

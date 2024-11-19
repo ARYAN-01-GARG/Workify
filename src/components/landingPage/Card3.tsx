@@ -17,7 +17,7 @@ const Card3 = ({
     outline=false
 }:Card3Props) => {
   return (
-    <div className="p-6 flex flex-col gap-1 w-[29.5vw] border border-[#E4E5E8] rounded-lg shadow-lg shadow-neutral-500/10 my-4">
+    <div className="p-6 flex flex-col gap-1 w-[29.5vw] border border-[#E4E5E8] rounded-lg shadow-lg shadow-neutral-500/10 my-4 transition hover:scale-[1.04]">
         <div className="flex items-center mb-4 gap-5">
             <div className={`${imageURL ? 'bg-[#EA4C89]' : 'bg-[#F3F6FC]'} p-4 rounded-md `}>
                 {Icon ? <Icon size={30} /> : <img src={imageURL} alt={title} />}
@@ -31,7 +31,7 @@ const Card3 = ({
                 </p>
             </div>
         </div>
-        <div className="w-full py-2 text-[#2B5A9E] font-semibold bg-[#E7F0FA] text-center rounded-sm">
+        <div className="w-full py-2 text-[#2B5A9E] font-semibold bg-[#E7F0FA] text-center rounded-sm cursor-pointer transition hover:scale-[1.05]">
             Open position (6)
         </div>
     </div>

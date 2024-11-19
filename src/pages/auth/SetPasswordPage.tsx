@@ -96,6 +96,7 @@ const SetPasswordPage = () => {
             showPassword={showPassword}
             setShowPassword={(value) => dispatch(setShowPassword(value))}
             onKeyDown={(e) => handleKeyDown(e , confirmPasswordRef)}
+            autoComplete="off"
           />
           <Input
             inputRef={confirmPasswordRef}
@@ -109,6 +110,7 @@ const SetPasswordPage = () => {
             showPassword={showConfirmPassword}
             setShowPassword={(value) => dispatch(setShowConfirmPassword(value))}
             onKeyDown={(e) => handleKeyDown(e)}
+            autoComplete="off"
           />
         </form>
     </Modal>

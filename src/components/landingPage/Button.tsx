@@ -1,15 +1,17 @@
+import { IconType } from "react-icons";
 import { useNavigate } from "react-router-dom"
 
 interface ButtonProps {
     label: string,
     redirect: string,
-    type: string
+    type: string,
+    Icon? : IconType,
 }
 
 const Button = ({
     label,
     redirect,
-    type
+    type,
 } : ButtonProps) => {
 
     const navigate = useNavigate();
@@ -22,6 +24,7 @@ const Button = ({
             rounded-lg
             mx-2
             hover:opacity-90
+            outline-none
             hover:shadow-none
             ${type === 'link' ? 'text-[#3965A4] font-semibold' : 'bg-[#2A5B9E] text-white font-medium shadow-md'}
     `}>

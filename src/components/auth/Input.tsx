@@ -13,6 +13,7 @@ interface InputProps {
     showPassword?: boolean;
     setShowPassword?: (value: boolean) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    autoComplete?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(({
@@ -26,7 +27,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
     showPassword,
     setShowPassword,
     inputRef,
-    onKeyDown
+    onKeyDown,
+    autoComplete = 'on',
 }, ref) => {
 
     const handleTogglePassword = () => {
@@ -45,6 +47,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
                 type={showPassword ? 'text' : type}
                 disabled={disabled}
                 value={value}
+                autoComplete={autoComplete}
                 maxLength={charSize}
                 onChange={e => onChange(e.target.value)}
                 onKeyDown={onKeyDown}

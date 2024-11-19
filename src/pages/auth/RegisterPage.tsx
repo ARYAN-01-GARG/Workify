@@ -123,6 +123,7 @@ const RegisterPage = () => {
             showPassword={showPassword}
             setShowPassword={(value) => dispatch(setShowPassword(value))}
             onKeyDown={(e) => handleKeyDown(e)}
+            autoComplete="off"
           />
         </form>
       </Modal>

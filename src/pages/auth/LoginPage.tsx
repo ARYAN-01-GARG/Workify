@@ -111,6 +111,7 @@ const LoginPage = () => {
             showPassword={showPassword}
             setShowPassword={(value) => dispatch(setShowPassword(value))}
             onKeyDown={(e) => handleKeyDown(e)}
+            autoComplete="off"
           />
           <div className="flex justify-between items-center font-medium">
             <div className="flex items-center gap-1">

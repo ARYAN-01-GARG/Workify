@@ -8,11 +8,11 @@ const NavBar = ({
     elements
 } : NavBarProps) => {
   return (
-    <div className="flex justify-evenly items-center md:gap-8 lg:gap-16 mr-8 font-semibold text-[1.05rem] text-[#333]">
+    <div className="flex justify-evenly items-center md:gap-8 lg:gap-12 mr-8 font-[650] text-[1.05rem] text-[#16233B]">
        {elements.map((element, index) => {
             return (
                 <NavLink
-                    className={({isActive}) => `hover:text-[#3965A4] ${isActive ? 'text-[#3965A4]' : 'text-[#333]'} transition duration-300`}
+                    className={({isActive}) => `hover:text-[#3965A4] ${isActive ? 'text-[#3965A4]' : 'text-[#16233B]'} transition duration-300`}
                     to={`${element === "Home" ? '/' : element}`} key={index}
                 >
                     {element}

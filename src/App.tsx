@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/auth/AuthPage";
@@ -12,9 +12,14 @@ import SetPasswordPage from "./pages/auth/SetPasswordPage";
 import Dashboard from "./pages/Dashboard";
 import { AppDispatch } from "./store/store";
 import { activeUser } from "./store/features/UserSlice";
+import { UserState } from "./store/features/auth/UserState";
+import Layout from "./pages/Layout";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
+
 
   useEffect(() => {
     dispatch(activeUser());
@@ -25,7 +30,7 @@ const App = () => {
       <ToastProvider />
       <Routes>
         {/* Landing page/ not protected  */}
-        <Route index element={<LandingPage />} />
+        {!IsAuthenticated && <Route index element={<LandingPage />} />}
 
         {/* Auth routes  */}
         <Route path="/auth" element={<AuthPage />}>
@@ -37,7 +42,11 @@ const App = () => {
         </Route>
 
         {/* Protected routes */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path='/' element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="dashboard" element={<Dashboard />} />
+        </Route>
+
       </Routes>
     </>
   );

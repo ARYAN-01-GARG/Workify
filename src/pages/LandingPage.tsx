@@ -6,8 +6,23 @@ import Card from "../components/landingPage/Card"
 import Card2 from "../components/landingPage/Card2"
 import Card3 from "../components/landingPage/Card3"
 import { FcGoogle } from "react-icons/fc"
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
+import { UserState } from "../store/features/auth/UserState"
 
 const LandingPage = () => {
+
+  const navigate = useNavigate();
+  const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
+
+
+  useEffect(() => {
+    if(IsAuthenticated){
+      navigate('/dashboard');
+    }
+  },[ IsAuthenticated , navigate ]);
+
   return (
     <div className="
         flex flex-col
@@ -52,10 +67,10 @@ const LandingPage = () => {
               <button className="bg-[#C8D8EF] text-[#2B5A9E] text-sm lg:text-[1rem] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
                 <FaRegCircle size={20} className="text-[#213E6B]"/>Full Time
               </button>
-              <button className="bg-[#C8D8EF] text-[#2B5A9E] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
+              <button className="bg-[#C8D8EF] text-[#2B5A9E] text-sm lg:text-[1rem] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
                 <FaRegCircle size={20} className="text-[#213E6B]"/>Part Time
               </button>
-              <button className="bg-[#C8D8EF] text-[#2B5A9E] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
+              <button className="bg-[#C8D8EF] text-[#2B5A9E] text-sm lg:text-[1rem] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
                 <FaRegCircle size={20} className="text-[#213E6B]"/>Remote
               </button>
             </div>
@@ -106,8 +121,8 @@ const LandingPage = () => {
           </div>
         </section>
         <section className="lg:flex items-center gap-10 justify-center w-full hidden">
-          <img src="/images/landing-page/card4.png" alt="image" className="max-w-[43%] cursor-pointer transition hover:scale-105" />
-          <img src="/images/landing-page/card5.png" alt="image" width={650} className="max-w-[45%] cursor-pointer transition hover:scale-105"/>
+          <img src="/images/landing-page/card4.png" alt="image" className="max-w-[43%] cursor-pointer transition hover:scale-105" onClick={() => navigate('/auth/register')}/>
+          <img src="/images/landing-page/card5.png" alt="image" width={650} className="max-w-[45%] cursor-pointer transition hover:scale-105" onClick={() => navigate('/auth/register')}/>
         </section>
         <section className="py-16 lg:py-32 text-center px-10 -mt-16 lg:mt-0">
           <h6 className="text-xl lg:text-[2.5rem] font-medium ">Get ahead with <span className="text-[#2B5A9E]">Workify</span></h6>

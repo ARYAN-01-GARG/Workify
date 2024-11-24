@@ -9,16 +9,16 @@ import ToastProvider from "./components/ToastProvider";
 import VerifyOTP from "./pages/auth/VerifyOTP";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import SetPasswordPage from "./pages/auth/SetPasswordPage";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Home/Dashboard";
 import { AppDispatch } from "./store/store";
 import { activeUser } from "./store/features/UserSlice";
 import { UserState } from "./store/features/auth/UserState";
-import Layout from "./pages/Layout";
-import HomePage from "./pages/HomePage";
+import Layout from "./pages/Home/Layout";
+import HomePage from "./pages/Home/HomePage";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
+  const role = useSelector((state: { user : UserState}) => state.user.userData.role);
 
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const App = () => {
       <ToastProvider />
       <Routes>
         {/* Landing page/ not protected  */}
-        {!IsAuthenticated && <Route index element={<LandingPage />} />}
+        {(role ==='') && <Route index element={<LandingPage />} />}
 
         {/* Auth routes  */}
         <Route path="/auth" element={<AuthPage />}>

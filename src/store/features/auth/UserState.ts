@@ -4,6 +4,7 @@ export interface UserState {
         lastName:string;
         contact: string;
         emailVerified: boolean;
+        role : string;
     },
     token : string | null,
     isAuthenticated: boolean

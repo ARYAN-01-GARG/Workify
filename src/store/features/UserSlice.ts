@@ -6,10 +6,12 @@ const initialState = {
     lastName: '',
     contact: '',
     emailVerified: false,
+    role : '',
   },
   token: '',
   isAuthenticated: false,
 };
+
 
 const UserSlice = createSlice({
   name: 'user',
@@ -30,6 +32,7 @@ const UserSlice = createSlice({
         lastName: '',
         contact: '',
         emailVerified: false,
+        role : '',
       };
       state.token = '';
       state.isAuthenticated = false;

@@ -1,5 +1,3 @@
-import RecruiterSVG from '../assets/RecruiterSVG';
-
 
 interface DialogCardProps {
     title: string;
@@ -26,7 +24,6 @@ const DialogCard:React.FC<DialogCardProps> = ({
             <h1 className="font-semibold">{title}</h1>
             {subTitle && <h2 className="font-medium">{subTitle}</h2>}
             <p className="font-medium text-[#4F4F4F] text-xl max-w-[75%] text-center">{description}</p>
-            <RecruiterSVG/>
         </header>
         <div>
             <main>

@@ -1,4 +1,6 @@
+import MagnifyLens from "../assets/MagnifyLens"
 import DialogCard from "./DialogCard"
+import { JobInput } from "./JobInput"
 
 const JobDetails = () => {
   return (
@@ -10,18 +12,49 @@ const JobDetails = () => {
             actionLabel="Proceed"
             disabled={true}
         >
-            <JobCard/>
+            <form className="mt-16">
+                <h1 className="text-xl font-medium">Where do you currently work?</h1>
+                <div className="flex gap-6 py-6 max-w-[95%]">
+                    <JobInput
+                        label="Job title"
+                        placeholder="e.g., HR"
+                    />
+                    <JobInput
+                        label="Company"
+                        placeholder="e.g., Google"
+                    />
+                </div>
+                <div className="flex gap-12 items-center mb-20 max-w-[95%]">
+                    <div className="flex flex-col w-full">
+                        <h1 className="text-xl font-medium mb-2">Where are you based?</h1>
+                        <JobInput
+                            placeholder="Select for a different location"
+                            description="You can choose a city, state or country"
+                            icon ={<MagnifyLens/>}
+                        />
+                    </div>
+                    <div className="flex flex-col w-full justify-between">
+                        <h1 className="text-xl font-medium mb-9">What role are you hiring for?</h1>
+                        <JobInput
+                            placeholder="Select a role"
+                        />
+                    </div>
+                </div>
+                <h1 className="text-xl font-medium">Your Company Details?</h1>
+                <div className="flex gap-6 py-6 max-w-[95%]">
+                    <JobInput
+                        label="Comapny Email"
+                        placeholder="e.g., company.design@gmail.com"
+                    />
+                    <JobInput
+                        label="Company Website"
+                        placeholder="e.g., Google"
+                    />
+                </div>
+            </form>
         </DialogCard>
     </div>
   )
-}
-
-const JobCard= () => {
-    return (
-        <div className="">
-            hello
-        </div>
-    )
 }
 
 export default JobDetails

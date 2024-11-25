@@ -10,6 +10,9 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import { UserState } from "../store/features/auth/UserState"
+import RoleSelection from "../components/profile/RoleSelection"
+import JobDetails from "../components/profile/JobDetails"
+import CandidateDetails from "../components/profile/CandidateDetails"
 
 const LandingPage = () => {
 
@@ -132,6 +135,11 @@ const LandingPage = () => {
         </section>
       </main>
       <Footer/>
+      <div className="absolute min-h-screen w-full flex justify-center items-center z-50 bg-neutral-800/80 ">
+        {/* <RoleSelection/> */}
+        {/* <JobDetails/> */}
+        <CandidateDetails/>
+      </div>
     </div>
   )
 }

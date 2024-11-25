@@ -4,6 +4,9 @@ import verifyReducer from './features/auth/VerifyOTPSlice';
 import userReducer from './features/UserSlice';
 import forgotPasswordReducer from './features/auth/ForgotPasswordSlice';
 import newPasswordReducer from './features/auth/SetPasswordPageSlice';
+import RoleSelectionReducer from './features/roleSelection/RoleSelectionSlice';
+import candidateSliceReducer from './features/roleSelection/CandidateSlice';
+import recruiterSliceReducer from './features/roleSelection/RecruiterSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +15,9 @@ const store = configureStore({
     user: userReducer,
     forgot : forgotPasswordReducer,
     newPassword : newPasswordReducer,
+    roleSelection : RoleSelectionReducer,
+    candidate: candidateSliceReducer,
+    recruiter: recruiterSliceReducer,
   },
 });
 

@@ -11,12 +11,17 @@ import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import { UserState } from "../store/features/auth/UserState"
 import RoleSelection from "../components/profile/RoleSelection"
-import JobDetails from "../components/profile/JobDetails"
 import CandidateDetails from "../components/profile/CandidateDetails"
+import { RoleSelectionState } from "../store/features/roleSelection/RoleSelectionSlice"
+import JobDetails from "../components/profile/JobDetails"
 
 const LandingPage = () => {
 
   const navigate = useNavigate();
+
+  const isOpen = useSelector((state: { roleSelection : RoleSelectionState}) => state.roleSelection.isOpen);
+  const isCandidateOpen = useSelector((state: { candidate : {isCandidateOpen : boolean}}) => state.candidate.isCandidateOpen);
+  const isRecruiterOpen = useSelector((state: { recruiter : {isRecruiterOpen : boolean}}) => state.recruiter.isRecruiterOpen);
   const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
 
 
@@ -135,11 +140,13 @@ const LandingPage = () => {
         </section>
       </main>
       <Footer/>
-      <div className="absolute min-h-screen w-full flex justify-center items-center z-50 bg-neutral-800/80 ">
-        {/* <RoleSelection/> */}
-        {/* <JobDetails/> */}
-        <CandidateDetails/>
-      </div>
+      {(isOpen || isCandidateOpen || isRecruiterOpen) &&
+        <div className="absolute min-h-screen w-full flex justify-center items-center z-50 bg-neutral-800/80 ">
+          {isOpen && <RoleSelection/>}
+          {isCandidateOpen && <CandidateDetails/>}
+          {isRecruiterOpen && <JobDetails/>}
+        </div>
+      }
     </div>
   )
 }

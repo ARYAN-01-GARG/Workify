@@ -18,13 +18,13 @@ export const JobInput:React.FC<JobInputProps>= ({
 
     return (
         <div className="w-full flex flex-col justify-start gap-1 relative">
-            {label &&
+            {label !=='' &&
                 <label
                     htmlFor={id}
                     className="text-xl font-medium">
                     {label}
                 </label>}
-            {description && <p className="px-2 text-[#4F4F4F] text-[12px] font-medium mb-2">{description}</p>}
+            {description !== '' && <p className="px-2 text-[#4F4F4F] text-[12px] font-medium mb-2">{description}</p>}
             <input
                 id={id}
                 type="text"

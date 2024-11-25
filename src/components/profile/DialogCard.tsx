@@ -30,7 +30,12 @@ const DialogCard:React.FC<DialogCardProps> = ({
                 {children}
             </main>
             <footer className="flex justify-end items-center my-5">
-                <button onClick={action} className={`${disabled ? 'bg-[#2B5A9E] text-[#F3F6FC] hover:opacity-90' : 'text-[#5D5D5D] bg-[#C8D8EF]'} px-5 py-2 text-[1rem] font-semibold rounded-md`}>{actionLabel}</button>
+                <button
+                    onClick={action}
+                    disabled={disabled}
+                    className={`${disabled ? 'text-[#5D5D5D] bg-[#C8D8EF] cursor-not-allowed' : 'bg-[#2B5A9E] text-[#F3F6FC] hover:opacity-90'} px-5 py-2 text-[1rem] font-semibold rounded-md`}>
+                        {actionLabel}
+                    </button>
             </footer>
         </div>
     </div>

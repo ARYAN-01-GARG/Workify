@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import DialogCard from "./DialogCard"
+import { useDispatch, useSelector } from "react-redux";
+import { RoleSelectionState, setIsOpen, setRole } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
+import { setIsRecruiterOpen } from "../../store/features/roleSelection/RecruiterSlice";
 
 interface RoleCardProps {
     title: string;
@@ -10,11 +14,25 @@ interface RoleCardProps {
 }
 
 const RoleSelection = () => {
-    const [role, setRole] = useState<string>('');
+    const dispatch = useDispatch();
+    const role = useSelector((state: {roleSelection : RoleSelectionState}) => state.roleSelection.role);
 
     const handleRoleClick = (selectedRole: string) => {
-        setRole(selectedRole);
+        dispatch(setRole(selectedRole));
     };
+
+    const handleNext = () => {
+        if(role === 'recruiter'){
+            dispatch(setIsRecruiterOpen(true));
+            dispatch(setIsOpen(false));
+        }else if(role === 'candidate'){
+            dispatch(setIsCandidateOpen(true));
+            dispatch(setIsOpen(false));
+        } else {
+            return;
+        }
+
+    }
 
   return (
     <div className="bg-[#F3F6FC] w-[61vw] min-h-[30vh] rounded-2xl">
@@ -22,9 +40,9 @@ const RoleSelection = () => {
             title = "Your account is created- Welcome to Workify!"
             subTitle = "Now, let&apos;s set up your path"
             description="Are you here to find the right talent, or to start an exciting new job journey?"
-            action={() => {}}
+            action={handleNext}
             actionLabel="Next"
-            disabled={role === 'candidate' || role === 'recruiter'}
+            disabled={!(role === 'candidate' || role === 'recruiter')}
         >
             <form className="flex justify-center items-center gap-8 mt-12">
                 <RoleCard

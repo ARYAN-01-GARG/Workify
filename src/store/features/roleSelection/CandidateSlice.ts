@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 const initialState = {
-  candidate: null,
+    isCandidateOpen: false,
+    candidate: null,
 };
 
 const candidateSlice = createSlice({
@@ -11,9 +11,12 @@ const candidateSlice = createSlice({
     setCandidate(state, action) {
       state.candidate = action.payload;
     },
+    setIsCandidateOpen(state, action) {
+      state.isCandidateOpen = action.payload;
+    },
   },
 });
 
 
 export default candidateSlice.reducer;
-export const { setCandidate } = candidateSlice.actions;
+export const { setCandidate, setIsCandidateOpen } = candidateSlice.actions;

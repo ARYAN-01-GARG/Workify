@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-
 export interface RoleSelectionState {
     isOpen : boolean;
     role: string | null;
@@ -24,6 +23,7 @@ export interface RoleSelectionState {
         currentJobTitle : string;
         skills : string[];
         isResumeUploaded : boolean;
+        resumeFile: File | null;
     };
 }
 
@@ -50,6 +50,7 @@ const initialState:RoleSelectionState = {
         currentJobTitle : '',
         skills : [],
         isResumeUploaded : false,
+        resumeFile: null,
     }
 };
 
@@ -67,7 +68,10 @@ const roleSelectionSlice = createSlice({
       state.recruiter = action.payload;
     },
     setCandidate(state, action) {
-      state.candidate = action.payload;
+      state.candidate = {
+        ...state.candidate,
+        ...action.payload
+      };
     },
     setResumeUploaded(state, action) {
       state.candidate.isResumeUploaded = action.payload;
@@ -77,7 +81,6 @@ const roleSelectionSlice = createSlice({
     },
 
 }});
-
 
 export default roleSelectionSlice.reducer;
 export const { setRole,setIsOpen, setRecruiter , setCandidate } = roleSelectionSlice.actions;

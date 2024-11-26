@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-
 export interface RoleSelectionState {
     isOpen : boolean;
     role: string | null;
@@ -12,6 +11,8 @@ export interface RoleSelectionState {
         jobType : string;
         companyEmail : string;
         companyWebsite : string;
+        jobDescription: string;
+        jobRequirements: string;
     };
     candidate : {
         email : string;
@@ -24,6 +25,7 @@ export interface RoleSelectionState {
         currentJobTitle : string;
         skills : string[];
         isResumeUploaded : boolean;
+        resumeFile: File | null;
     };
 }
 
@@ -38,6 +40,8 @@ const initialState:RoleSelectionState = {
         jobType : '',
         companyEmail : '',
         companyWebsite : '',
+        jobDescription: '',
+        jobRequirements: '',
     },
     candidate : {
         email : '',
@@ -50,6 +54,7 @@ const initialState:RoleSelectionState = {
         currentJobTitle : '',
         skills : [],
         isResumeUploaded : false,
+        resumeFile: null,
     }
 };
 
@@ -64,10 +69,16 @@ const roleSelectionSlice = createSlice({
       state.skip = action.payload;
     },
     setRecruiter(state, action) {
-      state.recruiter = action.payload;
+      state.recruiter = {
+        ...state.recruiter,
+        ...action.payload
+      };
     },
     setCandidate(state, action) {
-      state.candidate = action.payload;
+      state.candidate = {
+        ...state.candidate,
+        ...action.payload
+      };
     },
     setResumeUploaded(state, action) {
       state.candidate.isResumeUploaded = action.payload;
@@ -75,9 +86,8 @@ const roleSelectionSlice = createSlice({
     setIsOpen(state, action) {
       state.isOpen = action.payload;
     },
-
-}});
-
+  }
+});
 
 export default roleSelectionSlice.reducer;
-export const { setRole,setIsOpen, setRecruiter , setCandidate } = roleSelectionSlice.actions;
+export const { setRole, setIsOpen, setRecruiter, setCandidate } = roleSelectionSlice.actions;

@@ -5,20 +5,23 @@ interface JobInputProps {
     placeholder: string;
     description?: string;
     icon?: React.ReactNode;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Updated type
 }
 
-export const JobInput:React.FC<JobInputProps>= ({
+export const JobInput: React.FC<JobInputProps> = ({
     label,
     placeholder,
     description,
     icon,
+    value,
+    onChange, // Added onChange prop
 }) => {
-
     const id = useId();
 
     return (
         <div className="w-full flex flex-col justify-start gap-1 relative">
-            {label !=='' &&
+            {label !== '' &&
                 <label
                     htmlFor={id}
                     className="text-xl font-medium">
@@ -29,6 +32,8 @@ export const JobInput:React.FC<JobInputProps>= ({
                 id={id}
                 type="text"
                 placeholder={placeholder}
+                value={value}
+                onChange={onChange}
                 className="
                         relative
                         border-[2px]

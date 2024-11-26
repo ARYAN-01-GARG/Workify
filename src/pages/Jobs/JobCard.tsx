@@ -13,7 +13,13 @@ import { Link } from "react-router-dom"
 
 
 const JobCard = () => {
-    const [skills , setSkills] = useState(['Figma', 'Adobe XD', 'Sketch', 'InVision'])
+    const [skills , setSkills] = useState(['Figma', 'Adobe XD', 'Sketch', 'InVision']);
+
+    const handleChange = () => {
+        if(!skills){
+            setSkills(['Figma', 'Adobe XD', 'Sketch', 'InVision'])
+        }
+    }
   return (
     <div className="relative flex flex-col justify-between items-start bg-white px-8 py-12 rounded-xl border-2 border-[#6D6D6D]/50">
         <div className="absolute -top-5 right-6 px-3 py-[0.4rem] font-medium text-[#2B5A9E] bg-[#E6ECF8] border-[2px] border-[#C8D8EF] rounded-lg">In-Office</div>
@@ -54,7 +60,7 @@ const JobCard = () => {
         </div>
         <div className="flex justify-between items-center w-full pt-3">
             <p className="text-[#2B5A9E] font-medium">Apply by 14 December 2024 .  Posted 2d ago</p>
-            <div className="flex gap-5">
+            <div className="flex gap-5" onClick={handleChange}>
                 <Link to={'gshgshj'} className="bg-[#E6ECF8] text-xl font-medium py-2 px-5 border border-[#D1D1D1] rounded-2xl hover:bg-[#d4dae5] ">View Details</Link>
                 <button className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>
             </div>

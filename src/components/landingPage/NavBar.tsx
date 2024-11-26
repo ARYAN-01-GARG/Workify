@@ -13,7 +13,8 @@ const NavBar = ({
             return (
                 <NavLink
                     className={({isActive}) => `hover:text-[#3965A4] ${isActive ? 'text-[#3965A4]' : 'text-[#16233B]'} transition duration-300`}
-                    to={`${element === "Home" ? '/' : element}`} key={index}
+                    to={`${element === "Home" ? '/' : `/${element.toLowerCase()}`}`} key={index}
+                    end
                 >
                     {element}
                 </NavLink>

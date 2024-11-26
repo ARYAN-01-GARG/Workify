@@ -16,6 +16,7 @@ import { UserState } from "./store/features/auth/UserState";
 import Layout from "./pages/Home/Layout";
 import HomePage from "./pages/Home/HomePage";
 import AllRoutesWithOutLogin from "./pages/AllRoutesWithOutLogin";
+import JobsPage from "./pages/Jobs/JobsPage";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -45,11 +46,14 @@ const App = () => {
         </Route>
 
         {/* Protected routes */}
-        {(role !== '' && isAuthenticated) &&
+        {(role === 'candidate' || role=== 'recruiter' && isAuthenticated) &&
           <Route path='/' element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="dashboard" element={<Dashboard />} />
-          </Route>}
+          </Route>
+        }
+
+        <Route path="/jobs" element={<JobsPage />}/>
 
       </Routes>
     </>

@@ -4,6 +4,19 @@ import { BiHomeAlt } from "react-icons/bi"
 import Footer from "../components/landingPage/Footer"
 import { AiOutlineFolderOpen } from "react-icons/ai"
 import { RxBackpack } from "react-icons/rx"
+import { FaRegCopy } from "react-icons/fa";
+import { IoBookOutline } from "react-icons/io5"
+
+const menuItems = [
+  { icon: <BiHomeAlt size={20} />, label: "My home" },
+  { icon: <AiOutlineFolderOpen size={20} />, label: "Portfolio" },
+  { icon: <RxBackpack size={20} />, label: "Jobs" },
+  { icon: <RxBackpack size={20} />, label: "Tempings" },
+  { icon: <FaRegCopy size={20}/>, label: "My Home" },
+  { icon: <BiHomeAlt size={20} />, label: "My heel" },
+  { icon: <IoBookOutline size={20}/>, label: "My Home" },
+  { icon: <BiHomeAlt size={20} />, label: "My Home" },
+];
 
 const Layout = () => {
   return (
@@ -17,48 +30,23 @@ const Layout = () => {
                     </div>
                     <figcaption className="font-semibold my-1">Aryan garg</figcaption>
                 </figure>
-                <div className="mt-12 mb-6 flex items-center text-[1.05rem]">
+                <div></div>
+                {/* <div className="mt-12 mb-6 flex items-center text-[1.05rem]">
                     <div className="mx-auto flex flex-col gap-6 justify-center items-start">
-                        <div className="flex items-center gap-5 font-semibold">
-                            <BiHomeAlt size={20}/>
-                            <p>My home</p>
-                        </div>
-                        <div className="flex items-center gap-5 font-semibold">
-                            <AiOutlineFolderOpen size={20}/>
-                            <p>Portfolio</p>
-                        </div>
-                        <div className="flex items-center gap-5 font-semibold">
-                            <RxBackpack size={20}/>
-                            <p>Jobs</p>
-                        </div>
-                        <div className="flex items-center gap-5 font-semibold">
-                            <RxBackpack size={20}/>
-                            <p>Tempings</p>
-                        </div>
-                        <div className="flex justify-center items-center gap-5 font-semibold">
-                            <img src="/images/landing-page/copy.svg" alt="Copy" />
-                            <p>My Home</p>
-                        </div>
-                        <div className="flex justify-center items-center gap-5 font-semibold">
-                            <BiHomeAlt size={20}/>
-                            <p>My Home</p>
-                        </div>
-                        <div className="flex justify-center items-center gap-5 font-semibold">
-                            <img src="/images/landing-page/ion_book.svg" alt="Book" />
-                            <p>My Home</p>
-                        </div>
-                        <div className="flex  justify-center items-center gap-5 font-semibold">
-                            <BiHomeAlt size={20}/>
-                            <p>My Home</p>
-                        </div>
+                        {menuItems.map((item, index) => (
+                          <div key={index} className="flex items-center font-semibold text-[#2B5A9E] cursor-pointer">
+                            <div>{item.icon}</div>
+                            <div>{item.label}</div>
+                          </div>
+                        ))}
                     </div>
-                </div>
+                </div> */}
             </div>
             <div>
                 <Outlet />
             </div>
             <div>
-                Side
+                Sidencmncmncmnccnczn,mzcn,cnkn,cznzK
             </div>
         </main>
         <Footer />

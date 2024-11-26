@@ -12,10 +12,10 @@ const menuItems = [
   { icon: <AiOutlineFolderOpen size={20} />, label: "Portfolio" },
   { icon: <RxBackpack size={20} />, label: "Jobs" },
   { icon: <RxBackpack size={20} />, label: "Tempings" },
-  { icon: <FaRegCopy size={20}/>, label: "My Home" },
-  { icon: <BiHomeAlt size={20} />, label: "My heel" },
-  { icon: <IoBookOutline size={20}/>, label: "My Home" },
-  { icon: <BiHomeAlt size={20} />, label: "My Home" },
+  { icon: <FaRegCopy size={20}/>, label: "Applied" },
+  { icon: <BiHomeAlt size={20} />, label: "Companies" },
+  { icon: <IoBookOutline size={20}/>, label: "Blog" },
+  { icon: <BiHomeAlt size={20} />, label: "Membership" },
 ];
 
 const Layout = () => {
@@ -31,7 +31,7 @@ const Layout = () => {
                     <figcaption className="font-semibold my-1">Aryan garg</figcaption>
                 </figure>
                 <div></div>
-                {/* <div className="mt-12 mb-6 flex items-center text-[1.05rem]">
+                <div className="mt-12 mb-6 flex items-center text-[1.05rem]">
                     <div className="mx-auto flex flex-col gap-6 justify-center items-start">
                         {menuItems.map((item, index) => (
                           <div key={index} className="flex items-center font-semibold text-[#2B5A9E] cursor-pointer">
@@ -40,7 +40,7 @@ const Layout = () => {
                           </div>
                         ))}
                     </div>
-                </div> */}
+                </div>
             </div>
             <div>
                 <Outlet />

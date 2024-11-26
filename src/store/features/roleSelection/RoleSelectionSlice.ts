@@ -11,6 +11,8 @@ export interface RoleSelectionState {
         jobType : string;
         companyEmail : string;
         companyWebsite : string;
+        jobDescription: string;
+        jobRequirements: string;
     };
     candidate : {
         email : string;
@@ -38,6 +40,8 @@ const initialState:RoleSelectionState = {
         jobType : '',
         companyEmail : '',
         companyWebsite : '',
+        jobDescription: '',
+        jobRequirements: '',
     },
     candidate : {
         email : '',
@@ -65,7 +69,10 @@ const roleSelectionSlice = createSlice({
       state.skip = action.payload;
     },
     setRecruiter(state, action) {
-      state.recruiter = action.payload;
+      state.recruiter = {
+        ...state.recruiter,
+        ...action.payload
+      };
     },
     setCandidate(state, action) {
       state.candidate = {
@@ -79,8 +86,8 @@ const roleSelectionSlice = createSlice({
     setIsOpen(state, action) {
       state.isOpen = action.payload;
     },
-
-}});
+  }
+});
 
 export default roleSelectionSlice.reducer;
-export const { setRole,setIsOpen, setRecruiter , setCandidate } = roleSelectionSlice.actions;
+export const { setRole, setIsOpen, setRecruiter, setCandidate } = roleSelectionSlice.actions;

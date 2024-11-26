@@ -73,7 +73,6 @@ const CandidateDetails = () => {
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file && file.type === "application/pdf") {
-            // Handle the file upload logic here
             setIsResume(true);
             console.log("PDF file uploaded:", file.name);
         } else {
@@ -115,6 +114,7 @@ const CandidateDetails = () => {
                     description="Autocomplete your profile in just a few seconds by uploading a resume."
                     action={handleNext}
                     actionLabel={isResume ? "Complete Profile" : 'Skip'}
+                    disabled={false}
                 >
                     <div className="w-[90%] mx-auto flex flex-col gap-10 justify-center items-center my-6">
                         {!isResume ? (

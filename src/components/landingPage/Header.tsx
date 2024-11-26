@@ -4,10 +4,11 @@ import NavBar from "./NavBar"
 import { UserState } from "../../store/features/auth/UserState";
 import { BiBell } from "react-icons/bi";
 import { FaRegCircleUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
 
+  const navigate = useNavigate();
   const isAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
   const navElementsBeforeLogin = ["Home", "Find Jobs", "Find Candidates", "For Recruiters" , "Career Advice"];
   const navElementsAfterLogin = ["Jobs", "Companies", "Communites", "About Us" , "Career Advice"];
@@ -24,7 +25,7 @@ const Header = () => {
         isAuthenticated ? (
           <div className="flex justify-center items-center gap-5">
             <BiBell size={30} className="mr-6"/>
-            <FaRegCircleUser size={30}/>
+            <FaRegCircleUser size={30} onClick={() => navigate('/dashboard')} className="cursor-pointer"/>
           </div>
         ) : (
           <div className="flex justify-center items-center gap-5">
@@ -33,7 +34,6 @@ const Header = () => {
           </div>
         )
       }
-      
     </header>
   )
 }

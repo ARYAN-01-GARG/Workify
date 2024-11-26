@@ -28,7 +28,7 @@ export interface RoleSelectionState {
 }
 
 const initialState:RoleSelectionState = {
-    isOpen : true,
+    isOpen : false,
     role: null,
     skip : false,
     recruiter : {

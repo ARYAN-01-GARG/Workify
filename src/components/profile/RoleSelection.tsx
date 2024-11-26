@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RoleSelectionState, setIsOpen, setRole } from "../../store/features/roleSelection/RoleSelectionSlice";
 import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
 import { setIsRecruiterOpen } from "../../store/features/roleSelection/RecruiterSlice";
+import { activeUser } from "../../store/features/UserSlice";
 
 interface RoleCardProps {
     title: string;

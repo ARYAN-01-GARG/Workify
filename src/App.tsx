@@ -15,10 +15,12 @@ import { activeUser } from "./store/features/UserSlice";
 import { UserState } from "./store/features/auth/UserState";
 import Layout from "./pages/Home/Layout";
 import HomePage from "./pages/Home/HomePage";
+import AllRoutesWithOutLogin from "./pages/AllRoutesWithOutLogin";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
   const role = useSelector((state: { user : UserState}) => state.user.userData.role);
+  const isAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
 
 
   useEffect(() => {
@@ -31,6 +33,7 @@ const App = () => {
       <Routes>
         {/* Landing page/ not protected  */}
         {(role ==='') && <Route index element={<LandingPage />} />}
+        {(role ==='') && <Route path="*" element={<AllRoutesWithOutLogin/>} />}
 
         {/* Auth routes  */}
         <Route path="/auth" element={<AuthPage />}>
@@ -42,10 +45,11 @@ const App = () => {
         </Route>
 
         {/* Protected routes */}
-        <Route path='/' element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="dashboard" element={<Dashboard />} />
-        </Route>
+        {(role !== '' && isAuthenticated) &&
+          <Route path='/' element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="dashboard" element={<Dashboard />} />
+          </Route>}
 
       </Routes>
     </>

@@ -1,8 +1,13 @@
 import { useState } from "react";
 import DialogCard from "./DialogCard"
 import { JobInput } from "./JobInput"
+import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../store/features/UserSlice";
 
 const CandidateDetails = () => {
+
+    const dispatch = useDispatch();
     const [counter, setCounter] = useState(0);
 
     const pages = [
@@ -33,7 +38,8 @@ const CandidateDetails = () => {
         if (counter < pages.length - 1) {
             setCounter((prev) => prev + 1);
         } else {
-            return;
+            dispatch(setIsCandidateOpen(false));
+            dispatch(setUserData({ role: 'candidate' }));
         }
     };
 

@@ -8,6 +8,7 @@ import { AuthState } from "../../store/features/auth/AuthState";
 import { AppDispatch } from "../../store/store";
 import { UserState } from "../../store/features/auth/UserState";
 import { setIsAuthenticated, setToken, setUserData } from "../../store/features/UserSlice";
+import { setIsOpen } from "../../store/features/roleSelection/RoleSelectionSlice";
 
 const LoginPage = () => {
 
@@ -21,6 +22,7 @@ const LoginPage = () => {
   const showPassword = useSelector((state: { auth : AuthState}) => state.auth.showPassword);
   const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
   const userData = useSelector((state: { user : UserState}) => state.user.userData);
+  const role = useSelector((state: { user : UserState}) => state.user.userData.role);
 
   const contactRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -42,6 +44,9 @@ const LoginPage = () => {
             dispatch(setToken(res.payload.token));
             dispatch(setPassword(''));
             dispatch(setContact(''));
+            if(role === ''){
+              dispatch(setIsOpen(true));
+            }
         }
       })
     } catch (error) {
@@ -70,13 +75,13 @@ const LoginPage = () => {
   )
 
   useEffect(() => {
-    if(IsAuthenticated){
-      navigate('/dashboard');
+    if(IsAuthenticated && role === ''){
+      navigate('/');
     }
     else {
       contactRef.current?.focus();
     }
-  },[ IsAuthenticated , navigate ]);
+  },[ IsAuthenticated ,role , navigate ]);
 
   return (
     <>

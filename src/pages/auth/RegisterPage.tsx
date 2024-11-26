@@ -13,6 +13,7 @@ import { useRef, useEffect } from "react";
 import { Link , useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../store/store";
 import { setIsAllowed } from "../../store/features/auth/VerifyOTPSlice";
+import { setIsOpen } from "../../store/features/roleSelection/RoleSelectionSlice";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -25,19 +26,20 @@ const RegisterPage = () => {
   const password = useSelector((state: { auth: AuthState }) => state.auth.password);
   const showPassword = useSelector((state: { auth: AuthState }) => state.auth.showPassword);
   const isAuthenticated = useSelector((state: { user: { isAuthenticated: boolean; }; }) => state.user.isAuthenticated);
+  const role = useSelector((state: { user: { userData: { role: string; }; }; }) => state.user.userData.role);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const contactRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if(isAuthenticated){
-      navigate('/dashboard');
+    if(isAuthenticated && role === ''){
+      navigate('/');
       return;
     }
     dispatch({ type: 'auth/activeUser' });
     nameRef.current?.focus();
-  },[ dispatch , navigate , isAuthenticated ]);
+  },[ dispatch , navigate, role , isAuthenticated ]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +50,9 @@ const RegisterPage = () => {
         password: password
       }))
       .then((res) => {
+        if(role === ''){
+          dispatch(setIsOpen(true));
+        }
         if(res.type === 'auth/registerUser/fulfilled'){
         dispatch(setIsAllowed(true));
         navigate('/auth/verify');

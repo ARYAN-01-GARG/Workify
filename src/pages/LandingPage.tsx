@@ -6,30 +6,42 @@ import Card from "../components/landingPage/Card"
 import Card2 from "../components/landingPage/Card2"
 import Card3 from "../components/landingPage/Card3"
 import { FcGoogle } from "react-icons/fc"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import { UserState } from "../store/features/auth/UserState"
 import RoleSelection from "../components/profile/RoleSelection"
 import CandidateDetails from "../components/profile/CandidateDetails"
-import { RoleSelectionState } from "../store/features/roleSelection/RoleSelectionSlice"
+import { RoleSelectionState, setIsOpen } from "../store/features/roleSelection/RoleSelectionSlice"
 import JobDetails from "../components/profile/JobDetails"
 
 const LandingPage = () => {
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isOpen = useSelector((state: { roleSelection : RoleSelectionState}) => state.roleSelection.isOpen);
   const isCandidateOpen = useSelector((state: { candidate : {isCandidateOpen : boolean}}) => state.candidate.isCandidateOpen);
   const isRecruiterOpen = useSelector((state: { recruiter : {isRecruiterOpen : boolean}}) => state.recruiter.isRecruiterOpen);
   const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
+  const role = useSelector((state: { user : UserState}) => state.user.userData.role);
 
 
   useEffect(() => {
-    if(IsAuthenticated){
+    if(IsAuthenticated && role ===''){
+      dispatch(setIsOpen(true));
+    }
+    if(IsAuthenticated && role !== ''){
       navigate('/dashboard');
     }
-  },[ IsAuthenticated , navigate ]);
+  },[ IsAuthenticated , dispatch , role , navigate ]);
+
+  useEffect(() => {
+    if(isOpen || isCandidateOpen || isRecruiterOpen){
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+  },[isOpen ,isCandidateOpen , isRecruiterOpen])
 
   return (
     <div className="

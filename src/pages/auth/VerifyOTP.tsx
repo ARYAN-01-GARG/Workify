@@ -10,6 +10,7 @@ import { registerUser, setContact, setName, setPassword } from "../../store/feat
 import { useNavigate } from "react-router-dom";
 import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";
 import { validateContact } from "../../store/features/auth/ForgotPasswordSlice";
+import { setIsOpen } from "../../store/features/roleSelection/RoleSelectionSlice";
 
 const VerifyOTP = () => {
 
@@ -26,6 +27,7 @@ const VerifyOTP = () => {
     const contact = useSelector((state: { auth: AuthState }) => state.auth.contact);
     const name = useSelector((state: { auth: AuthState }) => state.auth.name);
     const password = useSelector((state: { auth: AuthState }) => state.auth.password);
+    const role = useSelector((state: { user: { userData: { role: string; }; }; }) => state.user.userData.role);
     const sendBy = useSelector((state: { verifyOTP: VerifyOTPState }) => state.verifyOTP.sendBy);
     const contactOfForgot = useSelector((state: { forgot: { contact: string; }; }) => state.forgot.contact);
 
@@ -99,6 +101,9 @@ const VerifyOTP = () => {
                         dispatch(setOTP(''));
                         dispatch(setPassword(''));
                         dispatch(setContact(''));
+                        if(role === ''){
+                            dispatch(setIsOpen(true));
+                        }
                     }
                 });
             }

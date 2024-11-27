@@ -13,10 +13,11 @@ import Dashboard from "./pages/Home/Dashboard";
 import { AppDispatch } from "./store/store";
 import { activeUser } from "./store/features/UserSlice";
 import { UserState } from "./store/features/auth/UserState";
-import Layout from "./pages/Home/Layout";
+import Layout5 from "./pages/Layout5";
 import HomePage from "./pages/Home/HomePage";
 import AllRoutesWithOutLogin from "./pages/AllRoutesWithOutLogin";
 import JobsPage from "./pages/Jobs/JobsPage";
+import CompanyPage from "./pages/Companies/CompanyPage";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,14 +47,15 @@ const App = () => {
         </Route>
 
         {/* Protected routes */}
-        {(role === 'candidate' || role=== 'recruiter' && isAuthenticated) &&
-          <Route path='/' element={<Layout />}>
+        {((role === 'candidate' || role=== 'recruiter') && isAuthenticated) &&
+          <Route path='/' element={<Layout5 />}>
             <Route index element={<HomePage />} />
             <Route path="dashboard" element={<Dashboard />} />
           </Route>
         }
 
         <Route path="/jobs" element={<JobsPage />}/>
+        <Route path="/companies" element={<CompanyPage />}/>
 
       </Routes>
     </>

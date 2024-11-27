@@ -18,7 +18,7 @@ const menuItems = [
   { icon: <BiHomeAlt size={20} />, label: "Membership" },
 ];
 
-const Layout = () => {
+const Layout5 = () => {
   return (
     <div className="bg-[#E6ECF8] min-h-[100vh]">
         <Header/>
@@ -46,7 +46,7 @@ const Layout = () => {
                 <Outlet />
             </div>
             <div>
-                Sidencmncmncmnccnczn,mzcn,cnkn,cznzK
+                Side
             </div>
         </main>
         <Footer />
@@ -54,4 +54,4 @@ const Layout = () => {
   )
 }
 
-export default Layout
+export default Layout5

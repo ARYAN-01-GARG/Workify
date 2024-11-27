@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 const NAME_REGEX = /^[a-zA-Z ]{3,22}$/;
 const PHONE_REGEX = /^[0-9]{10}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 const initialState: AuthState = {
     isLoading: false,

@@ -74,7 +74,7 @@ const LayoutForcandidate = () => {
   return (
     <div className="bg-[#E6ECF8] min-h-[100vh]">
       <Header />
-      <main className="px-10 flex my-10 gap-6">
+      <main className="px-10 flex my-10 gap-6 items-start">
         <div className={`bg-white min-w-[18vw] py-10 rounded-lg ${isScrolled ? 'sticky top-0 self-start' : ''}`}>
           <figure className="w-full flex flex-col items-center">
             <div className="bg-slate-500 w-32 h-32 rounded-full flex justify-center items-center">

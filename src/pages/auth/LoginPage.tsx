@@ -42,7 +42,7 @@ const LoginPage = () => {
               mobile: res.payload.user.mobile,
               status: res.payload.user.status,
               membership: res.payload.user.membership,
-              role: res.payload.user.role,
+              role: res.payload.user.role.toLowerCase(),
               enabled: res.payload.user.enabled,
               authorities: res.payload.user.authorities,
             };
@@ -82,7 +82,7 @@ const LoginPage = () => {
   )
 
   useEffect(() => {
-    if(IsAuthenticated && role === 'USER'){
+    if(IsAuthenticated){
       navigate('/');
     }
     else {

@@ -32,7 +32,7 @@ const RegisterPage = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if(isAuthenticated && role === ''){
+    if(isAuthenticated && role === 'USER'){
       navigate('/');
       return;
     }

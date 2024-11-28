@@ -6,7 +6,7 @@ const initialState = {
     lastName: '',
     contact: '',
     emailVerified: false,
-    role : 'candidate',
+    role : 'USER',
   },
   token: '',
   isAuthenticated: false,
@@ -32,7 +32,7 @@ const UserSlice = createSlice({
         lastName: '',
         contact: '',
         emailVerified: false,
-        role : '',
+        role : 'USER',
       };
       state.token = '';
       state.isAuthenticated = false;

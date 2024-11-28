@@ -10,8 +10,10 @@ const Header = () => {
 
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
+  const role = useSelector((state: { user : UserState}) => state.user.userData.role);
   const navElementsBeforeLogin = ["Home", "Find Jobs", "Find Candidates", "For Recruiters" , "Career Advice"];
-  const navElementsAfterLogin = ["Jobs", "Companies", "Communites", "About Us" , "Career Advice"];
+  const navElementsForCandidate = ["Jobs", "Companies", "Communites", "About Us" , "Career Advice"];
+  const navElementsForRecruiter = ["Post a Job", "Find Talent", "Chats", "About Us"];
 
   return (
     <header className="sticky top-0 z-50 flex justify-between shadow-sm items-center px-10 py-4 bg-white md:gap-10">
@@ -19,10 +21,10 @@ const Header = () => {
         <Link to={'/'}><img src="/images/Workify.svg" alt="logo" /></Link>
       </div>
       <nav className={`lg:flex justify-between items-center px-5 ${isAuthenticated ? '' : '-mr-20'} hidden`}>
-        <NavBar elements={isAuthenticated ? navElementsAfterLogin : navElementsBeforeLogin } />
+        <NavBar elements={!isAuthenticated ? navElementsBeforeLogin : role ==='recruiter' ? navElementsForRecruiter : role === 'candidate' ? navElementsForCandidate : navElementsBeforeLogin } />
       </nav>
       {
-        isAuthenticated ? (
+        (isAuthenticated && role !== '') ? (
           <div className="flex justify-center items-center gap-5">
             <BiBell size={30} className="mr-6"/>
             <FaRegCircleUser size={30} onClick={() => navigate('/dashboard')} className="cursor-pointer"/>

@@ -44,7 +44,7 @@ const LoginPage = () => {
             dispatch(setToken(res.payload.token));
             dispatch(setPassword(''));
             dispatch(setContact(''));
-            if(role === ''){
+            if(role === 'USER'){
               dispatch(setIsOpen(true));
             }
         }
@@ -75,7 +75,7 @@ const LoginPage = () => {
   )
 
   useEffect(() => {
-    if(IsAuthenticated && role === ''){
+    if(IsAuthenticated && role === 'USER'){
       navigate('/');
     }
     else {

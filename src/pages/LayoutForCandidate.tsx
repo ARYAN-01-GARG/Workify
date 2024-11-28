@@ -7,12 +7,13 @@ import { RxBackpack } from "react-icons/rx"
 import { FaRegCopy } from "react-icons/fa";
 import { IoBookOutline } from "react-icons/io5"
 import { useState, useEffect } from "react"
+import { CiChat1 } from "react-icons/ci"
 
 const menuItems = [
   { icon: <BiHomeAlt size={20} />, label: "My home" },
   { icon: <AiOutlineFolderOpen size={20} />, label: "Portfolio" },
   { icon: <RxBackpack size={20} />, label: "Jobs" },
-  { icon: <RxBackpack size={20} />, label: "Tempings" },
+  { icon: <CiChat1 size={20} />, label: "Chats" },
   { icon: <FaRegCopy size={20}/>, label: "Applied" },
   { icon: <BiHomeAlt size={20} />, label: "Companies" },
   { icon: <IoBookOutline size={20}/>, label: "Blog" },
@@ -26,7 +27,7 @@ const scores = [
   { title: "Job offers viewed", score: '2,481,455' , icon : '/images/home/folder.svg' },
 ]
 
-const Layout5 = () => {
+const LayoutForcandidate = () => {
   const [isActive, setIsActive] = useState('My home');
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -50,7 +51,7 @@ const Layout5 = () => {
       }
 
       const sections = menuItems.map(item => document.getElementById(item.label));
-      const scrollPosition = window.scrollY + window.innerHeight / 5;
+      const scrollPosition = window.scrollY + window.innerHeight / 4;
 
       for (const section of sections) {
         if (section && section.offsetTop <= scrollPosition && section.offsetTop + section.offsetHeight > scrollPosition) {
@@ -116,4 +117,4 @@ const Layout5 = () => {
   )
 }
 
-export default Layout5
+export default LayoutForcandidate;

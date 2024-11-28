@@ -2,8 +2,24 @@ import Footer from "../components/landingPage/Footer"
 import Header from "../components/landingPage/Header"
 import JobCard from "../components/Jobs/JobCard"
 import SearchBar from "../components/Jobs/SearchBar"
+import { useEffect } from "react"
+import { useSelector } from "react-redux"
+import { UserState } from "../store/features/auth/UserState"
+import { useNavigate } from "react-router-dom"
 
 const JobsPage = () => {
+
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector((state : {user : UserState}) => state.user.isAuthenticated);
+  const role = useSelector((state : {user : UserState}) => state.user.userData.role);
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    if(role !== 'candidate' || !isAuthenticated) {
+      navigate('/')
+    }
+  } , [navigate , isAuthenticated , role])
+
   return (
     <div className="bg-[#E6ECF8] min-h-screen flex flex-col w-full">
         <Header/>

@@ -1,7 +1,7 @@
 import { HiMiniMagnifyingGlassCircle } from "react-icons/hi2"
 import JobCard from "../../components/Jobs/JobCard"
 import { SearchInput } from "../../components/Jobs/SearchBar"
-import { useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useState } from "react"
 
 const HomePage = () => {
@@ -40,7 +40,7 @@ const PortfolioCard = () => {
   return (
     <div className="bg-white rounded-lg p-3 flex gap-5 items-center justify-evenly border-2 border-[#B0B0B0]">
       <div className="w-[9vw] h-[9vw] rounded-lg">
-        <img src='/public/images/portfolioFolder.svg' alt="Folder Portfolio" className="w-full h-full"/>
+        <img src='/images/portfolioFolder.svg' alt="Folder Portfolio" className="w-full h-full"/>
       </div>
       <div className="flex flex-col gap-2">
         <div className="text-xl font-medium">Create Your Porfolio in easy Steps</div>
@@ -56,7 +56,6 @@ const PortfolioCard = () => {
 }
 
 export const AppliedJobCard = () => {
-  const navigate = useNavigate();
 
   const [isActive , setIsActive] = useState('Applied Jobs');
 
@@ -90,7 +89,12 @@ export const AppliedJobCard = () => {
       <div className="flex flex-col justify-center items-center gap-4 pt-8 pb-1">
         <p className="text-[#454545] text-xl font-medium">No Applied Jobs</p>
         <p className="text-[#4F4F4F] font-medium text-[1rem]">You have not applied to any jobs yet.</p>
-        <button className="bg-[#2B5A9E] font-medium text-xl text-white py-[0.6rem] px-5 rounded-2xl hover:opacity-80" onClick={() => navigate('/Jobs')}>Search Jobs</button>
+        <Link
+          to="/jobs"
+          className="bg-[#2B5A9E] font-medium text-xl text-white py-[0.6rem] px-5 rounded-2xl hover:opacity-80" 
+        >
+          Search Jobs
+        </Link>
       </div>
     </div>
   )

@@ -1,18 +1,20 @@
 import { useState } from "react";
-import { FaStar, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle icon
+import { FaStar, FaCheckCircle } from "react-icons/fa";
 import DialogCard from "./DialogCard"
 import { JobInput } from "./JobInput"
 import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../store/features/UserSlice";
-import { setCandidate } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { createCandidate, RoleSelectionState, setCandidate } from "../../store/features/roleSelection/RoleSelectionSlice";
 import { UserState } from "../../store/features/auth/UserState";
+import { AppDispatch } from "../../store/store";
 
 const CandidateDetails = () => {
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const [counter, setCounter] = useState(0);
     const userData = useSelector((state: { user: UserState }) => state.user.userData);
+    const candidate = useSelector((state: { roleSelection: RoleSelectionState }) => state.roleSelection.candidate);
     const [pages, setPages] = useState([
         {
             heading: 'Education',
@@ -52,23 +54,32 @@ const CandidateDetails = () => {
     };
 
     const handleNext = () => {
-        if (counter < pages.length) {
+        if (counter < pages.length - 1) {
             setCounter((prev) => prev + 1);
-        } else {
-            dispatch(setIsCandidateOpen(false));
-            dispatch(setUserData({ ...userData , role: 'candidate' }));
-            const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-            const resumeFile = fileInput && fileInput.files ? fileInput.files[0] : null;
-            dispatch(setCandidate({
+        } else if (counter === pages.length - 1) {
+            const candidateData = {
+                ...candidate,
                 education: pages[0].inputs[0].value,
                 course: pages[0].inputs[1].value,
                 location: pages[1].inputs[0].value,
                 careerInterests: pages[1].inputs[1].value,
                 companyName: pages[2].inputs[0].value,
                 currentJobTitle: pages[2].inputs[1].value,
-                isResumeUploaded: isResume,
-                resumeFile: resumeFile
-            }));
+                skills: []
+            };
+            dispatch(setCandidate(candidateData));
+            try {
+                dispatch(createCandidate(candidateData));
+            } catch (error) {
+                console.error("Error creating candidate:", error);
+                setCounter(0);
+            }
+        } else {
+            dispatch(setIsCandidateOpen(false));
+            dispatch(setUserData({ ...userData, role: 'candidate' }));
+            const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+            const resumeFile = fileInput && fileInput.files ? fileInput.files[0] : null;
+            dispatch(setCandidate({ ...candidate, isResumeUploaded: isResume, resumeFile: resumeFile }));
         }
     };
 

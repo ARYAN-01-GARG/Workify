@@ -30,29 +30,36 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      dispatch(loginUser({contact, password}))
-      .then((res) => {
-        if (res.type === 'auth/loginUser/fulfilled') {
+      dispatch(loginUser({ contact, password }))
+        .then((res) => {
+          if (res.type === 'auth/loginUser/fulfilled') {
             const newUserData = {
-                ...userData,
-                firstName: res.payload.firstName,
-                lastName: res.payload.lastName,
-                contact : contact
-            }
+              ...userData,
+              id: res.payload.user.id,
+              firstName: res.payload.user.firstName,
+              lastName: res.payload.user.lastName,
+              email: res.payload.user.email,
+              mobile: res.payload.user.mobile,
+              status: res.payload.user.status,
+              membership: res.payload.user.membership,
+              role: res.payload.user.role,
+              enabled: res.payload.user.enabled,
+              authorities: res.payload.user.authorities,
+            };
             dispatch(setUserData(newUserData));
             dispatch(setIsAuthenticated(true));
             dispatch(setToken(res.payload.token));
             dispatch(setPassword(''));
             dispatch(setContact(''));
-            if(role === 'USER'){
+            if (role === 'USER') {
               dispatch(setIsOpen(true));
             }
-        }
-      })
+          }
+        });
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, nextRef?: React.RefObject<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -132,5 +139,23 @@ const LoginPage = () => {
     </>
   )
 }
+// "user": {
+//         "id": 5453,
+//         "firstName": "Aryan",
+//         "lastName": "garg",
+//         "email": "aryangarg30842@gmail.com",
+//         "mobile": null,
+//         "status": null,
+//         "membership": false,
+//         "role": "USER",
+//         "enabled": true,
+//         "authorities": [
+//             {
+//                 "authority": "USER"
+//             }
+//         ],
+//         "accountNonExpired": true,
+//         "accountNonLocked": true,
+//         "credentialsNonExpired": true
 
 export default LoginPage

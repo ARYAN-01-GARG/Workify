@@ -1,11 +1,16 @@
 export interface UserState {
-    userData :{
-        firstName:string;
-        lastName:string;
-        contact: string;
-        emailVerified: boolean;
-        role : string;
-    },
-    token : string | null,
-    isAuthenticated: boolean
+  userData: {
+    id: number | null;
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string | null;
+    status: string | null;
+    membership: boolean;
+    role: string;
+    enabled: boolean;
+    authorities: { authority: string }[];
+  };
+  token: string | null;
+  isAuthenticated: boolean;
 }

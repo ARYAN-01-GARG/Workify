@@ -3,14 +3,16 @@ import { FaStar, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle 
 import DialogCard from "./DialogCard"
 import { JobInput } from "./JobInput"
 import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../store/features/UserSlice";
 import { setCandidate } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { UserState } from "../../store/features/auth/UserState";
 
 const CandidateDetails = () => {
 
     const dispatch = useDispatch();
     const [counter, setCounter] = useState(0);
+    const userData = useSelector((state: { user: UserState }) => state.user.userData);
     const [pages, setPages] = useState([
         {
             heading: 'Education',
@@ -54,7 +56,7 @@ const CandidateDetails = () => {
             setCounter((prev) => prev + 1);
         } else {
             dispatch(setIsCandidateOpen(false));
-            dispatch(setUserData({ role: 'candidate' }));
+            dispatch(setUserData({ ...userData , role: 'candidate' }));
             const fileInput = document.getElementById('file-upload') as HTMLInputElement;
             const resumeFile = fileInput && fileInput.files ? fileInput.files[0] : null;
             dispatch(setCandidate({

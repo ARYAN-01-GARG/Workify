@@ -8,6 +8,8 @@ import { FaRegCopy } from "react-icons/fa";
 import { IoBookOutline } from "react-icons/io5"
 import { useState, useEffect } from "react"
 import { CiChat1 } from "react-icons/ci"
+import { useSelector } from "react-redux"
+import { UserState } from "../store/features/auth/UserState"
 
 const menuItems = [
   { icon: <BiHomeAlt size={20} />, label: "My home" },
@@ -28,6 +30,8 @@ const scores = [
 ]
 
 const LayoutForcandidate = () => {
+
+  const userData = useSelector((state : { user : UserState}) => state.user.userData);
   const [isActive, setIsActive] = useState('My home');
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -76,7 +80,7 @@ const LayoutForcandidate = () => {
             <div className="bg-slate-500 w-32 h-32 rounded-full flex justify-center items-center">
               Image
             </div>
-            <figcaption className="font-semibold my-1">Aryan garg</figcaption>
+            <figcaption className="font-semibold my-1">{`${userData.firstName} ${userData.lastName}`}</figcaption>
           </figure>
           <div></div>
           <div className="mt-12 mb-6 flex items-center text-[1.05rem]">

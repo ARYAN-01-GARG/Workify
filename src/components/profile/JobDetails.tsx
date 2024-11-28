@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setRecruiter } from "../../store/features/roleSelection/RoleSelectionSlice";
 import MagnifyLens from "../assets/MagnifyLens";
 import DialogCard from "./DialogCard";
@@ -7,9 +7,11 @@ import { JobInput } from "./JobInput";
 import { FaStar } from "react-icons/fa6";
 import { setIsRecruiterOpen } from "../../store/features/roleSelection/RecruiterSlice";
 import { setUserData } from "../../store/features/UserSlice";
+import { UserState } from "../../store/features/auth/UserState";
 
 const JobDetails = () => {
     const dispatch = useDispatch();
+    const userData = useSelector((state: { user: UserState }) => state.user.userData);
     const [counter, setCounter] = useState(0);
     const [pages, setPages] = useState([
         {
@@ -50,7 +52,7 @@ const JobDetails = () => {
             setCounter((prev) => prev + 1);
         } else {
             dispatch(setIsRecruiterOpen(false));
-            dispatch(setUserData({ role: 'recruiter' }));
+            dispatch(setUserData({ ...userData , role: 'recruiter' }));
             dispatch(setRecruiter({
                 jobTitle: pages[0].inputs[0].value,
                 companyName: pages[0].inputs[1].value,

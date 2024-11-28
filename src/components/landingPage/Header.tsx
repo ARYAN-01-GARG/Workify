@@ -12,7 +12,7 @@ const Header = () => {
   const isAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
   const role = useSelector((state: { user : UserState}) => state.user.userData.role);
   const navElementsBeforeLogin = ["Home", "Find Jobs", "Find Candidates", "For Recruiters" , "Career Advice"];
-  const navElementsForCandidate = ["Jobs", "Companies", "Communites", "About Us" , "Career Advice"];
+  const navElementsForCandidate = ["Jobs", "Companies", "Chats", "About Us" , "Career Advice"];
   const navElementsForRecruiter = ["Post a Job", "Find Talent", "Chats", "About Us"];
 
   return (

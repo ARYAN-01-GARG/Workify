@@ -2,16 +2,20 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   userData: {
+    id: null,
     firstName: '',
     lastName: '',
-    contact: '',
-    emailVerified: false,
-    role : 'USER',
+    email: '',
+    mobile: null,
+    status: null,
+    membership: false,
+    role: 'USER',
+    enabled: true,
+    authorities: [],
   },
   token: '',
   isAuthenticated: false,
 };
-
 
 const UserSlice = createSlice({
   name: 'user',
@@ -28,11 +32,16 @@ const UserSlice = createSlice({
     },
     logout(state) {
       state.userData = {
+        id: null,
         firstName: '',
         lastName: '',
-        contact: '',
-        emailVerified: false,
-        role : 'USER',
+        email: '',
+        mobile: null,
+        status: null,
+        membership: false,
+        role: 'USER',
+        enabled: true,
+        authorities: [],
       };
       state.token = '';
       state.isAuthenticated = false;
@@ -55,6 +64,6 @@ const UserSlice = createSlice({
   },
 });
 
-export const { activeUser, setUserData, setToken, setIsAuthenticated , logout } = UserSlice.actions;
+export const { activeUser, setUserData, setToken, setIsAuthenticated, logout } = UserSlice.actions;
 
 export default UserSlice.reducer;

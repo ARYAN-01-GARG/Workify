@@ -5,7 +5,7 @@ import { JobInput } from "./JobInput"
 import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../store/features/UserSlice";
-import { createCandidate, RoleSelectionState, setCandidate } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { createCandidate, RoleSelectionState, setCandidate, uploadResume } from "../../store/features/roleSelection/RoleSelectionSlice";
 import { UserState } from "../../store/features/auth/UserState";
 import { AppDispatch } from "../../store/store";
 
@@ -14,6 +14,7 @@ const CandidateDetails = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [counter, setCounter] = useState(0);
     const userData = useSelector((state: { user: UserState }) => state.user.userData);
+    const token = useSelector((state: { user: UserState }) => state.user.token) as string;
     const candidate = useSelector((state: { roleSelection: RoleSelectionState }) => state.roleSelection.candidate);
     const [pages, setPages] = useState([
         {
@@ -57,6 +58,7 @@ const CandidateDetails = () => {
         if (counter < pages.length - 1) {
             setCounter((prev) => prev + 1);
         } else if (counter === pages.length - 1) {
+            setCounter((prev) => prev + 1);
             const candidateData = {
                 ...candidate,
                 education: pages[0].inputs[0].value,
@@ -69,7 +71,7 @@ const CandidateDetails = () => {
             };
             dispatch(setCandidate(candidateData));
             try {
-                dispatch(createCandidate(candidateData));
+                dispatch(createCandidate({ candidate: candidateData, token }));
             } catch (error) {
                 console.error("Error creating candidate:", error);
                 setCounter(0);
@@ -80,6 +82,14 @@ const CandidateDetails = () => {
             const fileInput = document.getElementById('file-upload') as HTMLInputElement;
             const resumeFile = fileInput && fileInput.files ? fileInput.files[0] : null;
             dispatch(setCandidate({ ...candidate, isResumeUploaded: isResume, resumeFile: resumeFile }));
+            try {
+                if (resumeFile) {
+                    dispatch(uploadResume({ resume: resumeFile, token }));
+                }
+            } catch (error) {
+                console.error("Error uploading resume:", error);
+                setCounter((prev) => prev - 1);
+            }
         }
     };
 
@@ -135,7 +145,7 @@ const CandidateDetails = () => {
                         ) : (
                             <div className="flex gap-4 items-center">
                                 <FaCheckCircle className="text-[#2cc655] text-4xl" />
-                                <span className="text-xl">Resume Uploaded</span>
+                                <span className="text-xl">Resume Selected</span>
                             </div>
                         )}
                         <button className="bg-[#2B5A9E] text-[#F3F6FC] font-medium text-xl py-3 w-[350px] rounded-lg hover:opacity-80">

@@ -62,7 +62,7 @@ const initialState:RoleSelectionState = {
 
 export const createCandidate = createAsyncThunk(
     'roleSelection/createCandidate',
-    async (candidate : RoleSelectionState['candidate'], { rejectWithValue }) => {
+    async ({ candidate, token }: { candidate: RoleSelectionState['candidate'], token: string }, { rejectWithValue }) => {
         toast.loading('Creating candidate...');
         try {
             const response = await axios.post('https://naitikjain.me/api/candidates/create', {
@@ -73,7 +73,11 @@ export const createCandidate = createAsyncThunk(
                     { companyName: candidate.companyName, yearsWorked: 1, position: candidate.currentJobTitle }
                 ],
                 skill: [...candidate.skills],
-                DOB: '2005-10-20'
+                DOB: '2003-10-14'
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
             toast.dismiss();
             toast.success('Candidate created successfully!');
@@ -83,6 +87,35 @@ export const createCandidate = createAsyncThunk(
             toast.dismiss();
             toast.error(error.response?.data?.message || 'Candidate creation failed');
             return rejectWithValue(error.response?.data?.message || 'Registration failed');
+        }
+    }
+);
+
+export const uploadResume = createAsyncThunk(
+    'roleSelection/uploadResume',
+    async ({ resume, token }: { resume: File | null, token: string }, { rejectWithValue }) => {
+        if (!resume) {
+            toast.error('No resume file selected');
+            return rejectWithValue('No resume file selected');
+        }
+        toast.loading('Uploading resume...');
+        try {
+            const formData = new FormData();
+            formData.append('resume', resume);
+            const response = await axios.post('https://naitikjain.me/api/candidates/resume', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            toast.dismiss();
+            toast.success('Resume uploaded successfully!');
+            return response.data;
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message: string }>;
+            toast.dismiss();
+            toast.error(error.response?.data?.message || 'Resume upload failed');
+            return rejectWithValue(error.response?.data?.message || 'Resume upload failed');
         }
     }
 );

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { IconType } from "react-icons";
 import { FaChevronDown, FaLocationDot } from "react-icons/fa6";
-import { HiMiniMagnifyingGlassCircle } from "react-icons/hi2"; // Add this import
+import { HiMiniMagnifyingGlassCircle } from "react-icons/hi2";
 import { IoFilterSharp } from "react-icons/io5";
 
 interface SearchInputProps {
@@ -10,6 +10,7 @@ interface SearchInputProps {
     value: string;
     size?: number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    isBg?: boolean;
 }
 
 
@@ -44,22 +45,23 @@ const SearchBar = () => {
 }
 
 
-const SearchInput:React.FC<SearchInputProps> = ({
+export const SearchInput:React.FC<SearchInputProps> = ({
     placeholder,
     Icon,
     value,
     onChange,
-    size
+    size,
+    isBg=false
 }) => {
     return (
-        <div className="border-[1px] border-[#6092D0] rounded-xl px-4 py-3 flex-grow flex gap-5 items-center">
+        <div className={`border-[2px] border-[#6092D0] rounded-xl px-4 py-3 flex-grow flex gap-5 items-center ${isBg ? 'bg-white' : 'bg-transparent'}`}>
             <Icon size={size} className="text-[#2A5A9F] hover:opacity-80 cursor-pointer"/>
             <input
                 type="text"
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
-                className="outline-none placeholder:text-[#454545] text-[#454545] text-lg font-medium bg-transparent w-full"
+                className={`outline-none placeholder:text-[#454545] text-[#454545] text-lg font-medium ${isBg ? 'bg-white' : 'bg-transparent'} w-full`}
              />
         </div>
     )

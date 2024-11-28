@@ -34,7 +34,10 @@ const Layout5 = () => {
     setIsActive(label);
     const section = document.getElementById(label);
     if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
+      window.scrollTo({
+        top: section.offsetTop - 40,
+        behavior: "smooth"
+      });
     }
   };
 
@@ -47,7 +50,7 @@ const Layout5 = () => {
       }
 
       const sections = menuItems.map(item => document.getElementById(item.label));
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
+      const scrollPosition = window.scrollY + window.innerHeight / 5;
 
       for (const section of sections) {
         if (section && section.offsetTop <= scrollPosition && section.offsetTop + section.offsetHeight > scrollPosition) {
@@ -83,7 +86,7 @@ const Layout5 = () => {
                   className={`flex items-center font-semibold gap-4 cursor-pointer ${isActive === item.label ? 'text-[#2B5A9E]' : 'text-black'}`}
                   onClick={() => handleMenuClick(item.label)}
                 >
-                  <div>{item.icon}</div>
+                  <div className="list-disc">{item.icon}</div>
                   <div>{item.label}</div>
                 </div>
               ))}

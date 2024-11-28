@@ -1,7 +1,7 @@
-import Footer from "../../components/landingPage/Footer"
-import Header from "../../components/landingPage/Header"
-import JobCard from "./JobCard"
-import SearchBar from "./SearchBar"
+import Footer from "../components/landingPage/Footer"
+import Header from "../components/landingPage/Header"
+import JobCard from "../components/Jobs/JobCard"
+import SearchBar from "../components/Jobs/SearchBar"
 
 const JobsPage = () => {
   return (

@@ -16,7 +16,7 @@ import { UserState } from "./store/features/auth/UserState";
 import Layout5 from "./pages/Layout5";
 import HomePage from "./pages/Home/HomePage";
 import AllRoutesWithOutLogin from "./pages/AllRoutesWithOutLogin";
-import JobsPage from "./pages/Jobs/JobsPage";
+import JobsPage from "./pages/JobsPage";
 import CompanyPage from "./pages/Companies/CompanyPage";
 
 const App = () => {

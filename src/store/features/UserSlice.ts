@@ -6,7 +6,7 @@ const initialState = {
     lastName: '',
     contact: '',
     emailVerified: false,
-    role : '',
+    role : 'candidate',
   },
   token: '',
   isAuthenticated: false,

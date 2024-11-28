@@ -21,7 +21,7 @@ const JobCard = () => {
         }
     }
   return (
-    <div className="relative flex flex-col justify-between items-start bg-white px-8 py-12 rounded-xl border-2 border-[#6D6D6D]/50">
+    <div className="relative flex flex-col justify-between items-start bg-white px-8 py-8 rounded-xl border-2 border-[#6D6D6D]/50">
         <div className="absolute -top-5 right-6 px-3 py-[0.4rem] font-medium text-[#2B5A9E] bg-[#E6ECF8] border-[2px] border-[#C8D8EF] rounded-lg">In-Office</div>
         <div className="flex gap-4 p">
             <div className="w-[60px] h-[60px] bg-red-400 rounded-full">
@@ -31,7 +31,7 @@ const JobCard = () => {
                 <p className="text-[#6D6D6D] text-lg font-medium">Modgenics Technology Solutions | Hyderabad, India</p>
             </div>
         </div>
-        <div className="flex gap-3 py-5 mt-5">
+        <div className="flex gap-3 pt-2 mt-5">
             {skills.map((skill, index) => (
                 <span
                     key={index}

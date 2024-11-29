@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 export interface Candidate {
   firstName: string;
@@ -7,15 +8,13 @@ export interface Candidate {
   email: string;
   phone: number | null;
   education: {
-    id: number;
     institution: string;
     degree: string;
     yearOfCompletion: number;
   }[];
-  experience: {
-    id: number;
+  experiences: {
     companyName: string;
-    yearsWorked: string;
+    yearsWorked: number;
     position: string;
   }[];
   skill: string[];
@@ -34,17 +33,15 @@ const initialState = {
       phone: null,
       education : [
         {
-          id : 0,
           institution : '',
           degree : '',
           yearOfCompletion : 2023
         }
       ],
-      experience : [
+      experiences : [
         {
-          id : 0,
           companyName : '',
-          yearsWorked : '',
+          yearsWorked : 0,
           position : ''
         }
       ],
@@ -74,6 +71,88 @@ export const getCandidate = createAsyncThunk(
     }
 );
 
+export const uploadProfilePic = createAsyncThunk(
+    'roleSelection/uploadProfilePic',
+    async ({ token, profileImageKey }: { token: string, profileImageKey: string }, { rejectWithValue, dispatch }) => {
+      const formData = new FormData();
+      const blob = await fetch(profileImageKey).then(res => res.blob());
+      formData.append('image', blob, 'profile.jpg');
+      try {
+            toast.loading('Uploading profile picture...');
+            await axios.post('https://naitikjain.me/api/candidates/Profile-picture', formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            toast.dismiss();
+            toast.success('Profile picture uploaded successfully');
+            dispatch(getCandidate({ token }));
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message: string }>;
+            toast.dismiss();
+            console.log(err);
+            toast.error('Failed to upload profile picture');
+            return rejectWithValue(error.response?.data?.message || 'Failed to upload profile picture');
+        }
+    }
+)
+
+export const uploadResume = createAsyncThunk(
+    'roleSelection/uploadResume',
+    async ({ token, resumeFile }: { token: string, resumeFile: File }, { rejectWithValue, dispatch }) => {
+      const formData = new FormData();
+      formData.append('Resume', resumeFile, resumeFile.name);
+      try {
+            toast.loading('Uploading resume...');
+            await axios.post('https://naitikjain.me/api/candidates/resume', formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            toast.dismiss();
+            toast.success('Resume uploaded successfully');
+            dispatch(getCandidate({ token }));
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message: string }>;
+            toast.dismiss();
+            console.log(err);
+            toast.error('Failed to upload resume');
+            return rejectWithValue(error.response?.data?.message || 'Failed to upload resume');
+        }
+    }
+)
+
+export const updateCandidate = createAsyncThunk(
+    'roleSelection/updateCandidate',
+    async ({ token, candidateData }: { token: string, candidateData: Candidate }, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await axios.put('https://naitikjain.me/api/candidates/update', {
+                education: [{
+                  institution: candidateData.education[0].institution,
+                  degree: candidateData.education[0].degree,
+                  yearOfCompletion: candidateData.education[0].yearOfCompletion
+                }],
+                experiences: candidateData.experiences,
+                skill: candidateData.skill
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            dispatch(setCandidate(response.data));
+            toast.success('Profile updated successfully');
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message: string }>;
+            console.log(err);
+            toast.error('Failed to update profile');
+            return rejectWithValue(error.response?.data?.message || 'Failed to update profile');
+        }
+    }
+);
+
 const candidateSlice = createSlice({
   name: 'candidate',
   initialState,
@@ -87,7 +166,6 @@ const candidateSlice = createSlice({
     },
   },
 });
-
 
 export default candidateSlice.reducer;
 export const { setCandidate, setIsCandidateOpen } = candidateSlice.actions;

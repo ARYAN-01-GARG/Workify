@@ -81,7 +81,7 @@ const LayoutForcandidate = () => {
         <div className={`bg-white min-w-[18vw] py-10 rounded-lg ${isScrolled ? 'sticky top-0 self-start' : ''}`}>
           <figure className="w-full flex flex-col items-center">
             <div className="bg-slate-300 w-32 h-32 rounded-full flex justify-center items-center">
-              <FaRegUser size={50} className="text-slate-500"/>
+              {candidate.profileImageKey ? <img src={candidate.profileImageKey} alt="User" className="w-full h-full rounded-full" /> : <FaRegUser size={50} className="text-slate-500"/>}
             </div>
             <figcaption className="font-semibold my-1">{`${candidate.firstName} ${candidate.lastName}`}</figcaption>
           </figure>

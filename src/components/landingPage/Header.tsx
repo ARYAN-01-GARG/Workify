@@ -77,7 +77,9 @@ const Header = () => {
         (isAuthenticated && role !== '') ? (
           <div className="flex justify-center items-center gap-5 relative">
             <BiBell size={30} className="mr-6"/>
-            <FaRegCircleUser size={30} onClick={() => setIsOpen((prev)=> !prev)} className="cursor-pointer bg-slate-300 rounded-full"/>
+            <div onClick={() => setIsOpen((prev)=> !prev)} className="cursor-pointer bg-slate-300 rounded-full h-8 w-8 ">
+              {candidate.profileImageKey ? <img src={candidate.profileImageKey} alt="User" className="w-full h-full rounded-full border-2 border-[#2B5A9E]" /> : <FaRegCircleUser className="text-slate-700 m-auto w-full h-full " size={20} />}
+            </div>
             {isOpen && UserMenu}
           </div>
         ) : (

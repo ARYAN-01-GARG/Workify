@@ -36,9 +36,11 @@ const HomePage = () => {
   )
 }
 
-const PortfolioCard = () => {
+export const PortfolioCard = ({
+  bg='#fff'
+}:{ bg? : string}) => {
   return (
-    <div className="bg-white rounded-lg p-3 flex gap-5 items-center justify-evenly border-2 border-[#B0B0B0]">
+    <div className={`bg-[${bg}] rounded-lg p-3 flex gap-5 items-center justify-evenly border-2 border-[#B0B0B0]`}>
       <div className="w-[9vw] h-[9vw] rounded-lg">
         <img src='/images/portfolioFolder.svg' alt="Folder Portfolio" className="w-full h-full"/>
       </div>

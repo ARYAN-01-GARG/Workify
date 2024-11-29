@@ -37,8 +37,8 @@ const CompanyPage = () => {
               {CompaniesCount.slice(currentIndex, currentIndex + 5).map((company, index) => (
                 <TopCompanyCard key={index} title={company.title} count={company.count}/>
               ))}
-            <img src="/public/images/sideNavigationLeft.svg" alt="Previous" className="absolute top-[35%] left-1 scale-90 hover:scale-100 cursor-pointer" onClick={handlePrev}/>
-            <img src="/public/images/sideNavigationRight.svg" alt="Next" className="absolute top-[35%] right-1 scale-90 hover:scale-100 cursor-pointer" onClick={handleNext}/>
+            <img src="/images/sideNavigationLeft.svg" alt="Previous" className="absolute top-[35%] left-1 scale-90 hover:scale-100 cursor-pointer" onClick={handlePrev}/>
+            <img src="/images/sideNavigationRight.svg" alt="Next" className="absolute top-[35%] right-1 scale-90 hover:scale-100 cursor-pointer" onClick={handleNext}/>
           </div>
           <div className="flex gap-3 mt-10 w-full pb-32 items-start">
             <div className="bg-white p-10 w-full flex-grow max-w-[22vw] rounded-2xl ">

@@ -5,7 +5,7 @@ const CompanyCard = () => {
     <div className="bg-white border border-[#B0B0B0] pt-10 pl-10 pr-8 rounded-2xl hover:scale-[1.02]">
         <div className="flex items-center gap-6 w-full">
             <div className="h-[50px] w-[50px] rounded-md bg-[#E6ECF8] flex items-center justify-center">
-                <img src='/public/images/appleiconwithoutbg.png' alt="image" className=" "/>
+                <img src='/images/appleiconwithoutbg.png' alt="image" className=" "/>
             </div>
             <div className="">
                 <h5 className="text-xl text-[#16233B] font-semibold">Apple</h5>

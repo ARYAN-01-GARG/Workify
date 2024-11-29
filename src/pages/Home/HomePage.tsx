@@ -18,7 +18,7 @@ const HomePage = () => {
         />
       </div>
       <div className="w-full" id="Portfolio">
-        <PortfolioCard />
+        <PortfolioCard bg={'white'} />
       </div>
       <div className="w-full" id="Applied">
         <AppliedJobCard/>
@@ -37,10 +37,10 @@ const HomePage = () => {
 }
 
 export const PortfolioCard = ({
-  bg='#fff'
-}:{ bg? : string}) => {
+  bg
+}:{ bg : string}) => {
   return (
-    <div className={`bg-[${bg}] rounded-lg p-3 flex gap-5 items-center justify-evenly border-2 border-[#B0B0B0]`}>
+    <div className={`${bg==='white' ? 'bg-white' : 'bg-[#E6ECF8]'} rounded-lg p-3 flex gap-5 items-center justify-evenly border-2 border-[#B0B0B0]`}>
       <div className="w-[9vw] h-[9vw] rounded-lg">
         <img src='/images/portfolioFolder.svg' alt="Folder Portfolio" className="w-full h-full"/>
       </div>

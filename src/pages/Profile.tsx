@@ -8,7 +8,7 @@ import { FiPhone } from "react-icons/fi"
 import { RxBackpack } from "react-icons/rx"
 import { MdOutlineMail } from "react-icons/md"
 import { Link } from "react-router-dom"
-import { Candidate, uploadProfilePic, uploadResume, setCandidate, updateCandidate } from "../store/features/roleSelection/CandidateSlice"
+import { Candidate, uploadProfilePic, uploadResume, setCandidate } from "../store/features/roleSelection/CandidateSlice"
 import { RiPencilFill } from "react-icons/ri"
 import { PortfolioCard } from "./Home/HomePage"
 import { useState } from "react"
@@ -46,7 +46,7 @@ const Profile = () => {
   const [isEditingEducation, setIsEditingEducation] = useState(false);
   const [newInstitution, setNewInstitution] = useState(candidate.education[0]?.institution || '');
   const [newDegree, setNewDegree] = useState(candidate.education[0]?.degree || '');
-  const [isSaveEnabled, setIsSaveEnabled] = useState(false);
+  const [isProfileChanged, setIsProfileChanged] = useState(false);
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isLoading) {
@@ -70,23 +70,14 @@ const Profile = () => {
         setIsLoading(false);
       }
     }
-    setIsSaveEnabled(true);
   };
 
   const handleSaveProfile = async () => {
-    setIsLoading(true);
     if (selectedImage) {
-      await dispatch(uploadProfilePic({ token, profileImageKey: selectedImage }));
+      dispatch(uploadProfilePic({ token, profileImageKey: selectedImage }));
       setSelectedImage(null);
     }
-    if (selectedResume) {
-      await dispatch(uploadResume({ token, resumeFile: selectedResume }));
-      setSelectedResume(null);
-    }
-    await dispatch(updateCandidate({ token, candidateData: candidate }));
     setIsEditing(false);
-    setIsLoading(false);
-    setIsSaveEnabled(false);
   };
 
   const handleEditClick = () => {
@@ -102,7 +93,6 @@ const Profile = () => {
       }
       setSelectedResume(file);
     }
-    setIsSaveEnabled(true);
   };
 
   const handleSaveResume = () => {
@@ -122,8 +112,8 @@ const Profile = () => {
       dispatch(setCandidate({ ...candidate, skill: updatedSkills }));
       setNewSkill('');
       setIsAddingSkill(false);
+      setIsProfileChanged(true);
     }
-    setIsSaveEnabled(true);
   };
 
   const handleAddLocation = () => {
@@ -132,8 +122,8 @@ const Profile = () => {
       setNewLocation('');
       setIsAddingLocation(false);
       setIsEditingLocation(false);
+      setIsProfileChanged(true);
     }
-    setIsSaveEnabled(true);
   };
 
   const handleEditLocation = () => {
@@ -155,7 +145,14 @@ const Profile = () => {
     };
     dispatch(setCandidate({ ...candidate, education: [updatedEducation] }));
     setIsEditingEducation(false);
-    setIsSaveEnabled(true);
+    setIsProfileChanged(true);
+  };
+
+  const handleSaveChanges = async () => {
+    setIsLoading(true);
+    // await dispatch(updateProfile({ token, candidate }));
+    setIsLoading(false);
+    setIsProfileChanged(false);
   };
 
   return (
@@ -182,7 +179,7 @@ const Profile = () => {
             <div className="w-full">
               <div className="w-full">
                 <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#D1D1D1]">
-                  <h1 className="text-[1.57rem] font-semibold ">{`${candidate.firstName} ${candidate.lastName || ''}`}</h1>
+                  <h1 className="text-[1.57rem] font-semibold ">{`${candidate.firstName} ${candidate.lastName}`}</h1>
                   <p className="text-xl font-medium text-[#3D3D3D]">{`${'Frontend Developer'}`}</p>
                 </div>
               </div>
@@ -332,15 +329,19 @@ const Profile = () => {
                 </div>
               )}
             </div>
-            <button
-              className={`bg-[#2B5A9E] text-white font-medium text-xl py-[.7rem] px-10 rounded-2xl hover:opacity-80 self-center mt-6 ${!isSaveEnabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onClick={handleSaveProfile}
-              disabled={!isSaveEnabled || isLoading}
-            >
-              Save Profile
-            </button>
           </div>
         </div>
+        {isProfileChanged && (
+          <div className="flex justify-center mt-6">
+            <button
+              className="bg-[#2B5A9E] text-white font-medium text-xl py-[.7rem] px-10 rounded-2xl hover:opacity-80"
+              onClick={handleSaveChanges}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
+        )}
       </main>
       <Footer />
     </div>

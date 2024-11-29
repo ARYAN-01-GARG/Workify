@@ -73,12 +73,12 @@ export const getCandidate = createAsyncThunk(
 
 export const uploadProfilePic = createAsyncThunk(
     'roleSelection/uploadProfilePic',
-    async ({ token, profileImageKey }: { token: string, profileImageKey: string }, { rejectWithValue, dispatch }) => {
+    async ({ token, profileImageKey }: { token: string, profileImageKey: string }, { rejectWithValue }) => {
       const formData = new FormData();
       const blob = await fetch(profileImageKey).then(res => res.blob());
       formData.append('image', blob, 'profile.jpg');
+      toast.loading('Uploading profile picture...');
       try {
-            toast.loading('Uploading profile picture...');
             await axios.post('https://naitikjain.me/api/candidates/Profile-picture', formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -87,7 +87,6 @@ export const uploadProfilePic = createAsyncThunk(
             });
             toast.dismiss();
             toast.success('Profile picture uploaded successfully');
-            dispatch(getCandidate({ token }));
         } catch (err: unknown) {
             const error = err as AxiosError<{ message: string }>;
             toast.dismiss();
@@ -118,7 +117,7 @@ export const uploadResume = createAsyncThunk(
             const error = err as AxiosError<{ message: string }>;
             toast.dismiss();
             console.log(err);
-            toast.error('Failed to upload resume');
+            toast.error(error.response?.data?.message || 'Failed to upload resume');
             return rejectWithValue(error.response?.data?.message || 'Failed to upload resume');
         }
     }

@@ -83,7 +83,7 @@ const LayoutForcandidate = () => {
             <div className="bg-slate-300 w-32 h-32 rounded-full flex justify-center items-center">
               {candidate.profileImageKey ? <img src={candidate.profileImageKey} alt="User" className="w-full h-full rounded-full" /> : <FaRegUser size={50} className="text-slate-500"/>}
             </div>
-            <figcaption className="font-semibold my-1">{`${candidate.firstName} ${candidate.lastName}`}</figcaption>
+            <figcaption className="font-semibold my-1">{`${candidate.firstName} ${candidate.lastName || ''}`}</figcaption>
           </figure>
           <div></div>
           <div className="mt-12 mb-6 flex items-center text-[1.05rem]">

@@ -29,8 +29,6 @@ const LandingPage = () => {
   useEffect(() => {
     if(IsAuthenticated && role ==='USER'){
       dispatch(setIsOpen(true));
-    } else if(IsAuthenticated && (role === 'candidate' || role === 'recruiter')){
-      navigate('/dashboard');
     }
   },[ IsAuthenticated , dispatch , role , navigate ]);
 

@@ -21,6 +21,7 @@ import LayoutForRecruiter from "./pages/LayoutForRecruiter";
 import PostJob from "./pages/Home/PostJob";
 import JobDetailsPage from "./components/Jobs/JobDetailsPage";
 import CompanyDetailsPage from "./pages/Companies/CompanyDetailsPage";
+import Profile from "./pages/Profile";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -58,6 +59,7 @@ const App = () => {
               <Route index element={<HomePage />} />
               <Route path="dashboard" element={<Dashboard />} />
             </Route>
+            <Route path="profile" element={<Profile />}/>
             <Route path="jobs" element={<JobsPage />}/>
             <Route path="jobs/:id" element={<JobDetailsPage />} />
             <Route path="companies" element={<CompanyPage />}/>

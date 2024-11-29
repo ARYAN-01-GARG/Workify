@@ -58,7 +58,6 @@ const CandidateDetails = () => {
         if (counter < pages.length - 1) {
             setCounter((prev) => prev + 1);
         } else if (counter === pages.length - 1) {
-            setCounter((prev) => prev + 1);
             const candidateData = {
                 ...candidate,
                 education: pages[0].inputs[0].value,
@@ -77,14 +76,16 @@ const CandidateDetails = () => {
                 setCounter(0);
             }
         } else {
-            dispatch(setIsCandidateOpen(false));
-            dispatch(setUserData({ ...userData, role: 'candidate' }));
             const fileInput = document.getElementById('file-upload') as HTMLInputElement;
             const resumeFile = fileInput && fileInput.files ? fileInput.files[0] : null;
             dispatch(setCandidate({ ...candidate, isResumeUploaded: isResume, resumeFile: resumeFile }));
             try {
                 if (resumeFile) {
-                    dispatch(uploadResume({ resume: resumeFile, token }));
+                    dispatch(uploadResume({ resume: resumeFile, token }))
+                    .then(()=> {
+                        dispatch(setIsCandidateOpen(false));
+                        dispatch(setUserData({ ...userData, role: 'candidate' }));
+                    })
                 }
             } catch (error) {
                 console.error("Error uploading resume:", error);

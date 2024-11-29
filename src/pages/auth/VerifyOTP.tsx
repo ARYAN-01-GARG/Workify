@@ -78,6 +78,9 @@ const VerifyOTP = () => {
                         dispatch(setContact(''));
                         dispatch(setSendBy('forgot'));
                         navigate('/auth/new-password');
+                        if(role === 'USER'){
+                            dispatch(setIsOpen(true));
+                        }
                     }
                 });
             } else {
@@ -91,7 +94,7 @@ const VerifyOTP = () => {
                         dispatch(setOTP(''));
                         dispatch(setPassword(''));
                         dispatch(setContact(''));
-                        if(role === ''){
+                        if(role === 'USER'){
                             dispatch(setIsOpen(true));
                         }
                     }

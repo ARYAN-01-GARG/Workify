@@ -9,24 +9,41 @@ import { useEffect, useState } from "react";
 import { AppDispatch } from "../../store/store";
 import { activeUser, logout } from "../../store/features/UserSlice";
 import { MdLogout } from "react-icons/md";
+import { Candidate, getCandidate } from "../../store/features/roleSelection/CandidateSlice";
 
 const Header = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
+  const candidate = useSelector((state: { candidate : { candidate : Candidate}}) => state.candidate.candidate);
   const role = useSelector((state: { user : UserState}) => state.user.userData.role);
+  const token = useSelector((state: { user : UserState}) => state.user.token) as string;
   const [isOpen , setIsOpen] = useState(false);
   const navElementsBeforeLogin = ["Home", "Find Jobs", "Find Candidates", "For Recruiters" , "Career Advice"];
   const navElementsForCandidate = ["Jobs", "Companies", "Chats", "About Us" , "Career Advice"];
   const navElementsForRecruiter = ["Post a Job", "Find Talent", "Chats", "About Us"];
 
   useEffect(() => {
-    dispatch(activeUser());
-  }, [dispatch,isAuthenticated, role]);
+    const fetchData = async () => {
+      try {
+        await dispatch(activeUser());
+        if (role === 'candidate' && candidate.firstName === '') {
+          await dispatch(getCandidate({ token }));
+        } else if (role === 'recruiter' && candidate.firstName === '') {
+          console.log('recruiter');
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [dispatch, isAuthenticated, role, candidate.firstName, token]);
 
   const handleLogout = () => {
     dispatch(logout());
+    navigate('/')
   }
 
   const UserMenu =(

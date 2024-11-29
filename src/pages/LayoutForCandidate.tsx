@@ -9,7 +9,9 @@ import { IoBookOutline } from "react-icons/io5"
 import { useState, useEffect } from "react"
 import { CiChat1 } from "react-icons/ci"
 import { useSelector } from "react-redux"
-import { UserState } from "../store/features/auth/UserState"
+// import { UserState } from "../store/features/auth/UserState"
+import { FaRegUser } from "react-icons/fa6"
+import { Candidate } from "../store/features/roleSelection/CandidateSlice"
 
 const menuItems = [
   { icon: <BiHomeAlt size={20} />, label: "My home" },
@@ -31,7 +33,8 @@ const scores = [
 
 const LayoutForcandidate = () => {
 
-  const userData = useSelector((state : { user : UserState}) => state.user.userData);
+  // const userData = useSelector((state : { user : UserState}) => state.user.userData);
+  const candidate = useSelector((state : { candidate : { candidate : Candidate}}) => state.candidate.candidate);
   const [isActive, setIsActive] = useState('My home');
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -77,10 +80,10 @@ const LayoutForcandidate = () => {
       <main className="px-10 flex my-10 gap-6 items-start">
         <div className={`bg-white min-w-[18vw] py-10 rounded-lg ${isScrolled ? 'sticky top-0 self-start' : ''}`}>
           <figure className="w-full flex flex-col items-center">
-            <div className="bg-slate-500 w-32 h-32 rounded-full flex justify-center items-center">
-              Image
+            <div className="bg-slate-300 w-32 h-32 rounded-full flex justify-center items-center">
+              <FaRegUser size={50} className="text-slate-500"/>
             </div>
-            <figcaption className="font-semibold my-1">{`${userData.firstName} ${userData.lastName}`}</figcaption>
+            <figcaption className="font-semibold my-1">{`${candidate.firstName} ${candidate.lastName}`}</figcaption>
           </figure>
           <div></div>
           <div className="mt-12 mb-6 flex items-center text-[1.05rem]">

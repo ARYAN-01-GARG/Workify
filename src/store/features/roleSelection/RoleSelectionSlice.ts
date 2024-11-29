@@ -27,7 +27,7 @@ export interface RoleSelectionState {
         currentJobTitle : string;
         skills : string[];
         isResumeUploaded : boolean;
-        resumeFile: File | null;
+        resumeFileName: string | null;
     };
 }
 
@@ -56,9 +56,10 @@ const initialState:RoleSelectionState = {
         currentJobTitle : '',
         skills : [],
         isResumeUploaded : false,
-        resumeFile: null,
+        resumeFileName: null,
     }
 };
+
 
 export const createCandidate = createAsyncThunk(
     'roleSelection/createCandidate',
@@ -85,7 +86,8 @@ export const createCandidate = createAsyncThunk(
         } catch (err: unknown) {
             const error = err as AxiosError<{ message: string }>;
             toast.dismiss();
-            toast.error(error.response?.data?.message || 'Candidate creation failed');
+            console.log(err)
+            toast.error('Candidate creation failed');
             return rejectWithValue(error.response?.data?.message || 'Registration failed');
         }
     }
@@ -101,7 +103,7 @@ export const uploadResume = createAsyncThunk(
         toast.loading('Uploading resume...');
         try {
             const formData = new FormData();
-            formData.append('resume', resume);
+            formData.append('Resume', resume);
             const response = await axios.post('https://naitikjain.me/api/candidates/resume', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -137,9 +139,11 @@ const roleSelectionSlice = createSlice({
       };
     },
     setCandidate(state, action) {
+      localStorage.setItem('localCandidate',JSON.stringify(action.payload))
       state.candidate = {
         ...state.candidate,
-        ...action.payload
+        ...action.payload,
+        resumeFileName: action.payload.resumeFileName || state.candidate.resumeFileName
       };
     },
     setResumeUploaded(state, action) {
@@ -159,7 +163,17 @@ const roleSelectionSlice = createSlice({
       })
       .addCase(createCandidate.pending, (state) => {
         state.candidate = initialState.candidate;
+      })
+      .addCase(uploadResume.fulfilled, (state) => {
+        state.candidate = initialState.candidate;
+      })
+      .addCase(uploadResume.rejected, (state) => {
+        state.candidate = initialState.candidate;
+      })
+      .addCase(uploadResume.pending, (state) => {
+        state.candidate = initialState.candidate;
       });
+
 
   }
 });

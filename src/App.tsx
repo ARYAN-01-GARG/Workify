@@ -38,7 +38,7 @@ const App = () => {
       <ToastProvider />
       <Routes>
         {/* Landing page not protected  */}
-        {(role ==='USER' || !isAuthenticated) &&
+        {(role ==='user' || !isAuthenticated) &&
         <Route path="/" element={<LandingPage />}>
           <Route path="dashboard" element={<Navigate to="/"/>} />
         </Route>}

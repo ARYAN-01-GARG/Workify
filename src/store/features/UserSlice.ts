@@ -9,7 +9,7 @@ const initialState = {
     mobile: null,
     status: null,
     membership: false,
-    role: 'USER',
+    role: 'user',
     enabled: true,
     authorities: [],
   },
@@ -39,7 +39,7 @@ const UserSlice = createSlice({
         mobile: null,
         status: null,
         membership: false,
-        role: 'USER',
+        role: 'user',
         enabled: true,
         authorities: [],
       };

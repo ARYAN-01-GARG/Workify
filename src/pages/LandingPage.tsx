@@ -27,7 +27,7 @@ const LandingPage = () => {
 
 
   useEffect(() => {
-    if(IsAuthenticated && role ==='USER'){
+    if(IsAuthenticated && role ==='user'){
       dispatch(setIsOpen(true));
     }
   },[ IsAuthenticated , dispatch , role , navigate ]);

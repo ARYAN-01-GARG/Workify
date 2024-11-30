@@ -7,6 +7,7 @@ import newPasswordReducer from './features/auth/SetPasswordPageSlice';
 import RoleSelectionReducer from './features/roleSelection/RoleSelectionSlice';
 import candidateSliceReducer from './features/roleSelection/CandidateSlice';
 import recruiterSliceReducer from './features/roleSelection/RecruiterSlice';
+import postJobReducer from './PostJobSlice';
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     roleSelection : RoleSelectionReducer,
     candidate: candidateSliceReducer,
     recruiter: recruiterSliceReducer,
+    postJob: postJobReducer,
   },
 });
 

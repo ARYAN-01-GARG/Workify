@@ -52,6 +52,7 @@ const App = () => {
           <Route path="new-password" element={<SetPasswordPage />} />
         </Route>
 
+
         {/* Protected routes */}
         {(role === 'candidate' && isAuthenticated) &&
           <>
@@ -74,8 +75,6 @@ const App = () => {
             <Route path="dashboard" element={<Dashboard />} />
           </>
         }
-
-        
       </Routes>
     </>
   );

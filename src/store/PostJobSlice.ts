@@ -76,6 +76,7 @@ const postJobSlice = createSlice({
     },
     addSkill: (state, action: PayloadAction<string>) => {
       state.requiredSkills.push(action.payload);
+      state.requiredSkills = [...new Set(state.requiredSkills)];
     },
     removeSkill: (state, action: PayloadAction<string>) => {
       state.requiredSkills = state.requiredSkills.filter(skill => skill !== action.payload);

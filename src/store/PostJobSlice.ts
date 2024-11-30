@@ -36,7 +36,7 @@ export const postJob = createAsyncThunk('job/postJob', async (jobData: JobState,
   try {
     toast.loading("Posting job...");
     const { title, description, location, experience, jobType, mode, minSalary, maxSalary, employmentType, requiredSkills } = jobData;
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     const response = await axios.post('https://naitikjain.me/api/jobs/post', {
       title,
       description,

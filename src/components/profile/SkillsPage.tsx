@@ -72,13 +72,13 @@ const SkillsPage = () => {
         setIsLoading(true);
         dispatch(createCandidate({ candidate: newCandidate, token })).then((res) => {
             if(res.type === 'roleSelection/createCandidate/fulfilled'){
-            setIsLoading(false);
+                setIsLoading(false);
             }
             else if(res.type === 'roleSelection/createCandidate/rejected'){
                 setIsLoading(false);
-                dispatch(closeSkillsPage());
-                dispatch(openResumePage());
         }
+        dispatch(closeSkillsPage());
+        dispatch(openResumePage());
     });
     };
 

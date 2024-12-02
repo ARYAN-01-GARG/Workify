@@ -102,7 +102,7 @@ const LandingPage = () => {
         </section>
         <section className="my-10">
             <div className="flex justify-center items-center gap-8 flex-wrap px-2">
-            <Card imageURL="/images/landing-page/briefcase.svg" count={count.liveJobCount ? (count.liveJobCount+1790).toString() : '238324'} description="Live Job"/>
+            <Card imageURL="/images/landing-page/briefcase.svg" count={count.liveJobCount ? (count.liveJobCount+1790).toString() : '2324'} description="Live Job"/>
             <Card imageURL="/images/landing-page/company.svg" count={count.companiesCount ? (count.companiesCount+7600).toString() : '97354'} description="Companies"/>
             <Card imageURL="/images/landing-page/users.svg" count={count.candidatesCount ? (count.candidatesCount+7360).toString() : '3847154'} description="Candidates"/>
             <Card imageURL="/images/landing-page/briefcase.svg" count={count.newJobCount ? (count.newJobCount+3774).toString() : '7532'} description="New Jobs"/>

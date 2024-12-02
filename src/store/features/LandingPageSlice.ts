@@ -25,17 +25,17 @@ export const getStats = createAsyncThunk(
     try {
       const response = await axios.get('https://naitikjain.me/api/v1/auth/statistics');
       dispatch(setCount({
-        liveJobCount : response.data.totalJobs,
-        companiesCount : response.data.numberOfRecruiters,
-        candidatesCount : response.data.numberOfCandidates,
-        newJobCount : response.data.totalJobs
+        liveJobCount : response.data.liveJobCount,
+        companiesCount : response.data.companiesCount,
+        candidatesCount : response.data.candidatesCount,
+        newJobCount : response.data.newJobCount
       }));
       return response.data;
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
      console.log(error.message);
     }
-  } 
+  }
 );
 
 const LandingPageSlice = createSlice({

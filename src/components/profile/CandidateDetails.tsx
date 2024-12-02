@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
+import { closeResumePage, setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../store/features/UserSlice";
-import { createCandidate, ReqCandidate, setCandidate, uploadResume } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { setCandidate, uploadResume } from "../../store/features/roleSelection/RoleSelectionSlice";
 import { UserState } from "../../store/features/auth/UserState";
 import { AppDispatch } from "../../store/store";
 import EducationPage from "./EducationPage";
@@ -32,32 +32,6 @@ const CandidateDetails = () => {
     const [isResume , setIsResume] = useState(false);
 
     const handleNext = () => {
-        const newCandidate:ReqCandidate = {
-            educations:candidate.education.map(edu => ({
-                institution: edu.institution,
-                degree: edu.degree,
-                yearOfCompletion: edu.yearOfCompletion
-            })),
-            experiences: candidate.experiences.map(exp => ({
-                companyName: exp.companyName,
-                yearsWorked: exp.yearsWorked,
-                position: exp.position
-            })),
-            skill: candidate.skill,
-            DOB: '2003-10-14',
-            location: candidate.location,
-            domain: candidate.domain,
-        };
-        console.log("New candidate:", newCandidate);
-        console.log("New candidate:jfhhds", candidate);
-        setIsLoading(true);
-        dispatch(createCandidate({ candidate: newCandidate, token })).then((res) => {
-            if(res.type === 'roleSelection/createCandidate/fulfilled'){
-            setIsLoading(false);
-            }
-            else if(res.type === 'roleSelection/createCandidate/rejected'){
-                setIsLoading(false);
-        }});
         const fileInput = document.getElementById('file-upload') as HTMLInputElement;
         const resumeFile = fileInput && fileInput.files ? fileInput.files[0] : null;
         const resumeFileName = resumeFile ? resumeFile.name : null;
@@ -68,6 +42,7 @@ const CandidateDetails = () => {
                 dispatch(uploadResume({ resume: resumeFile, token })).then((res) => {
                     if(res.type === 'roleSelection/uploadResume/fulfilled'){
                     dispatch(setIsCandidateOpen(false));
+                    dispatch(closeResumePage());
                     dispatch(setUserData({ ...userData, role: 'candidate' }));
                     setIsLoading(false);
                 }});
@@ -77,6 +52,11 @@ const CandidateDetails = () => {
             setIsLoading(false);
         }
     };
+
+    const handleSkip = () => {
+        dispatch(setIsCandidateOpen(false));
+        dispatch(closeResumePage())
+    }
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -98,9 +78,10 @@ const CandidateDetails = () => {
         <DialogCard
             title="Upload a recent resume or CV"
             description="Autocomplete your profile in just a few seconds by uploading a resume."
-            action={handleNext}
-            actionLabel={isResume ? "Complete Profile" : 'Skip'}
+            action={isResume ? handleNext : handleSkip}
+            actionLabel={isResume ? "Upload Resume" : 'Skip for Now'}
             disabled={isLoading}
+            isResume={isResume}
         >
             <div className="w-[90%] mx-auto flex flex-col gap-10 justify-center items-center my-6">
                 {!isResume ? (

@@ -7,11 +7,15 @@ import { CandidateState, openResumePage, setCandidate } from "../../store/featur
 import { closeSkillsPage, SkillsPageState } from "../../store/features/roleSelection/SkillsPageSlice";
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
+import { createCandidate, ReqCandidate } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { UserState } from "../../store/features/auth/UserState";
 
 const SkillsPage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [skill , setSkill] = useState<string>('');
+    const [isLoading , setIsLoading] = useState(false);
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const token = useSelector((state: { user: UserState }) => state.user.token) as string;
     const candidate = useSelector((state: { candidate: CandidateState }) => state.candidate.candidate);
     const error = useSelector((state: { skillsPage : SkillsPageState }) => state.skillsPage.error);
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -49,8 +53,33 @@ const SkillsPage = () => {
     const handleSubmit = () => {
         const updatedCandidate = { ...candidate, skill: selectedSkills };
         dispatch(setCandidate(updatedCandidate));
-        dispatch(closeSkillsPage());
-        dispatch(openResumePage());
+        const newCandidate: ReqCandidate = {
+            educations:candidate.education.map(edu => ({
+                institution: edu.institution,
+                degree: edu.degree,
+                yearOfCompletion: edu.yearOfCompletion
+            })),
+            experiences: candidate.experiences.map(exp => ({
+                companyName: exp.companyName,
+                yearsWorked: exp.yearsWorked,
+                position: exp.position
+            })),
+            skill: candidate.skill,
+            DOB: '2003-10-14',
+            location: candidate.location,
+            domain: candidate.domain,
+        };
+        setIsLoading(true);
+        dispatch(createCandidate({ candidate: newCandidate, token })).then((res) => {
+            if(res.type === 'roleSelection/createCandidate/fulfilled'){
+            setIsLoading(false);
+            }
+            else if(res.type === 'roleSelection/createCandidate/rejected'){
+                setIsLoading(false);
+                dispatch(closeSkillsPage());
+                dispatch(openResumePage());
+        }
+    });
     };
 
     return (
@@ -59,7 +88,7 @@ const SkillsPage = () => {
             description="Your next career move is waiting! Let&apos;s fine-tune your profile and get you connected to exciting opportunities tailored just for you."
             action={handleSubmit}
             actionLabel="Proceed"
-            disabled={selectedSkills.length === 0}
+            disabled={selectedSkills.length === 0 || isLoading}
         >
             <form className="mt-16" onSubmit={handleFormSubmit}>
                 <div className="w-full flex gap-2 items-center">

@@ -14,9 +14,11 @@ import RoleSelection from "../components/profile/RoleSelection"
 import CandidateDetails from "../components/profile/CandidateDetails"
 import { RoleSelectionState, setIsOpen } from "../store/features/roleSelection/RoleSelectionSlice"
 import JobDetails from "../components/profile/JobDetails"
+import { getStats, LandingPageState } from "../store/features/LandingPageSlice"
+import { AppDispatch } from "../store/store"
 
 const LandingPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const isOpen = useSelector((state: { roleSelection : RoleSelectionState}) => state.roleSelection.isOpen);
@@ -24,9 +26,11 @@ const LandingPage = () => {
   const isRecruiterOpen = useSelector((state: { recruiter : {isRecruiterOpen : boolean}}) => state.recruiter.isRecruiterOpen);
   const IsAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
   const role = useSelector((state: { user : UserState}) => state.user.userData.role);
+  const count = useSelector((state: { landingPage : LandingPageState}) => state.landingPage.count);
 
 
   useEffect(() => {
+    dispatch(getStats())
     if(IsAuthenticated && role ==='user'){
       dispatch(setIsOpen(true));
     }
@@ -97,12 +101,12 @@ const LandingPage = () => {
           </div>
         </section>
         <section className="my-10">
-          <div className="flex justify-center items-center gap-8 flex-wrap px-2">
-            <Card imageURL="/images/landing-page/briefcase.svg" count={'2,38,324'} description="Live Job"/>
-            <Card imageURL="/images/landing-page/company.svg" count={'97,354'} description="Companies"/>
-            <Card imageURL="/images/landing-page/users.svg" count={'38,47,154'} description="Candidates"/>
-            <Card imageURL="/images/landing-page/briefcase.svg" count={'7,532'} description="New Jobs"/>
-          </div>
+            <div className="flex justify-center items-center gap-8 flex-wrap px-2">
+            <Card imageURL="/images/landing-page/briefcase.svg" count={count.liveJobCount ? (count.liveJobCount+1790).toString() : '238324'} description="Live Job"/>
+            <Card imageURL="/images/landing-page/company.svg" count={count.companiesCount ? (count.companiesCount+7600).toString() : '97354'} description="Companies"/>
+            <Card imageURL="/images/landing-page/users.svg" count={count.candidatesCount ? (count.candidatesCount+7360).toString() : '3847154'} description="Candidates"/>
+            <Card imageURL="/images/landing-page/briefcase.svg" count={count.newJobCount ? (count.newJobCount+3774).toString() : '7532'} description="New Jobs"/>
+            </div>
           <div className="bg-white my-28 ">
             <div className="flex justify-between items-center px-6 lg:px-16 py-10">
               <div className="text-xl lg:text-[2.5rem] font-medium">
@@ -126,7 +130,7 @@ const LandingPage = () => {
         </section>
         <section className="lg:block hidden py-10 my-20 bg-white ">
           <div className="text-[2.5rem] font-medium px-16 mb-8">
-            Top campanies
+            Top companies
           </div>
           <div className="flex justify-evenly items-center flex-wrap">
             <Card3 Icon={FcGoogle} title="Google" location={'Bengaluru,Karnataka'}/>

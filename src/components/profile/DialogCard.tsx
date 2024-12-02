@@ -19,11 +19,11 @@ const DialogCard:React.FC<DialogCardProps> = ({
     children
 }) =>{
   return (
-    <div className="pt-20 w-[80%] mx-auto">
-        <header className="text-center flex flex-col justify-center items-center gap-7 text-[1.58rem]">
+    <div className="pt-20 w-[90%] lg:w-[80%] mx-auto">
+        <header className="text-center flex flex-col justify-center items-center gap-7 text-xl lg:text-[1.58rem]">
             <h1 className="font-semibold">{title}</h1>
-            {subTitle && <h2 className="font-medium">{subTitle}</h2>}
-            <p className="font-medium text-[#4F4F4F] text-xl max-w-[75%] text-center">{description}</p>
+            {subTitle && <h2 className="font-medium text-lg lg:text-[1.58rem]">{subTitle}</h2>}
+            <p className="font-medium text-[#4F4F4F] text-[16px] lg:text-xl max-w-[90%] lg:max-w-[75%] text-center">{description}</p>
         </header>
         <div>
             <main>

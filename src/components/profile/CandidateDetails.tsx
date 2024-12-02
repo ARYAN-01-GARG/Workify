@@ -104,14 +104,17 @@ const CandidateDetails = () => {
         >
             <div className="w-[90%] mx-auto flex flex-col gap-10 justify-center items-center my-6">
                 {!isResume ? (
-                    <img src="/images/role-card/UploadResume.svg" alt="Upload Resume" />
+                    <>
+                        <img src="/images/role-card/UploadResume.svg" alt="Upload Resume" />
+                        <p className="text-[#4F4F4F] text-sm font-medium text-center">Click the button below to upload your resume as a .pdf, .doc, .docx,.rtf or .txt file</p>
+                    </>
                 ) : (
                     <div className="flex gap-4 items-center">
                         <FaCheckCircle className="text-[#2cc655] text-4xl" />
                         <span className="text-xl">Resume Selected</span>
                     </div>
                 )}
-                <button className="bg-[#2B5A9E] text-[#F3F6FC] font-medium text-xl py-3 w-[350px] rounded-lg hover:opacity-80">
+                <button className="bg-[#2B5A9E] text-[#F3F6FC] font-medium text-xl py-3 px-10 md:w-[350px] rounded-lg hover:opacity-80">
                     <label htmlFor="file-upload" className="cursor-pointer">
                         {isResume ? 'Change Resume' : 'Upload Resume'}
                         <input
@@ -128,7 +131,7 @@ const CandidateDetails = () => {
     )
 
     return (
-        <div className="bg-[#F3F6FC] w-[61vw] min-h-[30vh] rounded-2xl pb-10">
+        <div className="bg-[#F3F6FC] w-[85vw] lg:w-[61vw] min-h-[30vh] rounded-2xl pb-10">
             {isEducationOpen && <EducationPage/>}
             {isPreferenceOpen && <PreferencePage/>}
             {isExperienceOpen && <ExperiencePage />}

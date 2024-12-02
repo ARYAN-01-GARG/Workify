@@ -68,7 +68,7 @@ const PreferencePage = () => {
                     <FaStar className="text-[#2B5A9E]" />
                     <h1 className="text-xl font-semibold">Your Preferences</h1>
                 </div>
-                <div className="flex  items-center gap-6 py-6 max-w-[95%]">
+                <div className="flex flex-col md:flex-row items-center gap-6 py-6 max-w-[95%]">
                     <JobInput
                         label={'Location'}
                         placeholder={'Your Location'}

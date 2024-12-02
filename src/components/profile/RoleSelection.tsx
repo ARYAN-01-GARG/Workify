@@ -37,7 +37,7 @@ const RoleSelection = () => {
     }
 
   return (
-    <div className="bg-[#F3F6FC] w-[61vw] min-h-[30vh] rounded-2xl">
+    <div className="bg-[#F3F6FC] w-[85vw] md:w-[61vw] min-h-[30vh] rounded-2xl">
         <DialogCard
             title = "Your account is created- Welcome to Workify!"
             subTitle = "Now, let&apos;s set up your path"
@@ -46,7 +46,7 @@ const RoleSelection = () => {
             actionLabel="Next"
             disabled={!(role === 'candidate' || role === 'recruiter')}
         >
-            <form className="flex justify-center items-center gap-8 mt-12">
+            <form className="flex flex-col lg:flex-row justify-center items-center gap-8 mt-12">
                 <RoleCard
                     title="Talent Seeker"
                     description="For Recruiter"
@@ -75,7 +75,7 @@ const RoleCard:React.FC<RoleCardProps> = ({
     onClick,
 }) => {
     return (
-        <div className="w-[45%] py-5 px-6 rounded-2xl relative border border-[#6D6D6D] cursor-pointer hover:scale-[1.02]" onClick={onClick}>
+        <div className="w-[80%] lg:w-[45%] py-5 px-6 rounded-2xl relative border border-[#6D6D6D] cursor-pointer hover:scale-[1.02]" onClick={onClick}>
             <div className="mx-1">
             <img src={icon} alt="Card-image" loading="lazy"/>
             </div>

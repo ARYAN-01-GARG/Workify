@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";
 import { validateContact } from "../../store/features/auth/ForgotPasswordSlice";
 import { setIsOpen } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { setIsAuthenticated, setToken } from "../../store/features/UserSlice";
 
 const VerifyOTP = () => {
 
@@ -94,6 +95,8 @@ const VerifyOTP = () => {
                         dispatch(setOTP(''));
                         dispatch(setPassword(''));
                         dispatch(setContact(''));
+                        dispatch(setToken(res.payload.token));
+                        dispatch(setIsAuthenticated(true));
                         if(role === 'USER'){
                             dispatch(setIsOpen(true));
                         }

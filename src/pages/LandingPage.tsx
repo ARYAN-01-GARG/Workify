@@ -113,14 +113,14 @@ const LandingPage = () => {
               </button>
             </div>
             <div className="flex justify-evenly items-center px-3 lg:px-16 flex-wrap gap-3 lg:gap-10 pb-20 shadow-md">
-              <Card2 imageURL={'/images/landing-page/pen.png'} title={'Graphics & Design'} description="357 Open position"/>
-              <Card2 imageURL={'/images/landing-page/code.png'} title={'Code & Programing'} description="312 Open position"/>
-              <Card2 imageURL={'/images/landing-page/megaphone.png'} title={'Digital Marketing'} description="297 Open position"/>
-              <Card2 imageURL={'/images/landing-page/monitor.png'} title={'Video & Animation'} description="247 Open position"/>
-              <Card2 imageURL={'/images/landing-page/music.png'} title={'Music & Audio'} description="204 Open position" className={'lg:flex hidden'}/>
-              <Card2 imageURL={'/images/landing-page/chart-bar.png'} title={'Account & Finance'} description="167 Open position" className={'lg:flex hidden'}/>
-              <Card2 imageURL={'/images/landing-page/first-aid.png'} title={'Health & Care'} description="125 Open position" className={'lg:flex hidden'}/>
-              <Card2 imageURL={'/images/landing-page/database.png'} title={'Data & Science'} description="57 Open position" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/pen.png'} title={'Graphics & Design'} description=""/>
+              <Card2 imageURL={'/images/landing-page/code.png'} title={'Code & Programing'} description=""/>
+              <Card2 imageURL={'/images/landing-page/megaphone.png'} title={'Digital Marketing'} description=""/>
+              <Card2 imageURL={'/images/landing-page/monitor.png'} title={'Video & Animation'} description=""/>
+              <Card2 imageURL={'/images/landing-page/music.png'} title={'Music & Audio'} description="" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/chart-bar.png'} title={'Account & Finance'} description="" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/first-aid.png'} title={'Health & Care'} description="" className={'lg:flex hidden'}/>
+              <Card2 imageURL={'/images/landing-page/database.png'} title={'Data & Science'} description="" className={'lg:flex hidden'}/>
             </div>
           </div>
         </section>

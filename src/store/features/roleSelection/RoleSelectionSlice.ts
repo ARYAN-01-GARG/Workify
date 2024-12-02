@@ -17,7 +17,6 @@ export interface RoleSelectionState {
         jobRequirements: string;
     };
     candidate : {
-        email : string;
         location : string;
         experience : string;
         education : string;
@@ -29,6 +28,23 @@ export interface RoleSelectionState {
         isResumeUploaded : boolean;
         resumeFileName: string | null;
     };
+}
+
+export interface ReqCandidate {
+    educations:
+      { institution: string,
+        degree:string,
+        yearOfCompletion:number
+      }[];
+    experiences:
+      { companyName:string,
+        yearsWorked:number,
+        position:string
+      }[];
+    skill:string[];
+    DOB : string;
+    location : string;
+    domain : string;
 }
 
 const initialState:RoleSelectionState = {
@@ -46,7 +62,6 @@ const initialState:RoleSelectionState = {
         jobRequirements: '',
     },
     candidate : {
-        email : '',
         location : '',
         experience : '',
         education : '',
@@ -63,18 +78,11 @@ const initialState:RoleSelectionState = {
 
 export const createCandidate = createAsyncThunk(
     'roleSelection/createCandidate',
-    async ({ candidate, token }: { candidate: RoleSelectionState['candidate'], token: string }, { rejectWithValue }) => {
+    async ({ candidate, token }: { candidate: ReqCandidate, token: string }, { rejectWithValue }) => {
         toast.loading('Creating candidate...');
         try {
             const response = await axios.post('https://naitikjain.me/api/candidates/create', {
-                educations: [
-                    { institution: candidate.education, degree: candidate.course, yearOfCompletion: 2023 },
-                ],
-                experiences: [
-                    { companyName: candidate.companyName, yearsWorked: 1, position: candidate.currentJobTitle }
-                ],
-                skill: [...candidate.skills],
-                DOB: '2003-10-14'
+                ...candidate
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`

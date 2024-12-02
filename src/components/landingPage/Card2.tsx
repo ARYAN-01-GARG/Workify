@@ -13,7 +13,7 @@ const Card2:React.FC<Card2Props> = ({
     className
 }) => {
   return (
-    <div className={`${className} flex items-center md:pl-6 max-w-[45vw] lg:max-w-[50vw] min-w-[20vw] gap-5 py-3`}>
+    <div className={`${className} flex items-center md:pl-6 max-w-[45vw] lg:max-w-[50vw] min-w-[20vw] gap-5 py-3 cursor-pointer`}>
       <div className="bg-[#E6ECF8] p-2 md:p-5 rounded-lg">
         <img src={imageURL} alt="Image" />
       </div>

@@ -48,6 +48,9 @@ const UserSlice = createSlice({
       localStorage.removeItem('userData');
       localStorage.removeItem('token');
       localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('localCandidate');
+      localStorage.removeItem('candidate');
+      localStorage.removeItem('recruiter');
     },
     setUserData(state, action) {
       state.userData = action.payload;

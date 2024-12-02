@@ -54,7 +54,7 @@ export const SearchInput:React.FC<SearchInputProps> = ({
     isBg=false
 }) => {
     return (
-        <div className={`border-[2px] border-[#6092D0] rounded-xl px-4 py-3 flex-grow flex gap-5 items-center ${isBg ? 'bg-white' : 'bg-transparent'}`}>
+        <div className={`border-[2px] border-[#6092D0] rounded-2xl px-4 py-3 flex-grow flex gap-5 items-center ${isBg ? 'bg-white' : 'bg-transparent'}`}>
             <Icon size={size} className="text-[#2A5A9F] hover:opacity-80 cursor-pointer "/>
             <input
                 type="text"

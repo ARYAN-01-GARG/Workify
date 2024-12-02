@@ -12,12 +12,14 @@ import EducationPageSliceReducer from './features/roleSelection/EducationPageSli
 import preferencePageReducer from './features/roleSelection/PreferencePageSlice';
 import experiencePageReducer from './features/roleSelection/ExperiencePageSlice';
 import skillsPageReducer from './features/roleSelection/SkillsPageSlice';
+import landingPageReducer from './features/LandingPageSlice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     verifyOTP: verifyReducer,
     user: userReducer,
+    landingPage : landingPageReducer,
     forgot : forgotPasswordReducer,
     newPassword : newPasswordReducer,
     roleSelection : RoleSelectionReducer,

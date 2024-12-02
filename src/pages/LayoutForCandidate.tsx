@@ -77,8 +77,8 @@ const LayoutForcandidate = () => {
   return (
     <div className="bg-[#E6ECF8] min-h-[100vh]">
       <Header />
-      <main className="px-10 flex my-10 gap-6 items-start">
-        <div className={`bg-white min-w-[18vw] py-10 rounded-lg ${isScrolled ? 'sticky top-0 self-start' : ''}`}>
+      <main className="p-5 lg:px-10 flex lg:my-10 gap-6 items-start">
+        <div className={`hidden lg:block bg-white min-w-[18vw] py-10 rounded-lg ${isScrolled ? 'sticky top-0 self-start' : ''}`}>
           <figure className="w-full flex flex-col items-center">
             <div className="bg-slate-300 w-32 h-32 rounded-full flex justify-center items-center">
               {candidate.profileImageKey ? <img src={candidate.profileImageKey} alt="User" className="w-full h-full rounded-full" /> : <FaRegUser size={50} className="text-slate-500"/>}
@@ -104,7 +104,7 @@ const LayoutForcandidate = () => {
         <div className="flex-grow scroll-smooth">
           <Outlet />
         </div>
-        <div className={`bg-white pl-6 pr-10 py-[4.75rem] flex flex-col gap-10 items-start overflow-hidden rounded-xl ${isScrolled ? 'sticky top-0 self-start' : ''}`}>
+        <div className={`hidden lg:flex bg-white pl-6 pr-10 py-[4.75rem] flex-col gap-10 items-start overflow-hidden rounded-xl ${isScrolled ? 'sticky top-0 self-start' : ''}`}>
           <h1 className="text-xl font-semibold text-center">Job offers Statistics</h1>
           {scores.map((score, index) => (
             <div key={index} className="flex items-center gap-5">

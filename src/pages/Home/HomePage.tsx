@@ -2,14 +2,38 @@ import { HiMiniMagnifyingGlassCircle } from "react-icons/hi2"
 import JobCard from "../../components/Jobs/JobCard"
 import { SearchInput } from "../../components/Jobs/SearchBar"
 import { Link } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const HomePage = () => {
+  const [placeholder, setPlaceholder] = useState("Search for jobs, internships, or companies");
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setPlaceholder("Search");
+      } else {
+        setPlaceholder("Search for jobs, internships, or companies");
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const scores = [
+    { title: "Posted Job Offers", score: '12,357' , icon : '/images/home/bag.svg' },
+    { title: "Employers", score: '3,513' , icon : '/images/home/employee.svg' },
+    { title: "Applications sent", score: '52,651' , icon : '/images/home/clip.svg' },
+    { title: "Job offers viewed", score: '2,481,455' , icon : '/images/home/folder.svg' },
+  ]
+
   return (
-    <div className="w-full flex flex-col gap-10 scroll-smooth">
+    <div className="w-full flex flex-col gap-7 lg:gap-10 scroll-smooth">
       <div className="w-full" id="My home">
         <SearchInput
-          placeholder="Search for jobs, internships, or companies"
+          placeholder={placeholder}
           value=""
           onChange={(e) => console.log(e.target.value)}
           Icon={HiMiniMagnifyingGlassCircle}
@@ -20,7 +44,21 @@ const HomePage = () => {
       <div className="w-full" id="Portfolio">
         <PortfolioCard bg={'white'} />
       </div>
-      <div className="w-full" id="Applied">
+      <div className={`flex lg:hidden bg-white pl-6 py-[1.95rem] flex-col gap-10 items-start overflow-hidden rounded-xl`}>
+        <h1 className="pl-0 md:pl-10 lg:pl-0 text-xl font-medium text-center">Job offers Statistics</h1>
+        {scores.map((score, index) => (
+          <div key={index} className="pl-0 md:pl-10 lg:pl-0 flex items-center gap-5">
+            <div className="w-[60px] h-[60px]">
+              <img src={score.icon} alt='Score Image' className="w-full h-full" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h5 className="font-semibold text-lg">{score.score}</h5>
+              <p className="font-medium text-[1rem]">{score.title}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-full hidden lg:block" id="Applied">
         <AppliedJobCard/>
       </div>
       <div id="Jobs" className="w-full flex flex-col gap-10">
@@ -40,12 +78,12 @@ export const PortfolioCard = ({
   bg
 }:{ bg : string}) => {
   return (
-    <div className={`${bg==='white' ? 'bg-white' : 'bg-[#E6ECF8]'} rounded-lg p-3 flex gap-5 items-center justify-evenly border-2 border-[#B0B0B0]`}>
-      <div className="w-[9vw] h-[9vw] rounded-lg">
+    <div className={`${bg==='white' ? 'bg-white' : 'bg-[#E6ECF8]'} rounded-lg p-3 flex flex-col md:flex-row gap-5 items-center justify-evenly border-2 border-[#B0B0B0]`}>
+      <div className="w-[9vw] h-[9vw] rounded-lg hidden md:block ">
         <img src='/images/portfolioFolder.svg' alt="Folder Portfolio" className="w-full h-full"/>
       </div>
       <div className="flex flex-col gap-2">
-        <div className="text-xl font-medium">Create Your Porfolio in easy Steps</div>
+        <div className="text-lg md:text-xl pt-4 md:pt-0 font-medium">Create Your Porfolio in easy Steps</div>
         <ul className="text-sm list-disc list-inside font-medium text-[#3D3D3D]">
           <li>Add Your Resume and key Skills</li>
           <li>Showcase Your Best Projects</li>

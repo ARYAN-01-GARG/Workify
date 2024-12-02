@@ -8,6 +8,10 @@ import RoleSelectionReducer from './features/roleSelection/RoleSelectionSlice';
 import candidateSliceReducer from './features/roleSelection/CandidateSlice';
 import recruiterSliceReducer from './features/roleSelection/RecruiterSlice';
 import postJobReducer from './PostJobSlice';
+import EducationPageSliceReducer from './features/roleSelection/EducationPageSlice';
+import preferencePageReducer from './features/roleSelection/PreferencePageSlice';
+import experiencePageReducer from './features/roleSelection/ExperiencePageSlice';
+import skillsPageReducer from './features/roleSelection/SkillsPageSlice';
 
 const store = configureStore({
   reducer: {
@@ -20,6 +24,10 @@ const store = configureStore({
     candidate: candidateSliceReducer,
     recruiter: recruiterSliceReducer,
     postJob: postJobReducer,
+    educationPage : EducationPageSliceReducer,
+    preferencePage: preferencePageReducer,
+    experiencePage: experiencePageReducer,
+    skillsPage : skillsPageReducer,
   },
 });
 

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RoleSelectionState, setIsOpen, setRole } from "../../store/features/roleSelection/RoleSelectionSlice";
 import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
 import { setIsRecruiterOpen } from "../../store/features/roleSelection/RecruiterSlice";
+import { openEducationPage } from "../../store/features/roleSelection/EducationPageSlice";
 
 interface RoleCardProps {
     title: string;
@@ -27,6 +28,7 @@ const RoleSelection = () => {
             dispatch(setIsOpen(false));
         }else if(role === 'candidate'){
             dispatch(setIsCandidateOpen(true));
+            dispatch(openEducationPage());
             dispatch(setIsOpen(false));
         } else {
             return;

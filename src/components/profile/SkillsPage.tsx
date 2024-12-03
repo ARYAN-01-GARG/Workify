@@ -54,17 +54,17 @@ const SkillsPage = () => {
         const updatedCandidate = { ...candidate, skills: selectedSkills };
         dispatch(setCandidate(updatedCandidate));
         const newCandidate: ReqCandidate = {
-            educations: candidate.education.map(edu => ({
+            education: candidate.education.map(edu => ({
                 institution: edu.institution,
                 degree: edu.degree,
                 yearOfCompletion: edu.yearOfCompletion
             })),
-            experiences: candidate.experiences.map(exp => ({
+            experience: candidate.experience.map(exp => ({
                 companyName: exp.companyName,
                 yearsWorked: exp.yearsWorked,
                 position: exp.position
             })),
-            skill: candidate.skill,
+            skill: [...candidate.skill],
             DOB: '2003-10-14',
             location: candidate.location,
             domain: candidate.domain,

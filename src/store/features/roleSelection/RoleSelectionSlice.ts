@@ -31,12 +31,12 @@ export interface RoleSelectionState {
 }
 
 export interface ReqCandidate {
-    educations:
+    education:
       { institution: string,
         degree:string,
         yearOfCompletion:number
       }[];
-    experiences:
+    experience:
       { companyName:string,
         yearsWorked:number,
         position:string
@@ -83,15 +83,14 @@ export const createCandidate = createAsyncThunk(
         try {
             const response = await axios.post('https://naitikjain.me/api/candidates/create', {
                 ...candidate,
-                educations: candidate.educations.map((education) => ({
+                education: candidate.education.map((education) => ({
                     ...education,
                     yearOfCompletion: Number(education.yearOfCompletion)
                 })),
-                experiences: candidate.experiences.map((experience) => ({
+                experience: candidate.experience.map((experience) => ({
                     ...experience,
                     yearsWorked: Number(experience.yearsWorked)
-                })),
-                skill : [...candidate.skill]
+                }))
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`

@@ -14,6 +14,7 @@ import experiencePageReducer from './features/roleSelection/ExperiencePageSlice'
 import skillsPageReducer from './features/roleSelection/SkillsPageSlice';
 import landingPageReducer from './features/LandingPageSlice';
 import profileEditReducer from './features/profile/ProfileEditSlice';
+import getAllRecommendedJobsReducer from './features/AllRecommendedJobSlice';
 
 const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ const store = configureStore({
     experiencePage: experiencePageReducer,
     skillsPage : skillsPageReducer,
     profileEdit : profileEditReducer,
+    getAllRecommendedJobs: getAllRecommendedJobsReducer,
   },
 });
 

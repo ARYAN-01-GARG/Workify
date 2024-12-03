@@ -41,7 +41,7 @@ const ExperiencePage = () => {
 
 
     const handleSubmit = () => {
-        dispatch(setCandidate({ ...candidate, experiences : [{...experience}] }));
+        dispatch(setCandidate({ ...candidate, experience : [{...experience}] }));
         dispatch(closeExperiencePage());
         dispatch(openSkillsPage());
     };

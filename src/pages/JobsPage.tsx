@@ -1,6 +1,6 @@
 import Footer from "../components/landingPage/Footer"
 import Header from "../components/landingPage/Header"
-import JobCard from "../components/Jobs/JobCard"
+// import JobCard from "../components/Jobs/JobCard"
 import SearchBar from "../components/Jobs/SearchBar"
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
@@ -36,11 +36,11 @@ const JobsPage = () => {
           </div>
           <div className="flex gap-10 py-10">
             <div className="flex-grow px-2 flex flex-col gap-10">
+              {/* <JobCard/>
               <JobCard/>
               <JobCard/>
               <JobCard/>
-              <JobCard/>
-              <JobCard/>
+              <JobCard/> */}
             </div>
             <div className="w-[25vw] bg-white rounded-xl text-center">
               Side

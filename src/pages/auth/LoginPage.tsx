@@ -51,7 +51,7 @@ const LoginPage = () => {
             dispatch(setToken(res.payload.token));
             dispatch(setPassword(''));
             dispatch(setContact(''));
-            if (role === 'user') {
+            if (role === 'user' && IsAuthenticated) {
               dispatch(setIsOpen(true));
             }
           }

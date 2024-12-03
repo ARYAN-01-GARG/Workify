@@ -12,7 +12,7 @@ export interface Candidate {
     degree: string;
     yearOfCompletion: number;
   }[];
-  experiences: {
+  experience: {
     companyName: string;
     yearsWorked: number;
     position: string;
@@ -48,7 +48,7 @@ const initialState: CandidateState = {
         yearOfCompletion: 2023,
       },
     ],
-    experiences: [
+    experience: [
       {
         companyName: '',
         yearsWorked: 0,
@@ -75,7 +75,7 @@ export const getCandidate = createAsyncThunk(
           Authorization: `Bearer ${token}`
         }
       });
-      dispatch(setCandidate(response.data));
+      dispatch(setCandidate({...response.data}));
       console.log(response.data);
     } catch (err: unknown) {
       const error = err as AxiosError<{ message: string }>;
@@ -153,7 +153,7 @@ export const updateCandidate = createAsyncThunk(
           degree: candidateData.education[0].degree,
           yearOfCompletion: candidateData.education[0].yearOfCompletion
         }],
-        experiences: candidateData.experiences,
+        experience: candidateData.experience,
         skill: candidateData.skill
       }, {
         headers: {

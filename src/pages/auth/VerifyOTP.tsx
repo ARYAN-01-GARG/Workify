@@ -48,8 +48,11 @@ const VerifyOTP = () => {
         setOtp(newOtp);
         if (value && index < otpRefs.length - 1) {
             otpRefs[index + 1].current?.focus();
+        } else if (!value && index > 0) {
+            otpRefs[index - 1].current?.focus();
         }
     };
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
             otpRefs[index - 1].current?.focus();
@@ -68,7 +71,7 @@ const VerifyOTP = () => {
         if (pasteData.length === otp.length) {
             const newOtp = pasteData.split('');
             setOtp(newOtp);
-            otpRefs[newOtp.length - 1].current?.focus();
+            otpRefs[otpRefs.length - 1].current?.focus();
         }
     };
 
@@ -161,7 +164,7 @@ const VerifyOTP = () => {
                 navigate('/dashboard');
             }
         }
-    }, [otpRefs ,isAllowed , navigate, sendBy]);
+    }, [isAllowed , navigate, sendBy]);
 
     useEffect(() => {
         let interval: ReturnType<typeof setInterval> | undefined;

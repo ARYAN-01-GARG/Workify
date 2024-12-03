@@ -191,7 +191,7 @@ const Profile = () => {
               <div className="flex justify-between gap-10 pt-2">
                 <div className="flex flex-col gap-5 justify-between">
                   <div className="flex gap-2 items-center"><CiLocationOn size={25}/>{`${candidate.location}`}</div>
-                  <div className="flex gap-2 items-center"><RxBackpack size={25}/>{`${candidate.experiences[0].yearsWorked ? candidate.experiences[0].yearsWorked < 5 ? 'Fresher' : 'Experienced' : 'Fresher' }`}</div>
+                  <div className="flex gap-2 items-center"><RxBackpack size={25}/>{`${candidate.experience[0].yearsWorked ? candidate.experience[0].yearsWorked < 5 ? 'Fresher' : 'Experienced' : 'Fresher' }`}</div>
                 </div>
                 <div className="flex flex-col gap-5 justify-between">
                   <div className="flex gap-2 items-center"><FiPhone size={20}/>{`${candidate.phone ? candidate.phone : 'Not verified'}`}</div>

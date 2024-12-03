@@ -3,9 +3,20 @@ import JobCard from "../../components/Jobs/JobCard"
 import { SearchInput } from "../../components/Jobs/SearchBar"
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { useDispatch, useSelector } from 'react-redux';
+import { AllRecommendedJobsState, getAllRecommendedJobs } from '../../store/features/AllRecommendedJobSlice';
+import { AppDispatch } from "../../store/store"
 
 const HomePage = () => {
   const [placeholder, setPlaceholder] = useState("Search for jobs, internships, or companies");
+  const dispatch = useDispatch<AppDispatch>();
+  const jobs = useSelector((state: {getAllRecommendedJobs : AllRecommendedJobsState }) => state.getAllRecommendedJobs.jobs);
+
+  useEffect(() => {
+    if (jobs.length === 0) {
+      dispatch(getAllRecommendedJobs());
+    }
+  }, [dispatch, jobs.length]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -72,11 +83,9 @@ const HomePage = () => {
         <AppliedJobCard/>
       </div>
       <div id="Jobs" className="w-full flex flex-col gap-10">
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
+        {jobs.slice(0, 5).map((job) => (
+          <JobCard key={job.id} job={job} />
+        ))}
       </div>
       <div className="min-h-screen bg-white" id="Companies"></div>
       <div className="min-h-screen bg-white" id="Membership"></div>

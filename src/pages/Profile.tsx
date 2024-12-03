@@ -8,12 +8,13 @@ import { FiPhone } from "react-icons/fi"
 import { RxBackpack } from "react-icons/rx"
 import { MdOutlineMail } from "react-icons/md"
 import { Link } from "react-router-dom"
-import { Candidate, uploadProfilePic, uploadResume, setCandidate } from "../store/features/roleSelection/CandidateSlice"
+import { uploadProfilePic, uploadResume, setCandidate, CandidateState } from "../store/features/roleSelection/CandidateSlice"
 import { RiPencilFill } from "react-icons/ri"
 import { PortfolioCard } from "./Home/HomePage"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AppDispatch } from "../store/store"
 import toast from 'react-hot-toast';
+import ProfileEditPage from "./ProfileEditPage"
 
 const sideBarData = [
   { title : 'Resume' , status : 'Uploaded' },
@@ -30,10 +31,9 @@ const Profile = () => {
 
 
   const dispatch = useDispatch<AppDispatch>();
-  const userData = useSelector((state: { user: UserState }) => state.user.userData);
   const token = useSelector((state: { user: UserState }) => state.user.token) as string;
   const [isLoading , setIsLoading] = useState(false);
-  const candidate = useSelector((state: { candidate: {candidate : Candidate} }) => state.candidate.candidate);
+  const candidate = useSelector((state: { candidate: CandidateState }) => state.candidate.candidate);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedResume, setSelectedResume] = useState<File | null>(null);
@@ -47,6 +47,7 @@ const Profile = () => {
   const [newInstitution, setNewInstitution] = useState(candidate.education[0]?.institution || '');
   const [newDegree, setNewDegree] = useState(candidate.education[0]?.degree || '');
   const [isProfileChanged, setIsProfileChanged] = useState(false);
+  const editPageOpen = useSelector((state: { profileEdit: { editPageOpen: boolean } }) => state.profileEdit.editPageOpen);
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isLoading) {
@@ -155,8 +156,12 @@ const Profile = () => {
     setIsProfileChanged(false);
   };
 
+  useEffect(() => {
+    console.log('Candidate', editPageOpen);
+  },[editPageOpen]);
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#E6ECF8]">
+    <div className="relative min-h-screen flex flex-col bg-[#E6ECF8]">
       <Header />
       <main className="flex-grow px-[3.125rem] py-[2.6rem] ">
         <div className="flex gap-6 w-full items-start">
@@ -179,22 +184,22 @@ const Profile = () => {
             <div className="w-full">
               <div className="w-full">
                 <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#D1D1D1]">
-                  <h1 className="text-[1.57rem] font-semibold ">{`${candidate.firstName} ${candidate.lastName}`}</h1>
-                  <p className="text-xl font-medium text-[#3D3D3D]">{`${'Frontend Developer'}`}</p>
+                  <h1 className="text-[1.57rem] font-semibold ">{`${candidate.firstName || ''} ${candidate.lastName || ''}`}</h1>
+                  <p className="text-xl font-medium text-[#3D3D3D]">{`${candidate.domain}`}</p>
                 </div>
               </div>
               <div className="flex justify-between gap-10 pt-2">
                 <div className="flex flex-col gap-5 justify-between">
-                  <div className="flex gap-2 items-center"><CiLocationOn size={25}/>{`${'Delhi'}`}</div>
-                  <div className="flex gap-2 items-center"><RxBackpack size={25}/>Fresher</div>
+                  <div className="flex gap-2 items-center"><CiLocationOn size={25}/>{`${candidate.location}`}</div>
+                  <div className="flex gap-2 items-center"><RxBackpack size={25}/>{`${candidate.experiences[0].yearsWorked ? candidate.experiences[0].yearsWorked < 5 ? 'Fresher' : 'Experienced' : 'Fresher' }`}</div>
                 </div>
                 <div className="flex flex-col gap-5 justify-between">
-                  <div className="flex gap-2 items-center"><FiPhone size={20}/>{`${userData.mobile ? userData.mobile.slice(0,2)+'XXXXXXX' : '91XXXXXXX'}`}</div>
-                  <div className="flex gap-2 items-center"><MdOutlineMail size={20}/>{`${userData.email ? userData.email.replace(/(.{2}).+(.{2}@.+)/, "$1*****$2") : 'abc@gmail.com'}`}</div>
+                  <div className="flex gap-2 items-center"><FiPhone size={20}/>{`${candidate.phone ? candidate.phone : 'Not verified'}`}</div>
+                  <div className="flex gap-2 items-center"><MdOutlineMail size={20}/>{`${candidate.email ? candidate.email : 'abc@gmail.com'}`}</div>
                 </div>
               </div>
             </div>
-            <button className="bg-[#2B5A9E] text-white font-medium text-xl py-[.7rem] px-10 ml-24 rounded-2xl hover:opacity-80" onClick={isEditing ? handleSaveProfile : handleEditClick}>
+            <button className="bg-[#2B5A9E] text-white font-medium text-xl py-[.7rem] px-10 ml-20 rounded-2xl hover:opacity-80" onClick={isEditing ? handleSaveProfile : handleEditClick}>
               {isEditing ? 'Save' : 'Edit'}
             </button>
           </div>
@@ -344,6 +349,9 @@ const Profile = () => {
         )}
       </main>
       <Footer />
+      {editPageOpen &&
+        <ProfileEditPage />
+      }
     </div>
   )
 }

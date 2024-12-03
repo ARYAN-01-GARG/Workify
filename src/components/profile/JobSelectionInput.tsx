@@ -22,7 +22,7 @@ const JobSelectionInput:React.FC<JobSelectionInputProps> = ({
         {label !== '' &&
                 <label
                     htmlFor={id}
-                    className="text-xl font-medium mb-3">
+                    className="text-xl font-medium mb-3 text-nowrap">
                     {label}
                 </label>}
         <select

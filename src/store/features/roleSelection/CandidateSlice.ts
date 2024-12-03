@@ -59,9 +59,9 @@ const initialState: CandidateState = {
     certificate: [],
     resumeKey: null,
     profileImageKey: null,
-    dob: null,
-    location: '',
     domain: '',
+    location: '',
+    dob: null,
   },
   error: null,
 };
@@ -76,6 +76,7 @@ export const getCandidate = createAsyncThunk(
         }
       });
       dispatch(setCandidate(response.data));
+      console.log(response.data);
     } catch (err: unknown) {
       const error = err as AxiosError<{ message: string }>;
       console.log(err);
@@ -176,7 +177,7 @@ const candidateSlice = createSlice({
   initialState,
   reducers: {
     setCandidate(state, action) {
-      state.candidate = { ...state.candidate, ...action.payload };
+      state.candidate = { ...state.candidate , ...action.payload };
       localStorage.setItem('candidate', JSON.stringify(state.candidate));
     },
     setIsCandidateOpen(state, action) {

@@ -30,8 +30,8 @@ const DialogCard:React.FC<DialogCardProps> = ({
             {subTitle && <h2 className="font-medium text-lg lg:text-[1.58rem]">{subTitle}</h2>}
             <p className="font-medium text-[#4F4F4F] text-[16px] lg:text-xl max-w-[90%] lg:max-w-[75%] text-center">{description}</p>
         </header>
-        <div>
-            <main>
+        <div className="w-full">
+            <main className="w-full">
                 {children}
             </main>
             <footer className="flex justify-end items-center my-5">

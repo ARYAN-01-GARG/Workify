@@ -13,6 +13,7 @@ import preferencePageReducer from './features/roleSelection/PreferencePageSlice'
 import experiencePageReducer from './features/roleSelection/ExperiencePageSlice';
 import skillsPageReducer from './features/roleSelection/SkillsPageSlice';
 import landingPageReducer from './features/LandingPageSlice';
+import profileEditReducer from './features/profile/ProfileEditSlice';
 
 const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ const store = configureStore({
     preferencePage: preferencePageReducer,
     experiencePage: experiencePageReducer,
     skillsPage : skillsPageReducer,
+    profileEdit : profileEditReducer,
   },
 });
 

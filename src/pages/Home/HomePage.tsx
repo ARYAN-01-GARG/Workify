@@ -22,11 +22,17 @@ const HomePage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const isValidImage = (fileName: string) => {
+    const validExtensions = ['png', 'jpg', 'jpeg'];
+    const fileExtension = fileName.split('.').pop()?.toLowerCase();
+    return validExtensions.includes(fileExtension || '');
+  };
+
   const scores = [
-    { title: "Posted Job Offers", score: '12,357' , icon : '/images/home/bag.svg' },
-    { title: "Employers", score: '3,513' , icon : '/images/home/employee.svg' },
-    { title: "Applications sent", score: '52,651' , icon : '/images/home/clip.svg' },
-    { title: "Job offers viewed", score: '2,481,455' , icon : '/images/home/folder.svg' },
+    { title: "Posted Job Offers", score: '12,357', icon: '/images/home/bag.svg' },
+    { title: "Employers", score: '3,513', icon: '/images/home/employee.svg' },
+    { title: "Applications sent", score: '52,651', icon: '/images/home/clip.svg' },
+    { title: "Job offers viewed", score: '2,481,455', icon: '/images/home/folder.svg' },
   ]
 
   return (
@@ -49,7 +55,11 @@ const HomePage = () => {
         {scores.map((score, index) => (
           <div key={index} className="pl-0 md:pl-10 lg:pl-0 flex items-center gap-5">
             <div className="w-[60px] h-[60px]">
-              <img src={score.icon} alt='Score Image' className="w-full h-full" />
+              {isValidImage(score.icon) ? (
+                <img src={score.icon} alt='Score Image' className="w-full h-full" />
+              ) : (
+                <p>Invalid image format</p>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <h5 className="font-semibold text-lg">{score.score}</h5>

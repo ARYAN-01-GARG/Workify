@@ -82,7 +82,16 @@ export const createCandidate = createAsyncThunk(
         toast.loading('Creating candidate...');
         try {
             const response = await axios.post('https://naitikjain.me/api/candidates/create', {
-                ...candidate
+                ...candidate,
+                educations: candidate.educations.map((education) => ({
+                    ...education,
+                    yearOfCompletion: Number(education.yearOfCompletion)
+                })),
+                experiences: candidate.experiences.map((experience) => ({
+                    ...experience,
+                    yearsWorked: Number(experience.yearsWorked)
+                })),
+                skill : [...candidate.skill]
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`

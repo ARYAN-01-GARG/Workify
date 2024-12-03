@@ -16,6 +16,7 @@ import { SkillsPageState } from "../../store/features/roleSelection/SkillsPageSl
 import { CandidateState } from "../../store/features/roleSelection/CandidateSlice";
 import DialogCard from "./DialogCard";
 import { FaCheckCircle } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
 const CandidateDetails = () => {
 
@@ -74,6 +75,14 @@ const CandidateDetails = () => {
         }
     };
 
+    const handleCutResume = () => {
+        setIsResume(false);
+        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = "";
+        }
+    };
+
     const ResumePage = (
         <DialogCard
             title="Upload a recent resume or CV"
@@ -90,9 +99,10 @@ const CandidateDetails = () => {
                         <p className="text-[#4F4F4F] text-sm font-medium text-center">Click the button below to upload your resume as a .pdf, .doc, .docx,.rtf or .txt file</p>
                     </>
                 ) : (
-                    <div className="flex gap-4 items-center">
+                    <div className="flex gap-4 items-center border border-[#7f7e7e] px-3 py-2 rounded-lg">
                         <FaCheckCircle className="text-[#2cc655] text-4xl" />
                         <span className="text-xl">Resume Selected</span>
+                        <RxCross2 size={20} className="hover:opacity-80 cursor-pointer" onClick={handleCutResume}/>
                     </div>
                 )}
                 <button className="bg-[#2B5A9E] text-[#F3F6FC] font-medium text-xl py-3 px-10 md:w-[350px] rounded-lg hover:opacity-80">

@@ -22,7 +22,7 @@ export const JobInput: React.FC<JobInputProps> = ({
     const id = useId();
 
     return (
-        <div className="w-full flex flex-col justify-start gap-1 *: relative">
+        <div className="w-full flex flex-col justify-start gap-1 relative">
             {label !== '' &&
                 <label
                     htmlFor={id}

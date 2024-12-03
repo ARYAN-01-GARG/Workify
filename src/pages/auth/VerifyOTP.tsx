@@ -63,6 +63,15 @@ const VerifyOTP = () => {
         }
     }
 
+    const handlePaste = (e: React.ClipboardEvent<HTMLFormElement>) => {
+        const pasteData = e.clipboardData.getData('text');
+        if (pasteData.length === otp.length) {
+            const newOtp = pasteData.split('');
+            setOtp(newOtp);
+            otpRefs[newOtp.length - 1].current?.focus();
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const otpValue = otp.join('');
@@ -144,6 +153,7 @@ const VerifyOTP = () => {
     );
 
     useEffect(() => {
+        otpRefs[0].current?.focus();
         if (!isAllowed) {
             if(sendBy === 'forgot'){
                 navigate('/auth/new-password');
@@ -151,7 +161,7 @@ const VerifyOTP = () => {
                 navigate('/dashboard');
             }
         }
-    }, [isAllowed , navigate, sendBy]);
+    }, [otpRefs ,isAllowed , navigate, sendBy]);
 
     useEffect(() => {
         let interval: ReturnType<typeof setInterval> | undefined;
@@ -179,7 +189,7 @@ const VerifyOTP = () => {
                 onSubmit={handleSubmit}
                 footer={footer}
             >
-                <form className="flex items-center justify-around gap-2" onSubmit={handleSubmit}>
+                <form className="flex items-center justify-around gap-2" onSubmit={handleSubmit} onPaste={handlePaste}>
                     {otpRefs.map((ref, index) => (
                         <InputOTP
                             key={index}

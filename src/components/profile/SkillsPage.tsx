@@ -51,10 +51,10 @@ const SkillsPage = () => {
     };
 
     const handleSubmit = () => {
-        const updatedCandidate = { ...candidate, skill: selectedSkills };
+        const updatedCandidate = { ...candidate, skills: selectedSkills };
         dispatch(setCandidate(updatedCandidate));
         const newCandidate: ReqCandidate = {
-            educations:candidate.education.map(edu => ({
+            educations: candidate.education.map(edu => ({
                 institution: edu.institution,
                 degree: edu.degree,
                 yearOfCompletion: edu.yearOfCompletion
@@ -76,10 +76,10 @@ const SkillsPage = () => {
             }
             else if(res.type === 'roleSelection/createCandidate/rejected'){
                 setIsLoading(false);
-        }
-        dispatch(closeSkillsPage());
-        dispatch(openResumePage());
-    });
+            }
+            dispatch(openResumePage());
+            dispatch(closeSkillsPage());
+        });
     };
 
     return (
@@ -105,7 +105,7 @@ const SkillsPage = () => {
                     />
                 </div>
                 {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-                <div className="flex gap-3 pt-2 mt-5 flex-wrap">
+                <div className="flex gap-3 flex-wrap">
                     {selectedSkills.map((skill, index) => (
                         <span
                             key={index}

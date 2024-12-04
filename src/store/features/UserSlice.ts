@@ -49,6 +49,7 @@ const UserSlice = createSlice({
       localStorage.removeItem('token');
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('localCandidate');
+      localStorage.removeItem('recommendedJobs');
       localStorage.removeItem('candidate');
       localStorage.removeItem('recruiter');
     },

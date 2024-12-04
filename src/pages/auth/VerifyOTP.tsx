@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { VerifyOTPState } from "../../store/features/auth/VerifyOTPState";
 import { validateContact } from "../../store/features/auth/ForgotPasswordSlice";
 import { setIsOpen } from "../../store/features/roleSelection/RoleSelectionSlice";
-import { setIsAuthenticated, setToken } from "../../store/features/UserSlice";
+import { setIsAuthenticated, setToken, setUserData } from "../../store/features/UserSlice";
 
 const VerifyOTP = () => {
 
@@ -109,6 +109,7 @@ const VerifyOTP = () => {
                         dispatch(setContact(''));
                         dispatch(setToken(res.payload.token));
                         dispatch(setIsAuthenticated(true));
+                        dispatch(setUserData({...res.payload.user , role : res.payload.user.role.toLowerCase()}));
                         if(role === 'USER'){
                             dispatch(setIsOpen(true));
                         }

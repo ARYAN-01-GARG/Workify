@@ -3,7 +3,7 @@ import DialogCard from "./DialogCard"
 import { useDispatch, useSelector } from "react-redux";
 import { RoleSelectionState, setIsOpen, setRole } from "../../store/features/roleSelection/RoleSelectionSlice";
 import { setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
-import { setIsRecruiterOpen } from "../../store/features/roleSelection/RecruiterSlice";
+import { openRecruiterJob, setIsRecruiterOpen } from "../../store/features/roleSelection/RecruiterSlice";
 import { openEducationPage } from "../../store/features/roleSelection/EducationPageSlice";
 
 interface RoleCardProps {
@@ -25,6 +25,7 @@ const RoleSelection = () => {
     const handleNext = () => {
         if(role === 'recruiter'){
             dispatch(setIsRecruiterOpen(true));
+            dispatch(openRecruiterJob());
             dispatch(setIsOpen(false));
         }else if(role === 'candidate'){
             dispatch(setIsCandidateOpen(true));

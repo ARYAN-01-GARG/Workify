@@ -1,7 +1,7 @@
 import { useId } from "react";
 
 interface JobSelectionInputProps {
-    label: string;
+    label?: string;
     options: string[];
     value: string;
     defaultValue?: string;

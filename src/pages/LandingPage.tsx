@@ -13,9 +13,9 @@ import { UserState } from "../store/features/auth/UserState"
 import RoleSelection from "../components/profile/RoleSelection"
 import CandidateDetails from "../components/profile/CandidateDetails"
 import { RoleSelectionState, setIsOpen } from "../store/features/roleSelection/RoleSelectionSlice"
-import JobDetails from "../components/profile/JobDetails"
 import { getStats, LandingPageState } from "../store/features/LandingPageSlice"
 import { AppDispatch } from "../store/store"
+import RecruiterDetails from "../components/profile/RecruiterDetails"
 
 const LandingPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -157,7 +157,7 @@ const LandingPage = () => {
         <div className="absolute min-h-screen w-full flex justify-center items-center z-50 bg-neutral-800/80 ">
           {isOpen && <RoleSelection/>}
           {isCandidateOpen && <CandidateDetails/>}
-          {isRecruiterOpen && <JobDetails/>}
+          {isRecruiterOpen && <RecruiterDetails/>}
         </div>
       }
       <Outlet/>

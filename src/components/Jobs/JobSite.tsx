@@ -173,9 +173,9 @@ const JobSite = () => {
           <input
             type="radio"
             name="job-type"
-            value="PART_TIME"
+            value="OFFLINE"
             id="PART_TIME"
-            checked={jobType === 'PART_TIME'}
+            checked={jobType === 'OFFLINE'}
             onChange={handleJobTypeChange}
             className="w-5 h-5"
           />
@@ -185,9 +185,9 @@ const JobSite = () => {
           <input
             type="radio"
             name="job-type"
-            value="REMOTE"
+            value="ONLINE"
             id="remote"
-            checked={jobType === 'REMOTE'}
+            checked={jobType === 'ONLINE'}
             onChange={handleJobTypeChange}
             className="w-5 h-5"
           />

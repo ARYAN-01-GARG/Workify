@@ -25,7 +25,7 @@ const PostJob = () => {
   };
 
   return (
-    <div className="bg-[#E6ECF8] min-h-screen flex flex-col items-center">
+    <div className="bg-[#E6ECF8] min-h-screen flex flex-col">
       <Header />
       {renderPage === 'jobSite' ? <JobSite /> : <JobSite2 />}
       <button

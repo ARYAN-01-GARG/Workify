@@ -3,14 +3,16 @@ import Header from "../components/landingPage/Header"
 import JobCard from "../components/Jobs/JobCard"
 import SearchBar from "../components/Jobs/SearchBar"
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { UserState } from "../store/features/auth/UserState"
 import { useNavigate } from "react-router-dom"
-import { AllJobsState } from "../store/features/AllJobSlice"
+import { AllJobsState, getAllJobs } from "../store/features/AllJobSlice"
+import { AppDispatch } from "../store/store"
 
 const JobsPage = () => {
 
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const jobs = useSelector((state : {allJobs : AllJobsState }) => state.allJobs.jobs);
   const isAuthenticated = useSelector((state : {user : UserState}) => state.user.isAuthenticated);
   const role = useSelector((state : {user : UserState}) => state.user.userData.role);
@@ -30,6 +32,12 @@ const JobsPage = () => {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  useEffect(() => {
+    if(jobs.length === 0) {
+      dispatch(getAllJobs())
+    }
+  },[dispatch , jobs.length])
 
   const startIndex = (currentPage - 1) * jobsPerPage;
   const currentJobs = jobs.slice(startIndex, startIndex + jobsPerPage);

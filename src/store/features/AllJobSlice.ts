@@ -1,6 +1,7 @@
-// import { createSlice ,createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice ,createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-interface User {
+export interface User {
     id: number;
     firstName: string;
     lastName: string | null;
@@ -16,7 +17,7 @@ interface User {
     credentialsNonExpired: boolean;
 }
 
-interface PostedBy {
+export interface PostedBy {
     id: number;
     user: User;
     companyEmail: string;
@@ -28,7 +29,7 @@ interface PostedBy {
     profileImage: string | null;
 }
 
-interface JobState {
+export interface JobState {
     id: number;
     title: string;
     description: string;
@@ -46,46 +47,45 @@ interface JobState {
     jobStatus: string;
 }
 
-const initialState: JobState = {
-    id: 0,
-    title: "",
-    description: "",
-    company: "",
-    location: "",
-    experience: 0,
-    industry: "",
-    postedAt: "",
-    jobType: null,
-    mode: "",
-    minSalary: 0,
-    maxSalary: 0,
-    requiredSkills: [],
-    postedBy: {
-        id: 0,
-        user: {
-            id: 0,
-            firstName: "",
-            lastName: null,
-            email: "",
-            mobile: null,
-            status: null,
-            membership: false,
-            role: "",
-            enabled: false,
-            authorities: [],
-            accountNonExpired: false,
-            accountNonLocked: false,
-            credentialsNonExpired: false
-        },
-        companyEmail: "",
-        companyName: "",
-        jobTitle: "",
-        companyWebsite: "",
-        companyLocation: "",
-        industry: "",
-        profileImage: null
-    },
-    jobStatus: ""
+export interface AllJobsState {
+    jobs: JobState[];
 }
 
-console.log(initialState);
+const initialState: AllJobsState = {
+    jobs: []
+};
+
+export const getAllJobs = createAsyncThunk(
+    'allJobs/getAllJobs',
+    async (_,{dispatch}) => {
+        try {
+            const response = await axios.get('https://naitikjain.me/api/jobs/all-jobs', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            dispatch(setJobs(response.data));
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+);
+
+const AllJobSlice = createSlice({
+    name: 'allJobs',
+    initialState,
+    reducers: {
+        setJobs: (state, action) => {
+            state.jobs = action.payload;
+        }
+    }
+});
+
+export const { setJobs } = AllJobSlice.actions;
+
+export default AllJobSlice.reducer;
+
+
+
+// https://naitikjain.me/api/jobs/all-jobs

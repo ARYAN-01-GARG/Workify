@@ -76,7 +76,6 @@ const allRecommendedJobsSlice = createSlice({
     reducers: {
         setAllRecommendedJobs: (state, action) => {
             state.jobs = action.payload;
-            localStorage.setItem('recommendedJobs', JSON.stringify(action.payload));
         }
     },
     extraReducers: (builder) => {

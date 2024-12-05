@@ -83,7 +83,7 @@ const HomePage = () => {
         <AppliedJobCard/>
       </div>
       <div id="Jobs" className="w-full flex flex-col gap-10">
-        {jobs.slice(0, 5).map((job) => (
+        {jobs.slice(0,5).map((job) => (
           <JobCard key={job.id} job={job} />
         ))}
       </div>

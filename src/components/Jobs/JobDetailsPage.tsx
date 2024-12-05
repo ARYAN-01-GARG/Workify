@@ -36,7 +36,7 @@ const JobDetailsPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [id]);
 
   if (!job) {
     return <div>Not found...</div>;
@@ -114,8 +114,12 @@ const JobDetailsPage = () => {
         </div>
         <h2 className="text-[#2B5A9E] font-medium text-xl py-10">Similar Jobs</h2>
         <div className="w-full flex gap-10 relative ">
-          <JobCard3 job={jobs[5]} />
-          <JobCard3 job={jobs[6]}/>
+          {jobs.filter(recommendedJob => recommendedJob.id !== job.id)
+               .sort(() => 0.5 - Math.random())
+               .slice(0, 2)
+               .map((recommendedJob, index) => (
+                 <JobCard3 key={index} job={recommendedJob} />
+               ))}
         </div>
       </div>
     </div>

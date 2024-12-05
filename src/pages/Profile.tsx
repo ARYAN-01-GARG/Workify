@@ -49,6 +49,14 @@ const Profile = () => {
   const [isProfileChanged, setIsProfileChanged] = useState(false);
   const editPageOpen = useSelector((state: { profileEdit: { editPageOpen: boolean } }) => state.profileEdit.editPageOpen);
 
+  useEffect(() => {
+    if (editPageOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [editPageOpen]);
+
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isLoading) {
       return;
@@ -176,7 +184,7 @@ const Profile = () => {
               )}
               {isEditing && (
                 <label htmlFor="profilePicUpload" className="absolute bottom-1 right-1 rounded-full bg-white border border-[#B0B0B0] cursor-pointer text-[#2B5A9E] p-1 hover:scale-105">
-                  <RiPencilFill size={30} className="p-1" />
+                  <RiPencilFill size={30} className="p-1"/>
                 </label>
               )}
               <input type="file" id="profilePicUpload" className="hidden" onChange={handlePhotoChange} />

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    editPageOpen : true,
+    editPageOpen : false,
     candidate: {
         firstName: '',
         lastName: '',

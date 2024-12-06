@@ -22,6 +22,7 @@ import PostJob from "./pages/Home/PostJob";
 import JobDetailsPage from "./components/Jobs/JobDetailsPage";
 import CompanyDetailsPage from "./pages/Companies/CompanyDetailsPage";
 import Profile from "./pages/Profile";
+import MissingPage from "./pages/MissingPage";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -51,6 +52,11 @@ const App = () => {
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="new-password" element={<SetPasswordPage />} />
         </Route>
+
+        {
+          !isAuthenticated &&
+          <Route path="*" element={<MissingPage/>}/>
+        }
 
 
         {/* Protected routes */}

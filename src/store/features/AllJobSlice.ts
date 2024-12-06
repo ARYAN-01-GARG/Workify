@@ -72,6 +72,22 @@ export const getAllJobs = createAsyncThunk(
     }
 );
 
+export const getJobById = createAsyncThunk(
+    'allJobs/getJobById',
+    async (id: number) => {
+        try {
+            const response = await axios.get(`https://naitikjain.me/api/jobs/get-job-by-id/${id}`,{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+);
+
 const AllJobSlice = createSlice({
     name: 'allJobs',
     initialState,
@@ -79,7 +95,7 @@ const AllJobSlice = createSlice({
         setJobs: (state, action) => {
             state.jobs = action.payload;
         }
-    }
+    },
 });
 
 export const { setJobs } = AllJobSlice.actions;

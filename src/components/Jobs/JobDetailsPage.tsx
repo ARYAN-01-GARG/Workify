@@ -4,42 +4,47 @@ import Header from "../landingPage/Header"
 import JobCard2 from "./JobCard2"
 import JobCard3 from "./JobCard3";
 import { Link, useParams } from "react-router-dom";
-import { JobState, AllRecommendedJobsState, getAllRecommendedJobs } from "../../store/features/AllRecommendedJobSlice";
+import { JobState, AllRecommendedJobsState } from "../../store/features/AllRecommendedJobSlice";
 import { AppDispatch } from "../../store/store";
+import { getJobById } from "../../store/features/AllJobSlice";
 
 const JobDetailsPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const [fetching, setFetching] = useState(false);
   const jobs = useSelector((state: {getAllRecommendedJobs : AllRecommendedJobsState }) => state.getAllRecommendedJobs.jobs);
   const [job, setJob] = useState<JobState | null>(null);
   const [benefits, setBenefits] = useState<string[]>([]);
 
   useEffect(() => {
-    if (jobs.length === 0) {
-      dispatch(getAllRecommendedJobs());
-    }
-  }, [dispatch, jobs.length]);
-
-  useEffect(() => {
-    if (id && jobs.length > 0) {
-      const selectedJob = jobs.find(job => job.id === Number(id));
-      if (selectedJob) {
-        setJob(selectedJob);
-        if (selectedJob.mode === 'ONLINE') {
+    if (id){
+      setFetching(true);
+      dispatch(getJobById(Number(id))).then((res) => {
+        setFetching(false);
+        if(res.type === 'allJobs/getJobById/fulfilled'){
+          setJob(res.payload)
+        }
+      })
+      if(job){
+        if (job.mode === 'ONLINE'){
           setBenefits(['Flexible Hours', 'Remote Work']);
         } else {
           setBenefits(['Health Insurance', 'Office Lunch']);
         }
       }
     }
-  }, [id, jobs]);
+  }, [id, dispatch , job]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
+  if (fetching) {
+    return <div className="flex justify-center items-center min-h-screen text-4xl font-bold">Loading...</div>;
+  }
+
   if (!job) {
-    return <div>Not found...</div>;
+    return <div className="flex justify-center items-center min-h-screen text-4xl font-bold">That job not exists...</div>;
   }
   return (
     <div className="w-full bg-[#E6ECF8] min-h-screen">
@@ -52,16 +57,6 @@ const JobDetailsPage = () => {
               <div className="flex flex-col gap-2 text-xl ">
                 <h2 className="font-semibold">About Job</h2>
                 <h3 className="text-lg font-medium text-[#3D3D3D]">{job.description ? job.description : 'Senior Full-stack Developer role, with end-to-end ownership of the Company&apos;s Android apps.'}</h3>
-              </div>
-              <div className="text-lg font-medium max-w-[90%]">
-                <h4 className="text-[#2a2a2a] pb-5">
-                  Key Responisbility :
-                </h4>
-                <div className="text-[#5D5D5D] pl-1">
-                  <p>1. Collaborate with cross-functional teams to design, develop, and implement new features for our Android applications</p>
-                  <p>2. Optimize App performance and ensure seamless user experience.</p>
-                  <p>3. Contribute to the overall Tech strategy & roadmap of the company to drive innovation & growth.</p>
-                </div>
               </div>
             </div>
             <div className="bg-white px-10 py-12 flex flex-col gap-6 rounded-lg">

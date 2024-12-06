@@ -3,12 +3,17 @@ import axios, { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 
 export interface Recruiter {
+  firstName : string;
+  lastName : string;
+  email : string | null;
+  phone : string | null;
   companyName: string;
   companyEmail: string;
   jobTitle: string;
   companyWebsite: string;
   industry: string;
   companyLocation: string;
+  profileImage: string | null;
 }
 
 export interface RecruiterState {
@@ -25,12 +30,17 @@ const initialState : RecruiterState = {
     isRecruiterLocationOpen : false,
     isRecruiterCompanyDetailsOpen : false,
     recruiter: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
       companyName: "",
       companyEmail: "",
       jobTitle: "",
       companyWebsite:"",
       industry: "",
-      companyLocation:""
+      companyLocation:"",
+      profileImage: null
     },
 };
 
@@ -54,6 +64,24 @@ export const createRecruiterProfile = createAsyncThunk(
         console.log(err)
         toast.error('Profile creation failed');
         return rejectWithValue(error.response?.data?.message || 'Registration failed');
+    }
+  }
+)
+
+export const getRecruiterProfile = createAsyncThunk(
+  'recruiter/getRecruiterProfile',
+  async (_,{dispatch}) => {
+    try {
+      console.log(localStorage.getItem('token'));
+      const response = await axios.get('https://naitikjain.me/api/recruiter/current-recruiter', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      dispatch(setRecruiter(response.data));
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
     }
   }
 )

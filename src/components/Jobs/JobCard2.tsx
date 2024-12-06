@@ -2,13 +2,20 @@ import { CiCalendar } from "react-icons/ci"
 import { FaClipboardList } from "react-icons/fa6"
 import { PiMoneyFill } from "react-icons/pi"
 import { Link } from "react-router-dom"
-import { JobState } from "../../store/features/AllRecommendedJobSlice"
+import { JobState} from "../../store/features/AllRecommendedJobSlice"
 import { format, differenceInDays } from 'date-fns';
+import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch } from "../../store/store"
+import { applyJob, setAppliedJobs } from "../../store/features/job/ApplyJobSlice"
 
 const JobCard2 = ({
     job
 }:{ job: JobState}) => {
 
+    const dispatch = useDispatch<AppDispatch>();
+    const [isLoading, setIsLoading] = useState(false);
+    const appliedJobs = useSelector((state : {applyJob : {jobs: JobState[]}}) => state.applyJob.jobs);
     const formatJobStatus = (status: string) => {
         return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     }
@@ -22,6 +29,22 @@ const JobCard2 = ({
         const date = new Date(dateString);
         return differenceInDays(new Date(), date);
     }
+
+    const handleApplyJob = () => {
+        setIsLoading(true);
+        try {
+            dispatch(applyJob(job.id)).then((res) => {
+                if(res.type === 'applyJob/applyJobFunc/fulfilled') {
+                    setIsLoading(false);
+                    dispatch(setAppliedJobs([...appliedJobs, job]));
+                }
+                setIsLoading(false);
+            });
+        } catch (error) {
+            console.error('Failed to apply for job', error);
+        }
+    }
+
   return (
     <div className="relative flex flex-col justify-between items-start bg-white px-8 py-8 rounded-xl border-2 border-[#6D6D6D]/50">
         <div className="absolute -top-5 right-6 px-3 py-[0.4rem] font-medium text-[#2B5A9E] bg-[#E6ECF8] border-[2px] border-[#C8D8EF] rounded-lg">{job.mode === 'ONLINE' ? 'Remote' : 'In-Office'}</div>
@@ -38,7 +61,8 @@ const JobCard2 = ({
             <p className="text-[#2B5A9E] text-lg font-medium"><span>Posted on {formatDate(job.postedAt)}</span><span className="">{` .  Posted ${calculateDaysAgo(job.postedAt)}d ago`}</span></p>
             <div className="flex gap-5">
                 <Link to={'gshgshj'} className="text-xl text-[#2B5A9E] font-medium py-2 px-5 border border-[#2B5A9E] rounded-2xl hover:bg-[#d4dae5] ">Save</Link>
-                <button className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>
+                {<button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
+                {/* {handleCheck && <div onClick={handleApplyJob} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>} */}
             </div>
         </div>
         <div className="w-full flex justify-between items-start mt-10 mb-5 pr-20 max-w-[65vw]">

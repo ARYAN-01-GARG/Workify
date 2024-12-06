@@ -10,6 +10,7 @@ import { AppDispatch } from "../../store/store";
 import { activeUser, logout } from "../../store/features/UserSlice";
 import { MdLogout } from "react-icons/md";
 import { Candidate, getCandidate } from "../../store/features/roleSelection/CandidateSlice";
+import { getRecruiterProfile, Recruiter } from "../../store/features/roleSelection/RecruiterSlice";
 
 const Header = () => {
 
@@ -17,6 +18,7 @@ const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector((state: { user : UserState}) => state.user.isAuthenticated);
   const candidate = useSelector((state: { candidate : { candidate : Candidate}}) => state.candidate.candidate);
+  const recruiter = useSelector((state: { recruiter : { recruiter : Recruiter}}) => state.recruiter.recruiter);
   const role = useSelector((state: { user : UserState}) => state.user.userData.role);
   const token = useSelector((state: { user : UserState}) => state.user.token) as string;
   const [isOpen , setIsOpen] = useState(false);
@@ -27,11 +29,11 @@ const Header = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(activeUser());
+        dispatch(activeUser());
         if (role === 'candidate' && candidate.firstName === '') {
           await dispatch(getCandidate({ token }));
-        } else if (role === 'recruiter' && candidate.firstName === '') {
-          console.log('recruiter');
+        } else if (role === 'recruiter' && recruiter.firstName === '') {
+          await dispatch(getRecruiterProfile());
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -39,7 +41,7 @@ const Header = () => {
     };
 
     fetchData();
-  }, [dispatch, isAuthenticated, role, candidate.firstName, token]);
+  }, [dispatch, recruiter.firstName , isAuthenticated, role, candidate.firstName, token]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -78,7 +80,7 @@ const Header = () => {
           <div className="flex justify-center items-center gap-5 relative">
             <BiBell size={30} className="mr-6"/>
             <div onClick={() => setIsOpen((prev)=> !prev)} className="cursor-pointer bg-slate-300 rounded-full h-8 w-8 ">
-              {candidate.profileImageKey ? <img src={candidate.profileImageKey} alt="User" className="w-full h-full rounded-full border-2 border-[#2B5A9E]" /> : <FaRegCircleUser className="text-slate-700 m-auto w-full h-full " size={20} />}
+              {candidate.profileImageKey ? <img src={candidate.profileImageKey} alt="User" className="w-full h-full rounded-full border-2 border-[#2B5A9E]" /> : recruiter.profileImage ? <img src={recruiter.profileImage} alt="User" className="w-full h-full rounded-full border-2 border-[#2B5A9E]" /> : <FaRegCircleUser className="text-slate-700 m-auto w-full h-full " size={20} />}
             </div>
             {isOpen && UserMenu}
           </div>

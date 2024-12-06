@@ -4,8 +4,6 @@ import Header from "../components/landingPage/Header"
 import { FaSearch } from "react-icons/fa"
 import Card from "../components/landingPage/Card"
 import Card2 from "../components/landingPage/Card2"
-import Card3 from "../components/landingPage/Card3"
-import { FcGoogle } from "react-icons/fc"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
@@ -46,12 +44,13 @@ const LandingPage = () => {
   },[ IsAuthenticated , dispatch , role , navigate ]);
 
   useEffect(() => {
-    if(isOpen || isCandidateOpen || isRecruiterOpen){
+    if(isOpen || isCandidateOpen || isRecruiterOpen || isLocked){
+      window.scrollTo(0,0);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto'
     }
-  },[isOpen ,isCandidateOpen , isRecruiterOpen])
+  },[isOpen ,isCandidateOpen , isRecruiterOpen , isLocked])
 
   return (
     <div className="
@@ -71,9 +70,9 @@ const LandingPage = () => {
               <p>Find jobs that match your interests with us.</p>
               <p>Workify provides a place to find your jobs</p>
             </h3>
-            <div className="flex items-center py-2 border-2 border-[#3C74BB] pl-2 lg:pl-4 pr-2 gap-2 rounded-2xl">
+            <form className="flex items-center py-2 border-2 border-[#3C74BB] pl-2 lg:pl-4 pr-2 gap-2 rounded-2xl" onSubmit={(e) => { e.preventDefault(); setIsLocked(true); }}>
               <div className="p-2 rounded-full bg-[#2B5A9E] text-white hover:opacity-80 cursor-pointer">
-                <FaSearch size={18} onClick={() => setIsLocked(true)}/>
+                <FaSearch type="submit" size={18} onClick={() => setIsLocked(true)}/>
               </div>
               <input
                 type="text"
@@ -84,7 +83,7 @@ const LandingPage = () => {
               <button className="flex items-center gap-1 text-[1.1rem] lg:text-xl bg-[#C8D8EF] font-medium text-[#3D3D3D] px-2 py-1 rounded-xl hover:opacity-90">
                 <span><FaLocationDot size={16}/></span>Location
               </button>
-            </div>
+            </form>
             <div className="text-[#474C54] font-medium text-[0.9rem]">
               <span className="text-[#9199A3]">Suggestion: </span>
               <span>Designer</span>,
@@ -97,7 +96,7 @@ const LandingPage = () => {
               <button onClick={() => handleSelectChange('Full Time')} className="bg-[#C8D8EF] text-[#2B5A9E] text-sm lg:text-[1rem] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
                 {selectedType === 'Full Time' ?
                   <FaRegCircleCheck  size={20} className="text-[#213E6B]"/> :
-                  <FaRegCircle  size={20} className="text-[#213E6B]"/> 
+                  <FaRegCircle  size={20} className="text-[#213E6B]"/>
                 }<span>Full Time</span>
               </button>
               <button onClick={() => handleSelectChange('Part Time')} className="bg-[#C8D8EF] text-[#2B5A9E] text-sm lg:text-[1rem] font-medium p-2 md:px-3 md:py-2 rounded-xl flex gap-2 items-center">
@@ -146,19 +145,6 @@ const LandingPage = () => {
                 <Card2 imageURL={'/images/landing-page/database.png'} title={'Data & Science'} description="" className={'lg:flex hidden'}/>
               </>}
             </div>
-          </div>
-        </section>
-        <section className="lg:block hidden py-10 my-20 bg-white ">
-          <div className="text-[2.5rem] font-medium px-16 mb-8">
-            Top companies
-          </div>
-          <div className="flex justify-evenly items-center flex-wrap">
-            <Card3 Icon={FcGoogle} title="Google" location={'Bengaluru,Karnataka'}/>
-            <Card3 imageURL='/images/landing-page/employers-logo.png' title="Google" location={'Bengaluru,Karnataka'} outline/>
-            <Card3 Icon={FcGoogle} title="Google" location={'Bengaluru,Karnataka'}/>
-            <Card3 imageURL='/images/landing-page/employers-logo.png' title="Google" location={'Bengaluru,Karnataka'} outline/>
-            <Card3 Icon={FcGoogle} title="Google" location={'Bengaluru,Karnataka'}/>
-            <Card3 imageURL='/images/landing-page/employers-logo.png' title="Google" location={'Bengaluru,Karnataka'} outline/>
           </div>
         </section>
         <section className="lg:flex items-center gap-10 justify-center w-full hidden">

@@ -25,15 +25,18 @@ const JobDetailsPage = () => {
           setJob(res.payload)
         }
       })
-      if(job){
-        if (job.mode === 'ONLINE'){
-          setBenefits(['Flexible Hours', 'Remote Work']);
-        } else {
-          setBenefits(['Health Insurance', 'Office Lunch']);
-        }
+    }
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if(job){
+      if (job.mode === 'ONLINE'){
+        setBenefits(['Flexible Hours', 'Remote Work']);
+      } else {
+        setBenefits(['Health Insurance', 'Office Lunch']);
       }
     }
-  }, [id, dispatch , job]);
+  }, [job]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

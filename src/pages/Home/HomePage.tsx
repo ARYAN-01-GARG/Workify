@@ -87,8 +87,6 @@ const HomePage = () => {
           <JobCard key={job.id} job={job} />
         ))}
       </div>
-      <div className="min-h-screen bg-white" id="Companies"></div>
-      <div className="min-h-screen bg-white" id="Membership"></div>
     </div>
   )
 }
@@ -150,7 +148,7 @@ export const AppliedJobCard = () => {
         <p className="text-[#4F4F4F] font-medium text-[1rem]">You have not applied to any jobs yet.</p>
         <Link
           to="/jobs"
-          className="bg-[#2B5A9E] font-medium text-xl text-white py-[0.6rem] px-5 rounded-2xl hover:opacity-80" 
+          className="bg-[#2B5A9E] font-medium text-xl text-white py-[0.6rem] px-5 rounded-2xl hover:opacity-80"
         >
           Search Jobs
         </Link>

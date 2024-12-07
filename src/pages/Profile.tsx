@@ -64,6 +64,12 @@ const Profile = () => {
       setIsLoading(true);
       const file = event.target.files?.[0];
       if (file) {
+        const validTypes = ['image/png', 'image/jpeg'];
+        if (!validTypes.includes(file.type)) {
+          toast.error('Please choose a PNG or JPG image');
+          setIsLoading(false);
+          return;
+        }
         if (file.size > 3 * 1024 * 1024) {
           toast.error('Please choose an image between 2-3 MB');
           setIsLoading(false);
@@ -173,8 +179,8 @@ const Profile = () => {
       <Header />
       <main className="flex-grow px-4 lg:px-[3.125rem] py-[2.6rem] ">
         <div className="flex gap-6 w-full items-start">
-          <div className="flex gap-8 border-[2px] border-[#B0B0B0] py-5 lg:py-[3.2rem] px-2 lg:px-[2.6rem] bg-white rounded-lg w-full lg:max-w-[60vw] items-start">
-            <div className="relative w-full max-w-25 lg:max-w-40 h-25 lg:h-40 rounded-full bg-slate-300 flex justify-center items-center">
+          <div className="flex gap-6 lg:gap-8 border-[2px] border-[#B0B0B0] py-5 lg:py-[3.2rem] px-2 lg:px-[2.6rem] bg-white rounded-lg w-full lg:max-w-[60vw] lg:items-start justify-center lg:justify-start">
+            <div className="relative w-full max-w-28 lg:max-w-40 h-28 lg:h-40 rounded-full bg-slate-300 flex justify-center items-center">
               {selectedImage ? (
                 <img src={selectedImage} alt="User" className="w-full h-full rounded-full" />
               ) : candidate.profileImageKey ? (
@@ -184,20 +190,20 @@ const Profile = () => {
               )}
               {isEditing && (
                 <label htmlFor="profilePicUpload" className="absolute bottom-1 right-1 rounded-full bg-white border border-[#B0B0B0] cursor-pointer text-[#2B5A9E] p-1 hover:scale-105">
-                  <RiPencilFill size={30} className="p-1"/>
+                  <RiPencilFill size={25} className="p-1"/>
                 </label>
               )}
               <input type="file" id="profilePicUpload" className="hidden" onChange={handlePhotoChange} />
             </div>
             <div className="w-full">
               <div className="w-full">
-                <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#D1D1D1]">
+                <div className="flex flex-col items-start gap-2 pb-2 border-b-2 border-[#D1D1D1]">
                   <h1 className="text-xl lg:text-[1.57rem] font-semibold ">{`${candidate.firstName || ''} ${candidate.lastName || ''}`}</h1>
                   <p className="lg:text-xl text-[1rem] font-medium text-[#3D3D3D]">{`${candidate.domain}`}</p>
-                  <button className="block lg:hidden bg-[#2B5A9E] text-white font-medium text-[1rem] py-2 px-5 rounded-2xl hover:opacity-80" onClick={isEditing ? handleSaveProfile : handleEditClick}>
-                    {isEditing ? 'Save' : 'Edit'}
-                  </button>
                 </div>
+                <button className="block lg:hidden p;l-10 mt-2 bg-[#2B5A9E] text-white font-medium text-[1rem] py-2 px-10 rounded-2xl hover:opacity-80" onClick={isEditing ? handleSaveProfile : handleEditClick}>
+                  {isEditing ? 'Save' : 'Edit'}
+                </button>
               </div>
               <div className="hidden justify-between gap-10 pt-2 lg:flex">
                 <div className="flex flex-col gap-5 justify-between">
@@ -246,6 +252,18 @@ const Profile = () => {
               <div className="w-full flex gap-3 mt-6 items-center justify-center flex-col border-[2px] py-3 pb-5 px-5 border-dashed border-[#B0B0B0]">
                 <h1 className="text-[#2B5A9E] text-xl cursor-pointer"><span className="text-black">Already Have a Portfolio ? </span>Upload Portfolio</h1>
                 <h3 className="text-lg text-[#3D3D3D]">Supported Formats: doc, docx, rtf, pdf, upto 2 MB</h3>
+              </div>
+            </div>
+            <div className="bg-white font-medium py-[1.5rem] px-8 lg:px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full lg:max-w-[64vw]">
+              <div className="flex flex-col lg:hidden justify-between gap-5 pt-2">
+                <div className="flex flex-col gap-5 justify-between">
+                  <div className="flex gap-2 items-center"><CiLocationOn size={25}/>{`${candidate.location}`}</div>
+                  <div className="flex gap-2 items-center"><RxBackpack size={25}/>{`${candidate.experience[0].yearsWorked ? candidate.experience[0].yearsWorked < 5 ? 'Fresher' : 'Experienced' : 'Fresher' }`}</div>
+                </div>
+                <div className="flex flex-col gap-5 justify-between">
+                  <div className="flex gap-2 items-center"><FiPhone size={20}/>{`${candidate.phone ? candidate.phone : 'Not verified'}`}</div>
+                  <div className="flex gap-2 items-center"><MdOutlineMail size={20}/>{`${candidate.email ? candidate.email : 'abc@gmail.com'}`}</div>
+                </div>
               </div>
             </div>
             <div className="bg-white font-medium py-[3.13rem] px-8 lg:px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full lg:max-w-[64vw]">

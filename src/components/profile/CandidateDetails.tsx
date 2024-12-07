@@ -2,7 +2,7 @@ import { useState } from "react";
 import { closeResumePage, setIsCandidateOpen } from "../../store/features/roleSelection/CandidateSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../store/features/UserSlice";
-import { setCandidate, setRole, uploadResume } from "../../store/features/roleSelection/RoleSelectionSlice";
+import { setCandidate, uploadResume } from "../../store/features/roleSelection/RoleSelectionSlice";
 import { UserState } from "../../store/features/auth/UserState";
 import { AppDispatch } from "../../store/store";
 import EducationPage from "./EducationPage";

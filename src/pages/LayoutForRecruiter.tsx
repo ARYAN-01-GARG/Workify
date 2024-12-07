@@ -8,7 +8,7 @@ const LayoutForRecruiter = () => {
   return (
     <div className="flex flex-col w-full min-h-screen bg-[#E6ECF8]">
         <Header/>
-        <main className="flex-grow px-16 flex items-start pt-2">
+        <main className="flex-grow px-16 flex lg:flex-row flex-col items-center pt-2">
             <div className="flex-grow flex flex-col justify-center items-start min-h-[80vh]">
                 <h1 className="text-[3.2rem] font-medium leading-[4.7rem]">Find your next perfect hire with Workify.</h1>
                 <h2 className="text-[2.45rem] font-medium text-[#3D3D3D]">Simple, fast, reliable.</h2>

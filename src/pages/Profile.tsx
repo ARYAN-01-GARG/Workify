@@ -171,10 +171,10 @@ const Profile = () => {
   return (
     <div className="relative min-h-screen flex flex-col bg-[#E6ECF8]">
       <Header />
-      <main className="flex-grow px-[3.125rem] py-[2.6rem] ">
+      <main className="flex-grow px-4 lg:px-[3.125rem] py-[2.6rem] ">
         <div className="flex gap-6 w-full items-start">
-          <div className="flex gap-8 border-[2px] border-[#B0B0B0] py-[3.2rem] px-[2.6rem] bg-white rounded-lg w-full max-w-[60vw] items-start">
-            <div className="relative w-full max-w-40 h-40 rounded-full bg-slate-300 flex justify-center items-center">
+          <div className="flex gap-8 border-[2px] border-[#B0B0B0] py-5 lg:py-[3.2rem] px-2 lg:px-[2.6rem] bg-white rounded-lg w-full lg:max-w-[60vw] items-start">
+            <div className="relative w-full max-w-25 lg:max-w-40 h-25 lg:h-40 rounded-full bg-slate-300 flex justify-center items-center">
               {selectedImage ? (
                 <img src={selectedImage} alt="User" className="w-full h-full rounded-full" />
               ) : candidate.profileImageKey ? (
@@ -192,11 +192,14 @@ const Profile = () => {
             <div className="w-full">
               <div className="w-full">
                 <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#D1D1D1]">
-                  <h1 className="text-[1.57rem] font-semibold ">{`${candidate.firstName || ''} ${candidate.lastName || ''}`}</h1>
-                  <p className="text-xl font-medium text-[#3D3D3D]">{`${candidate.domain}`}</p>
+                  <h1 className="text-xl lg:text-[1.57rem] font-semibold ">{`${candidate.firstName || ''} ${candidate.lastName || ''}`}</h1>
+                  <p className="lg:text-xl text-[1rem] font-medium text-[#3D3D3D]">{`${candidate.domain}`}</p>
+                  <button className="block lg:hidden bg-[#2B5A9E] text-white font-medium text-[1rem] py-2 px-5 rounded-2xl hover:opacity-80" onClick={isEditing ? handleSaveProfile : handleEditClick}>
+                    {isEditing ? 'Save' : 'Edit'}
+                  </button>
                 </div>
               </div>
-              <div className="flex justify-between gap-10 pt-2">
+              <div className="hidden justify-between gap-10 pt-2 lg:flex">
                 <div className="flex flex-col gap-5 justify-between">
                   <div className="flex gap-2 items-center"><CiLocationOn size={25}/>{`${candidate.location}`}</div>
                   <div className="flex gap-2 items-center"><RxBackpack size={25}/>{`${candidate.experience[0].yearsWorked ? candidate.experience[0].yearsWorked < 5 ? 'Fresher' : 'Experienced' : 'Fresher' }`}</div>
@@ -207,11 +210,11 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            <button className="bg-[#2B5A9E] text-white font-medium text-xl py-[.7rem] px-10 ml-20 rounded-2xl hover:opacity-80" onClick={isEditing ? handleSaveProfile : handleEditClick}>
+            <button className="hidden lg:block bg-[#2B5A9E] text-white font-medium text-xl py-[.7rem] px-10 ml-20 rounded-2xl hover:opacity-80" onClick={isEditing ? handleSaveProfile : handleEditClick}>
               {isEditing ? 'Save' : 'Edit'}
             </button>
           </div>
-          <div className="relative bg-[#FFECDD] px-[2rem] py-[2.9rem] w-[40vw] border rounded-lg border-[#ECDFC1] mt-2">
+          <div className="relative hidden lg:block bg-[#FFECDD] px-[2rem] py-[2.9rem] w-[40vw] border rounded-lg border-[#ECDFC1] mt-2">
             <h4 className="text-lg font-medium">How to create a good Resume on Workify?</h4>
             <Link to={'/resume-building'} className="text-lg font-semibold text-[#9E5A0D] hover:opacity-80">Read blog post</Link>
             <div className="absolute -top-5 text-lg font-medium bg-[#FFCBA4] border border-[#E9DED4] text-[#B85900] rounded-lg px-4 py-2 cursor-default">
@@ -220,7 +223,7 @@ const Profile = () => {
           </div>
         </div>
         <div className="flex gap-8 items-start mt-6">
-          <div className="bg-white py-[3.73rem] px-[3.12rem] border-[2px] rounded-lg border-[#B0B0B0]">
+          <div className="hidden lg:block bg-white py-[3.73rem] px-[3.12rem] border-[2px] rounded-lg border-[#B0B0B0]">
             <h1 className="text-lg font-semibold">Add More</h1>
             {sideBarData.map((data, index) => (
               <div key={index} className="flex text-lg font-medium justify-between items-center rounded-lg pt-[1.4rem] pb-[.7rem] w-[20vw]">
@@ -230,16 +233,22 @@ const Profile = () => {
             ))}
           </div>
           <div className="w-full flex flex-col gap-7">
-            <div className="bg-white font-medium py-[3.13rem] px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full max-w-[64vw]">
-              <h1 className="text-xl pb-3">Portfolio</h1>
+            <div className="bg-white font-medium py-[3.13rem] px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] hidden w-full lg:max-w-[64vw]">
+              <h1 className="text-xl pb-3 hidden lg:block">Portfolio</h1>
+              <h1 className="text-xl pb-3 hidden lg:block">Create</h1>
+              <div className="text-lg text-[#3D3D3D] pb-4">
+
+              </div>
               <p className="text-lg text-[#3D3D3D] pb-4">Showcase your skills and achievements to stand out- create a personalized portfolio that grabs attention and open doors to opportunities!</p>
-              <PortfolioCard bg={'#E6ECF8'}/>
+              <div className="w-full hidden lg:block">
+                <PortfolioCard bg={'#E6ECF8'}/>
+              </div>
               <div className="w-full flex gap-3 mt-6 items-center justify-center flex-col border-[2px] py-3 pb-5 px-5 border-dashed border-[#B0B0B0]">
                 <h1 className="text-[#2B5A9E] text-xl cursor-pointer"><span className="text-black">Already Have a Portfolio ? </span>Upload Portfolio</h1>
                 <h3 className="text-lg text-[#3D3D3D]">Supported Formats: doc, docx, rtf, pdf, upto 2 MB</h3>
               </div>
             </div>
-            <div className="bg-white font-medium py-[3.13rem] px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full max-w-[64vw]">
+            <div className="bg-white font-medium py-[3.13rem] px-8 lg:px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full lg:max-w-[64vw]">
               <h1 className="text-xl pb-3">Resume</h1>
               <p className="text-lg text-[#3D3D3D] pb-4">70% of recruiters discover candidates through their resume.</p>
               {candidate.resumeKey && <a href={candidate.resumeKey} target="_blank" rel="noopener noreferrer" className="w-full text-lg text-[#2B5A9E] text-center px-10">Resume.pdf</a>}
@@ -256,7 +265,7 @@ const Profile = () => {
                 )}
               </div>
             </div>
-            <div className="bg-white font-medium py-[3.13rem] px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full max-w-[64vw]">
+            <div className="bg-white font-medium py-[3.13rem] px-8 lg:px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full lg:max-w-[64vw]">
               <div className="flex justify-between">
                 <h1 className="text-xl pb-3">Key Skills</h1>
                 <FaPlus size={20} className="text-[#2B5A9E] cursor-pointer hover:opacity-80" onClick={() => setIsAddingSkill(true)} />
@@ -282,14 +291,14 @@ const Profile = () => {
                 </div>
               )}
             </div>
-            <div className="bg-white font-medium py-[3.13rem] px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full max-w-[64vw]">
+            <div className="bg-white font-medium py-[3.13rem] px-8 lg:px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full lg:max-w-[64vw]">
               <div className="flex justify-between">
                 <h1 className="text-xl pb-3">Employment</h1>
                 <FaPlus size={20} className="text-[#2B5A9E] cursor-pointer hover:opacity-80" onClick={()=> {}} />
               </div>
               <p className="text-lg text-[#3D3D3D] pb-4">UI UX Developer</p>
             </div>
-            <div className="bg-white font-medium py-[3.13rem] px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full max-w-[64vw]">
+            <div className="bg-white font-medium py-[3.13rem] px-8 lg:px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full lg:max-w-[64vw]">
               <div className="flex justify-between">
                 <h1 className="text-xl pb-3">Preferred location</h1>
                 <FaPlus size={20} className="text-[#2B5A9E] cursor-pointer hover:opacity-80" onClick={() => setIsAddingLocation(true)} />
@@ -313,7 +322,7 @@ const Profile = () => {
                 </div>
               )}
             </div>
-            <div className="bg-white font-medium py-[3.13rem] px-[3.45rem] border-[2px] rounded-lg border-[#B0B0B0] w-full max-w-[64vw]">
+            <div className="bg-white font-medium py-[3.13rem] px-8 lg:px-[3.45rem]+ border-[2px] rounded-lg border-[#B0B0B0] w-full lg:max-w-[64vw]">
               <div className="flex justify-between">
                 <h1 className="text-xl pb-3">Education</h1>
                 <FaPlus size={20} className="text-[#2B5A9E] cursor-pointer hover:opacity-80" onClick={handleEditEducation} />

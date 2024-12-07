@@ -15,6 +15,7 @@ const JobCard = ({
 
     const dispatch = useDispatch<AppDispatch>();
     const jobs = useSelector((state : {allJobs : {jobs : JobState[]}}) => state.allJobs.jobs);
+    const isApplied = useSelector((state : {applyJob : {jobs: JobState[]}}) => state.applyJob.jobs.some((j) => j.id === job.id));
     const formatJobStatus = (status: string) => {
         if (!status) return 'N/A';
         return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
@@ -87,19 +88,19 @@ const JobCard = ({
             ))}
         </div>
         <div className="w-full flex text-[1rem] lg:gap-5 justify-between items-center mt-10 mb-5 lg:pr-16 flex-wrap">
-            <div className="font-medium text-[#5D5D5D]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D]">
                 <div className="flex items-center md:gap-2 pb-3 "><PiMoneyFill size={20}/><p>Job Offer</p></div>
                 <p className="text-[#3D3D3D]">{`Rs ${jobData.minSalary} - ${jobData.maxSalary}`}</p>
             </div>
-            <div className="font-medium text-[#5D5D5D]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D]">
                 <div className="flex items-center md:gap-2 pb-3"><FaClipboardList size={18}/><p>Job Status</p></div>
                 <p className="text-[#3D3D3D]">{formatJobStatus(jobData.jobStatus)}</p>
             </div>
-            <div className="font-medium text-[#5D5D5D]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D]">
                 <div className="flex items-center md:gap-2 pb-3"><p>Experience</p></div>
                 <p className="text-[#3D3D3D]">{jobData.experience > 0 ? `0-${jobData.experience} years` : 'Fresher'}</p>
             </div>
-            <div className="font-medium text-[#5D5D5D] pr-[4.2rem] md:pr-0 lg:pr-[4.2rem]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D] pr-[4.2rem] md:pr-0 lg:pr-[4.2rem]">
                 <div className="flex items-center md:gap-1 pb-3"><CiCalendar size={25}/><p>Start Date</p></div>
                 <p className="text-[#3D3D3D]">Immediate</p>
             </div>
@@ -108,7 +109,8 @@ const JobCard = ({
             <p className="text-[#2B5A9E] font-medium flex flex-wrap">Posted on {formatDate(jobData.postedAt)}<span className="hidden lg:block">{` .  Posted ${calculateDaysAgo(jobData.postedAt)}d ago`}</span></p>
             <div className="flex gap-5">
                 <Link to={`/jobs/${jobData.id.toString()}`} className="bg-[#E6ECF8] text-xl font-medium py-2 px-5 border border-[#D1D1D1] text-center rounded-2xl hover:bg-[#d4dae5] ">View Details</Link>
-                <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80 text-center">Apply Now</button>
+                {isApplied && <div className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>}
+                {!isApplied && <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80 text-center">Apply Now</button>}
             </div>
         </div>
     </div>

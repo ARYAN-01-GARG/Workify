@@ -52,16 +52,12 @@ const JobsPage = () => {
   return (
     <div className="bg-[#E6ECF8] min-h-screen flex flex-col w-full">
         <Header/>
-        <main className="flex-grow px-12">
+        <main className="flex-grow lg:px-12 px-4">
           <SearchBar/>
           <div className="">
             <div>
-              <p>20500 results</p>
-              <div>
-                Recommended
-              </div>
+              <p className="text-semibold">Total Available Jobs : {jobs.length}</p>
             </div>
-            <p>Hiding jobs that do not accept applications from your location: India. Update location</p>
           </div>
           <div className="flex gap-10 py-10">
             <div className="flex-grow px-2 flex flex-col gap-10">
@@ -69,8 +65,8 @@ const JobsPage = () => {
                 <JobCard key={job.id} job={job} />
               ))}
             </div>
-            <div className="w-[25vw] bg-white rounded-xl text-center">
-              Side
+            <div className="lg:block hidden w-[25vw] bg-white rounded-xl text-center">
+              Showing Results of top Company
             </div>
           </div>
           <div className="flex justify-center items-center gap-3">
@@ -85,7 +81,7 @@ const JobsPage = () => {
             </div>
           </div>
         </main>
-        <div className="text-[#20365A] font-medium text-center px-32 pt-32 pb-8">
+        <div className="text-[#20365A] font-medium text-center px-6 lg:px-32 pt-32 pb-8">
           Applicants are advised to research bonafides of advertisers independently. Workify shall not have any responsibility in this regard. We also recommend that you visit Security Guidelines and Terms and Conditions for more comprehensive information on this aspect.
         </div>
         <Footer/>

@@ -18,7 +18,7 @@ const JobCard3 = ({ job }: { job: JobState }) => {
   }
 
   return (
-    <div className="w-[50vw] flex flex-col justify-between items-start bg-white px-8 pt-8 pb-4 rounded-xl border-2 border-[#6D6D6D]/50">
+    <div className="w-full lg:w-[50vw] flex flex-col justify-between items-start bg-white px-8 pt-8 pb-4 rounded-xl border-2 border-[#6D6D6D]/50">
       <div className="flex gap-4 justify-between w-full">
         <div className="max-w-[70%]">
           <h5 className="text-xl font-semibold">{job.title}</h5>

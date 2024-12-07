@@ -1,7 +1,6 @@
 import { CiCalendar } from "react-icons/ci"
 import { FaClipboardList } from "react-icons/fa6"
 import { PiMoneyFill } from "react-icons/pi"
-import { Link } from "react-router-dom"
 import { JobState} from "../../store/features/AllRecommendedJobSlice"
 import { format, differenceInDays } from 'date-fns';
 import { useState } from "react"
@@ -15,6 +14,7 @@ const JobCard2 = ({
 
     const dispatch = useDispatch<AppDispatch>();
     const [isLoading, setIsLoading] = useState(false);
+    const isapplied = useSelector((state : {applyJob : {jobs: JobState[]}}) => state.applyJob.jobs.some((j) => j.id === job.id));
     const appliedJobs = useSelector((state : {applyJob : {jobs: JobState[]}}) => state.applyJob.jobs);
     const formatJobStatus = (status: string) => {
         return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
@@ -57,30 +57,36 @@ const JobCard2 = ({
                 <div className="text-[#6D6D6D] text-[1rem] md:text-lg font-medium flex gap-1 flex-wrap"><p>{`${job.company || ''} | `}</p><p className="text-nowrap">{` ${job.location || 'Delhi, India'}`}</p></div>
             </div>
         </div>
-        <div className="flex justify-between items-center w-full pt-10">
+        <div className="hidden lg:flex justify-between items-center w-full pt-10">
             <p className="text-[#2B5A9E] text-lg font-medium"><span>Posted on {formatDate(job.postedAt)}</span><span className="">{` .  Posted ${calculateDaysAgo(job.postedAt)}d ago`}</span></p>
             <div className="flex gap-5">
-                <Link to={'gshgshj'} className="text-xl text-[#2B5A9E] font-medium py-2 px-5 border border-[#2B5A9E] rounded-2xl hover:bg-[#d4dae5] ">Save</Link>
-                {<button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
-                {/* {handleCheck && <div onClick={handleApplyJob} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>} */}
+                {!isapplied && <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
+                {isapplied && <div className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>}
             </div>
         </div>
-        <div className="w-full flex justify-between items-start mt-10 mb-5 pr-20 max-w-[65vw]">
-            <div className="font-medium text-[#5D5D5D]">
+        <div className="w-full flex justify-between flex-wrap items-start mt-10 mb-5 lg:pr-20 lg:max-w-[65vw]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D]">
                 <div className="flex items-center gap-2 pb-3"><PiMoneyFill size={20}/><p>Job Offer</p></div>
                 <p className="text-[#3D3D3D]">{`$ ${job.minSalary} - ${job.maxSalary}`}</p>
             </div>
-            <div className="font-medium text-[#5D5D5D]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D]">
                 <div className="flex items-center gap-2 pb-3"><FaClipboardList size={20}/><p>Job Status</p></div>
                 <p className="text-[#3D3D3D]">{`${job.jobStatus ? formatJobStatus(job.jobStatus) : 'Close'}`}</p>
             </div>
-            <div className="font-medium text-[#5D5D5D]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D]">
                 <div className="flex items-center gap-2 pb-3"><p>Experience</p></div>
                 <p className="text-[#3D3D3D]">{job.experience > 0 ? `0-${job.experience} years` : 'Fresher'}</p>
             </div>
-            <div className="font-medium text-[#5D5D5D]">
+            <div className="font-medium w-[40%] lg:w-auto text-[#5D5D5D]">
                 <div className="flex items-center gap-1 pb-3"><CiCalendar size={25}/><p>Start Date</p></div>
                 <p className="text-[#3D3D3D]">Immediate</p>
+            </div>
+        </div>
+        <div className="flex lg:hidden flex-wrap justify-between items-center w-full pt-10">
+            <p className="text-[#2B5A9E] text-lg font-medium"><span>Posted on {formatDate(job.postedAt)}</span><span className="">{` .  Posted ${calculateDaysAgo(job.postedAt)}d ago`}</span></p>
+            <div className="flex gap-5 justify-center lg:justify-start">
+                {!isapplied && <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
+                {isapplied && <div className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>}
             </div>
         </div>
     </div>

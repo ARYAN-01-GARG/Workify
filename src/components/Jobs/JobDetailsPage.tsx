@@ -52,7 +52,7 @@ const JobDetailsPage = () => {
   return (
     <div className="w-full bg-[#E6ECF8] min-h-screen">
       <Header />
-      <div className="w-full px-10 py-10">
+      <div className="w-full px-4 lg:px-10 py-10">
         <JobCard2 job={job}/>
         <div className="flex gap-12 w-full py-10">
           <div className="flex flex-col flex-grow gap-8">
@@ -60,6 +60,32 @@ const JobDetailsPage = () => {
               <div className="flex flex-col gap-2 text-xl ">
                 <h2 className="font-semibold">About Job</h2>
                 <h3 className="text-lg font-medium text-[#3D3D3D]">{job.description ? job.description : 'Senior Full-stack Developer role, with end-to-end ownership of the Company&apos;s Android apps.'}</h3>
+              </div>
+            </div>
+            <div className="flex lg:hidden flex-col gap-6 justify-start">
+              <div className="bg-white px-10 pt-10 w-[60vw] rounded-lg">
+                <h2 className="text-xl font-semibold ">Skills-Mandatory</h2>
+                <div className="flex gap-3 py-5 flex-wrap">
+                  {job.requiredSkills.map((skill, index) => (
+                      <span
+                          key={index}
+                          className="bg-[#E6ECF8] px-2 py-1 text-[1rem] font-medium rounded-md border border-[#D1D1D1]">
+                              {skill}
+                      </span>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white px-10 pt-10 w-[60vw] rounded-lg ">
+                <h2 className="text-xl font-semibold">Extra Benefits</h2>
+                <div className="flex gap-3 py-5 pb-10 flex-wrap">
+                  {benefits.map((benefit, index) => (
+                      <span
+                          key={index}
+                          className="bg-[#E6ECF8] px-2 py-1 text-[1rem] font-medium rounded-md border border-[#D1D1D1]">
+                              {benefit}
+                      </span>
+                  ))}
+                </div>
               </div>
             </div>
             <div className="bg-white px-10 py-12 flex flex-col gap-6 rounded-lg">
@@ -83,7 +109,7 @@ const JobDetailsPage = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-6 justify-start">
+          <div className="hidden lg:flex flex-col gap-6 justify-start">
             <div className="bg-white px-10 pt-10 w-[20vw] rounded-lg">
               <h2 className="text-xl font-semibold ">Skills-Mandatory</h2>
               <div className="flex gap-3 py-5 flex-wrap">
@@ -111,7 +137,7 @@ const JobDetailsPage = () => {
           </div>
         </div>
         <h2 className="text-[#2B5A9E] font-medium text-xl py-10">Similar Jobs</h2>
-        <div className="w-full flex gap-10 relative ">
+        <div className="w-full flex gap-10 relative flex-wrap lg:flex-nowrap">
           {jobs.filter(recommendedJob => recommendedJob.id !== job.id)
                .sort(() => 0.5 - Math.random())
                .slice(0, 2)

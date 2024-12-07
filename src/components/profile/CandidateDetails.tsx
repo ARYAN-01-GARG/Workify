@@ -57,7 +57,7 @@ const CandidateDetails = () => {
     const handleSkip = () => {
         dispatch(setIsCandidateOpen(false));
         dispatch(closeResumePage())
-        dispatch(setRole('recruiter'));
+        dispatch(setUserData({ ...userData, role: 'candidate' }));
     }
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

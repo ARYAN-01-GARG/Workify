@@ -34,7 +34,7 @@ const HomePage = () => {
   }, []);
 
   const scores = [
-    { title: "Posted Job Offers", score: '12,357', icon: '/public/images/home/bag.svg' },
+    { title: "Posted Job Offers", score: '12,357', icon: '/images/home/bag.svg' },
     { title: "Employers", score: '3,513', icon: '/images/home/employee.svg' },
     { title: "Applications sent", score: '52,651', icon: '/images/home/clip.svg' },
     { title: "Job offers viewed", score: '2,481,455', icon: '/images/home/folder.svg' },

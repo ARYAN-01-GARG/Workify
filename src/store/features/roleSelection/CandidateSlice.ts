@@ -76,7 +76,6 @@ export const getCandidate = createAsyncThunk(
         }
       });
       dispatch(setCandidate({...response.data}));
-      console.log(response.data);
     } catch (err: unknown) {
       const error = err as AxiosError<{ message: string }>;
       console.log(err);

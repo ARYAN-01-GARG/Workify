@@ -14,7 +14,7 @@ const JobCard2 = ({
 
     const dispatch = useDispatch<AppDispatch>();
     const [isLoading, setIsLoading] = useState(false);
-    const isapplied = useSelector((state : {applyJob : {jobs: JobState[]}}) => state.applyJob.jobs.some((j) => j.id === job.id));
+    const isApplied = useSelector((state : {applyJob : {jobs: JobState[]}}) => Array.isArray(state.applyJob.jobs) && state.applyJob.jobs.some((j) => j.id === job.id));
     const appliedJobs = useSelector((state : {applyJob : {jobs: JobState[]}}) => state.applyJob.jobs);
     const formatJobStatus = (status: string) => {
         return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
@@ -30,18 +30,17 @@ const JobCard2 = ({
         return differenceInDays(new Date(), date);
     }
 
-    const handleApplyJob = () => {
+    const handleApplyJob = async () => {
         setIsLoading(true);
         try {
-            dispatch(applyJob(job.id)).then((res) => {
-                if(res.type === 'applyJob/applyJobFunc/fulfilled') {
-                    setIsLoading(false);
-                    dispatch(setAppliedJobs([...appliedJobs, job]));
-                }
-                setIsLoading(false);
-            });
+            const res = await dispatch(applyJob(job.id));
+            if (res.type === 'applyJob/applyJobFunc/fulfilled') {
+                dispatch(setAppliedJobs([...appliedJobs, job]));
+            }
         } catch (error) {
             console.error('Failed to apply for job', error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -60,8 +59,8 @@ const JobCard2 = ({
         <div className="hidden lg:flex justify-between items-center w-full pt-10">
             <p className="text-[#2B5A9E] text-lg font-medium"><span>Posted on {formatDate(job.postedAt)}</span><span className="">{` .  Posted ${calculateDaysAgo(job.postedAt)}d ago`}</span></p>
             <div className="flex gap-5">
-                {!isapplied && <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
-                {isapplied && <div className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>}
+                {!isApplied && <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
+                {isApplied && <div className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>}
             </div>
         </div>
         <div className="w-full flex justify-between flex-wrap items-start mt-10 mb-5 lg:pr-20 lg:max-w-[65vw]">
@@ -85,8 +84,8 @@ const JobCard2 = ({
         <div className="flex lg:hidden flex-wrap justify-between items-center w-full pt-10">
             <p className="text-[#2B5A9E] text-lg font-medium"><span>Posted on {formatDate(job.postedAt)}</span><span className="">{` .  Posted ${calculateDaysAgo(job.postedAt)}d ago`}</span></p>
             <div className="flex gap-5 justify-center lg:justify-start">
-                {!isapplied && <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
-                {isapplied && <div className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>}
+                {!isApplied && <button onClick={handleApplyJob} disabled={isLoading} className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Apply Now</button>}
+                {isApplied && <div className="bg-[#2B5A9E] text-white font-medium text-xl py-2 px-5 rounded-2xl hover:opacity-80">Applied</div>}
             </div>
         </div>
     </div>

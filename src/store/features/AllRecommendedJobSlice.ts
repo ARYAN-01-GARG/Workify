@@ -65,7 +65,6 @@ export const getAllRecommendedJobs = createAsyncThunk(
             }
         }
         );
-        console.log(response.data);
         dispatch(setAllRecommendedJobs(response.data));
         return response.data;
     }

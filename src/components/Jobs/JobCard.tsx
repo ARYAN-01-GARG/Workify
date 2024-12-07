@@ -15,7 +15,7 @@ const JobCard = ({
 
     const dispatch = useDispatch<AppDispatch>();
     const jobs = useSelector((state : {allJobs : {jobs : JobState[]}}) => state.allJobs.jobs);
-    const isApplied = useSelector((state : {applyJob : {jobs: JobState[]}}) => state.applyJob.jobs.some((j) => j.id === job.id));
+    const isApplied = useSelector((state : {applyJob : {jobs: JobState[]}}) => Array.isArray(state.applyJob.jobs) && state.applyJob.jobs.some((j) => j.id === job.id));
     const formatJobStatus = (status: string) => {
         if (!status) return 'N/A';
         return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
@@ -50,18 +50,17 @@ const JobCard = ({
     const jobData = { ...defaultJob, ...job };
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleApplyJob = () => {
+    const handleApplyJob = async () => {
         setIsLoading(true);
         try {
-            dispatch(applyJob(jobData.id)).then((res) => {
-                if(res.type === 'applyJob/applyJobFunc/fulfilled') {
-                    setIsLoading(false);
-                    dispatch(setAppliedJobs([...jobs.filter((job) => job.id === jobData.id)]));
-                }
-                setIsLoading(false);
-            });
+            const res = await dispatch(applyJob(jobData.id));
+            if (res.type === 'applyJob/applyJobFunc/fulfilled') {
+                dispatch(setAppliedJobs([...jobs, jobData]));
+            }
         } catch (error) {
             console.error('Failed to apply for job', error);
+        } finally {
+            setIsLoading(false);
         }
     }
 

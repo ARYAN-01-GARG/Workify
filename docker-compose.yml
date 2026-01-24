@@ -1,9 +1,9 @@
 services:
-  project-name-app:
+  workify-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: project-name-app
+    container_name: workify-app
     ports:
       - '3000:3000'
       - '3001:3001'
@@ -11,9 +11,28 @@ services:
       - apps/web/.env
       - apps/server/.env
     restart: on-failure:5
+    depends_on:
+      - postgres
+    networks:
+      - app_network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: workify-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-workify}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
 
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  postgres_data:

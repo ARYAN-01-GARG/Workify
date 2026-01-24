@@ -26,7 +26,14 @@ export class AuthService {
 
   async sendOtp(email: string, role?: UserRole) {
     // 1. Generate 6 digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    let otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Hardcoded OTP for test users
+    const testEmails = ['admin@workify.com', 'recruiter@workify.com', 'candidate@workify.com'];
+    if (testEmails.includes(email)) {
+      otp = '123456';
+    }
+
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // 2. Store in DB (Simulating Redis with SQL for now as per plan)
@@ -68,21 +75,37 @@ export class AuthService {
     let user = await this.prismaService.user.findUnique({ where: { email } });
 
     if (!user) {
-      // Create new user (Default to CANDIDATE if not specified?
-      // Ideally pass role in verify but let's default for now or require it)
+      // Create new user
+      let userRole: UserRole = 'CANDIDATE'; // Default
+
+      // Assign specific roles for test emails
+      if (email === 'admin@workify.com') userRole = 'ADMIN';
+      if (email === 'recruiter@workify.com') userRole = 'RECRUITER';
+
       user = await this.prismaService.user.create({
         data: {
           email,
-          name: email.split('@')[0], // Placeholder name
-          role: 'CANDIDATE', // Default
+          name: email.split('@')[0],
+          role: userRole,
           isVerified: true,
         },
       });
 
       // Initialize Profile
-      await this.prismaService.candidateProfile.create({
-        data: { userId: user.id },
-      });
+      if (userRole === 'CANDIDATE') {
+        await this.prismaService.candidateProfile.create({
+          data: { userId: user.id },
+        });
+      } else if (userRole === 'RECRUITER') {
+        // Create default company for test recruiter
+        let company = await this.prismaService.company.findFirst({ where: { name: 'Workify Inc' } });
+        if (!company) {
+          company = await this.prismaService.company.create({ data: { name: 'Workify Inc' } });
+        }
+        await this.prismaService.recruiterProfile.create({
+          data: { userId: user.id, companyId: company.id },
+        });
+      }
     }
 
     // 3. Generate Token

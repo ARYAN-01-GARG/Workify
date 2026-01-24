@@ -21,3 +21,11 @@ export interface IVerifyOtpPayload {
 export interface IGoogleAuthPayload {
   idToken: string;
 }
+
+export interface RequestWithUser extends Request {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+}

@@ -10,105 +10,112 @@ datasource db {
 
 enum UserRole {
   ADMIN
-  USER
+  CANDIDATE
+  RECRUITER
 }
 
 model User {
-  id               String  @id @default(uuid()) @db.Uuid
-  email            String  @unique
-  name             String
-  avatarUrl        String?
-  rolePermissionId String  @db.Uuid
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String?  // Nullable for OAuth-only initially, but we use OTP
+  role      UserRole
+
+  isVerified Boolean @default(false)
+  
+  // Common Profile Fields
+  name      String
+  bio       String?
+  about     String?
+  avatarUrl String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  
   // Relations
-  userAuth       UserAuth?
-  userProfile    UserProfile?
-  rolePermission RolePermission @relation(fields: [rolePermissionId], references: [id])
-  chats          Chat[]
-
-  @@index([email])
-  @@map("users")
+  candidateProfile CandidateProfile?
+  recruiterProfile RecruiterProfile?
+  
+  // Connections
+  sentRequests     Connection[] @relation("Sender")
+  receivedRequests Connection[] @relation("Receiver")
+  
+  // posts            Post[] // Future implementation
 }
 
-model RolePermission {
-  id          String   @id @default(uuid()) @db.Uuid
-  role        UserRole
-  permissions String[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  users User[]
-
-  @@map("role_permissions")
-}
-
-model UserAuth {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @unique @db.Uuid
-  isDeleted  Boolean  @default(false)
-  password   String
-  isVerified Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  // Relations
-  user User @relation(fields: [userId], references: [id])
-
-  @@map("user_auths")
-}
-
-model UserProfile {
-  id          String    @id @default(uuid()) @db.Uuid
-  userId      String    @unique @db.Uuid
-  dob         DateTime?
-  gender      String?
-  phoneNumber String?
-  address     String?
-  city        String?
-  state       String?
-  country     String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  // Relations
-  user User @relation(fields: [userId], references: [id])
-
-  @@map("user_profiles")
-}
-
-model Chat {
-  id       String  @id @default(uuid()) @db.Uuid
-  userId   String  @db.Uuid
-  title    String  @default("New Chat")
-  isPublic Boolean @default(false)
-
+model Otp {
+  id        String   @id @default(uuid())
+  email     String
+  otp       String
+  expiresAt DateTime
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chatMessages ChatMessage[]
-
-  @@index([userId])
-  @@index([updatedAt])
-  @@map("chats")
 }
 
-model ChatMessage {
-  id          String   @id @default(uuid()) @db.Uuid
-  chatId      String   @db.Uuid
-  role        String
-  parts       Json?
-  attachments Json?
+model CandidateProfile {
+  id             String @id @default(uuid())
+  userId         String @unique
+  user           User   @relation(fields: [userId], references: [id])
+  
+  resumeUrl      String?
+  skills         String[]
+  education      Json?
+  experience     Json?
+}
+
+model RecruiterProfile {
+  id             String @id @default(uuid())
+  userId         String @unique
+  user           User   @relation(fields: [userId], references: [id])
+  
+  companyId      String
+  company        Company @relation(fields: [companyId], references: [id])
+}
+
+model Company {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  website     String?
+  logoUrl     String?
+  
+  recruiters  RecruiterProfile[]
+  jobs        Job[]
+}
+
+model Job {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  location    String
+  
+  // Salary
+  salaryMin   Float?
+  salaryMax   Float?
+  currency    String   @default("USD")
+  
+  // Requirements
+  skills      String[]
+  
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  
+  postedById  String
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+}
 
-  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
 
-  @@index([chatId])
-  @@index([updatedAt])
-  @@map("chat_messages")
+model Connection {
+  id         String @id @default(uuid())
+  senderId   String
+  receiverId String
+  status     ConnectionStatus @default(PENDING)
+  
+  sender     User @relation("Sender", fields: [senderId], references: [id])
+  receiver   User @relation("Receiver", fields: [receiverId], references: [id])
+
+  @@unique([senderId, receiverId])
 }

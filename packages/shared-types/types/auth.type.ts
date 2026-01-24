@@ -3,7 +3,7 @@ import { UserRole } from '@repo/db';
 export interface AuthContextType {
   id: string;
   email: string;
-  role: string;
+  role: UserRole;
   permissions: string[];
   name: string;
   avatarUrl?: string;
@@ -11,7 +11,6 @@ export interface AuthContextType {
 
 export interface ISendOtpPayload {
   email: string;
-  role?: UserRole;
 }
 
 export interface IVerifyOtpPayload {

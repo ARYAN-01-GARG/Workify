@@ -5,10 +5,6 @@ import type { ISendOtpPayload, IVerifyOtpPayload } from '@repo/shared-types';
 export class SendOtpDto implements ISendOtpPayload {
   @IsEmail()
   email: string;
-
-  @IsEnum(UserRole)
-  @IsOptional()
-  role?: UserRole; // Optional, default to CANDIDATE if new
 }
 
 export class VerifyOtpDto implements IVerifyOtpPayload {

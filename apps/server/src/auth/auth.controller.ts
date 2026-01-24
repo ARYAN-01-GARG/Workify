@@ -15,7 +15,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Send OTP to email' })
   @ApiResponse({ status: 200, description: 'OTP sent successfully' })
   async sendOtp(@Body() body: SendOtpDto) {
-    return this.authService.sendOtp(body.email, body.role);
+    return this.authService.sendOtp(body.email);
   }
 
   @Post('verify-otp')

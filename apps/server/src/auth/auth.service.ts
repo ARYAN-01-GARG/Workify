@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { google } from 'googleapis';
 import { config } from 'src/common/config';
-import { UserRole } from '@repo/db';
+import { User, UserRole } from '@repo/db';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,7 @@ export class AuthService {
 
   // --- OTP Flow ---
 
-  async sendOtp(email: string, role?: UserRole) {
+  async sendOtp(email: string) {
     let otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Hardcoded OTP for test users
@@ -149,7 +149,7 @@ export class AuthService {
     }
   }
 
-  private async generateToken(user: any) {
+  private async generateToken(user: User) {
     const payload = {
       id: user.id,
       email: user.email,

@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { BadRequestException, ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
 import { Logger } from 'nestjs-pino';
@@ -29,6 +29,7 @@ async function bootstrap() {
       },
     })
   );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.use(json({ limit: '10mb' }));

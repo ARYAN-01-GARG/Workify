@@ -4,10 +4,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from './dto/update-profile.dto';
 import { RequestWithUser } from '@repo/shared-types';
+import { RolesGuard, Roles } from 'src/common/guards/roles.guard';
+import { UserRole } from '@repo/db';
 
 @ApiTags('User')
 @Controller('user')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -24,6 +26,7 @@ export class UserController {
   }
 
   @Patch('profile/candidate')
+  @Roles(UserRole.CANDIDATE)
   @ApiOperation({
     summary: 'Update candidate profile',
     description: 'Updates the profile information for a candidate.',
@@ -35,6 +38,7 @@ export class UserController {
   }
 
   @Patch('profile/recruiter')
+  @Roles(UserRole.RECRUITER)
   @ApiOperation({
     summary: 'Update recruiter profile',
     description: 'Updates the profile information for a recruiter, including company association.',

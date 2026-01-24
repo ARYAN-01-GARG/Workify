@@ -47,6 +47,10 @@ export class ConnectionService {
       throw new BadRequestException('Only the receiver can accept or reject this request');
     }
 
+    if (status === ConnectionStatus.PENDING) {
+      throw new BadRequestException('Cannot set status back to PENDING');
+    }
+
     return this.prisma.connection.update({
       where: { id: connectionId },
       data: { status },

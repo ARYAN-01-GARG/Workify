@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from './dto/update-profile.dto';
+import { Prisma } from '@repo/db';
 
 @Injectable()
 export class UserService {
@@ -23,26 +24,58 @@ export class UserService {
   async updateCandidateProfile(userId: string, dto: UpdateCandidateProfileDto) {
     const { name, bio, about, ...profileData } = dto;
 
-    // Update User common fields
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        name,
-        bio,
-        about,
-      },
-    });
+    // Transaction to ensure atomicity
+    await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      // 1. Update User Common Fields
+      await tx.user.update({
+        where: { id: userId },
+        data: { name, bio, about },
+      });
 
-    // Update Candidate Profile
-    await this.prisma.candidateProfile.upsert({
-      where: { userId },
-      create: {
-        userId,
-        ...profileData,
-      },
-      update: {
-        ...profileData,
-      },
+      // 2. Update/Create Candidate Profile Scalars
+      const { education, experience, ...scalarData } = profileData;
+
+      const profile = await tx.candidateProfile.upsert({
+        where: { userId },
+        create: {
+          userId,
+          ...scalarData,
+        },
+        update: {
+          ...scalarData,
+        },
+      });
+
+      // 3. Handle Education (Replace All Strategy)
+      if (education) {
+        await tx.education.deleteMany({ where: { candidateProfileId: profile.id } });
+        if (education.length > 0) {
+          await tx.education.createMany({
+            data: education.map((edu) => ({
+              ...edu,
+              candidateProfileId: profile.id,
+              // Parse dates if they are strings (DTO validations ensures they are date strings)
+              startDate: new Date(edu.startDate),
+              endDate: edu.endDate ? new Date(edu.endDate) : null,
+            })),
+          });
+        }
+      }
+
+      // 4. Handle Experience (Replace All Strategy)
+      if (experience) {
+        await tx.experience.deleteMany({ where: { candidateProfileId: profile.id } });
+        if (experience.length > 0) {
+          await tx.experience.createMany({
+            data: experience.map((exp) => ({
+              ...exp,
+              candidateProfileId: profile.id,
+              startDate: new Date(exp.startDate),
+              endDate: exp.endDate ? new Date(exp.endDate) : null,
+            })),
+          });
+        }
+      }
     });
 
     return this.getProfile(userId);

@@ -25,7 +25,6 @@ export class AuthService {
   // --- OTP Flow ---
 
   async sendOtp(email: string, role?: UserRole) {
-    // 1. Generate 6 digit OTP
     let otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Hardcoded OTP for test users
@@ -34,10 +33,8 @@ export class AuthService {
       otp = '123456';
     }
 
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    // 2. Store in DB (Simulating Redis with SQL for now as per plan)
-    // First Clean up old OTps
     await this.prismaService.otp.deleteMany({ where: { email } });
 
     await this.prismaService.otp.create({
@@ -48,17 +45,12 @@ export class AuthService {
       },
     });
 
-    // 3. Send Email (Mock)
     this.logger.log(`[MOCK EMAIL] OTP for ${email} is: ${otp}`);
-
-    // If user exists, fine. If not, we don't creating yet.
-    // We create user only on verification.
 
     return { message: 'OTP sent successfully' };
   }
 
   async verifyOtp(email: string, otp: string) {
-    // 1. Check OTP
     const validOtp = await this.prismaService.otp.findFirst({
       where: {
         email,
@@ -71,14 +63,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid or expired OTP');
     }
 
-    // 2. Find or Create User
     let user = await this.prismaService.user.findUnique({ where: { email } });
 
     if (!user) {
-      // Create new user
-      let userRole: UserRole = 'CANDIDATE'; // Default
+      let userRole: UserRole = 'CANDIDATE';
 
-      // Assign specific roles for test emails
       if (email === 'admin@workify.com') userRole = 'ADMIN';
       if (email === 'recruiter@workify.com') userRole = 'RECRUITER';
 
@@ -91,13 +80,11 @@ export class AuthService {
         },
       });
 
-      // Initialize Profile
       if (userRole === 'CANDIDATE') {
         await this.prismaService.candidateProfile.create({
           data: { userId: user.id },
         });
       } else if (userRole === 'RECRUITER') {
-        // Create default company for test recruiter
         let company = await this.prismaService.company.findFirst({ where: { name: 'Workify Inc' } });
         if (!company) {
           company = await this.prismaService.company.create({ data: { name: 'Workify Inc' } });
@@ -108,10 +95,7 @@ export class AuthService {
       }
     }
 
-    // 3. Generate Token
     const token = await this.generateToken(user);
-
-    // 4. Cleanup OTP
     await this.prismaService.otp.delete({ where: { id: validOtp.id } });
 
     return { token, user };

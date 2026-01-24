@@ -1,7 +1,8 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 import { UserRole } from '@repo/db';
+import type { ISendOtpPayload, IVerifyOtpPayload } from '@repo/shared-types';
 
-export class SendOtpDto {
+export class SendOtpDto implements ISendOtpPayload {
   @IsEmail()
   email: string;
 
@@ -10,7 +11,7 @@ export class SendOtpDto {
   role?: UserRole; // Optional, default to CANDIDATE if new
 }
 
-export class VerifyOtpDto {
+export class VerifyOtpDto implements IVerifyOtpPayload {
   @IsEmail()
   email: string;
 

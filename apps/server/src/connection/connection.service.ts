@@ -11,12 +11,12 @@ export class ConnectionService {
       throw new BadRequestException('Cannot send connection request to yourself');
     }
 
-    const existing = await this.prisma.connection.findUnique({
+    const existing = await this.prisma.connection.findFirst({
       where: {
-        senderId_receiverId: {
-          senderId,
-          receiverId,
-        },
+        OR: [
+          { senderId, receiverId },
+          { senderId: receiverId, receiverId: senderId },
+        ],
       },
     });
 

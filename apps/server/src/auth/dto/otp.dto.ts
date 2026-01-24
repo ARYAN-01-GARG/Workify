@@ -1,5 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
-import { UserRole } from '@repo/db';
+import { IsEmail, IsString, Length } from 'class-validator';
 import type { ISendOtpPayload, IVerifyOtpPayload } from '@repo/shared-types';
 
 export class SendOtpDto implements ISendOtpPayload {

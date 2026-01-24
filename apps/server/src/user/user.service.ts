@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from './dto/update-profile.dto';
 
@@ -63,6 +63,11 @@ export class UserService {
 
     // Update Recruiter Profile
     if (companyId) {
+      const company = await this.prisma.company.findUnique({ where: { id: companyId } });
+      if (!company) {
+        throw new BadRequestException('Invalid companyId');
+      }
+
       await this.prisma.recruiterProfile.upsert({
         where: { userId },
         create: {

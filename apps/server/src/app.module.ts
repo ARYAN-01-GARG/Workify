@@ -3,6 +3,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { ConnectionModule } from './connection/connection.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -29,6 +31,8 @@ import { PrismaModule } from './prisma/prisma.module';
       },
     }),
     AuthModule,
+    UserModule,
+    ConnectionModule,
     PrismaModule,
   ],
   controllers: [AppController],

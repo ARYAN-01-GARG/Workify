@@ -57,8 +57,46 @@ model CandidateProfile {
   
   resumeUrl      String?
   skills         String[]
-  education      Json?
-  experience     Json?
+  
+  education      Education[]
+  experience     Experience[]
+}
+
+model Education {
+  id           String   @id @default(uuid())
+  school       String
+  degree       String
+  fieldOfStudy String
+  startDate    DateTime
+  endDate      DateTime?
+  grade        String?
+  activities   String?
+  description  String?
+  
+  candidateProfileId String
+  candidateProfile   CandidateProfile @relation(fields: [candidateProfileId], references: [id])
+}
+
+model Experience {
+  id             String   @id @default(uuid())
+  title          String
+  employmentType String
+  companyName    String
+  
+  // Composite Address
+  location       String? // General string
+  city           String?
+  state          String?
+  country        String?
+  
+  startDate      DateTime
+  endDate        DateTime?
+  currentlyWorking Boolean @default(false)
+  
+  description    String?
+  
+  candidateProfileId String
+  candidateProfile   CandidateProfile @relation(fields: [candidateProfileId], references: [id])
 }
 
 model RecruiterProfile {

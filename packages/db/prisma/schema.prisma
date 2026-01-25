@@ -104,16 +104,19 @@ model RecruiterProfile {
   userId         String @unique
   user           User   @relation(fields: [userId], references: [id])
   
-  companyId      String
-  company        Company @relation(fields: [companyId], references: [id])
+  companyId      String?
+  company        Company? @relation(fields: [companyId], references: [id])
 }
 
 model Company {
   id          String   @id @default(uuid())
-  name        String
+  name        String   @unique
   description String?
   website     String?
   logoUrl     String?
+  industry    String?
+  size        String? // e.g., "1-10", "11-50"
+  location    String? // HQ Location
   
   recruiters  RecruiterProfile[]
   jobs        Job[]

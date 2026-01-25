@@ -85,13 +85,7 @@ export class AuthService {
           data: { userId: user.id },
         });
       } else if (userRole === 'RECRUITER') {
-        let company = await this.prismaService.company.findFirst({ where: { name: 'Workify Inc' } });
-        if (!company) {
-          company = await this.prismaService.company.create({ data: { name: 'Workify Inc' } });
-        }
-        await this.prismaService.recruiterProfile.create({
-          data: { userId: user.id, companyId: company.id },
-        });
+        // Recruiter profile will be created when they create/join a company
       }
     }
 

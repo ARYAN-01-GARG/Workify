@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { ConnectionService } from './connection.service';
@@ -49,5 +49,14 @@ export class ConnectionController {
   @ApiResponse({ status: 200, description: 'List of pending requests' })
   async getPendingRequests(@Req() req: RequestWithUser) {
     return this.connectionService.getPendingRequests(req.user.id);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Cancel connection request', description: 'Cancels a pending connection request.' })
+  @ApiResponse({ status: 200, description: 'Connection request cancelled' })
+  @ApiResponse({ status: 400, description: 'Bad Request (e.g., Not sender, Not pending)' })
+  @ApiResponse({ status: 404, description: 'Connection not found' })
+  remove(@Param('id') id: string, @Req() req: RequestWithUser) {
+    return this.connectionService.remove(id, req.user.id);
   }
 }

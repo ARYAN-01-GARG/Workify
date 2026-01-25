@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCompanyDto, UpdateCompanyDto } from './dto/company.dto';
+import { CompanyQueryDto } from './dto/company-query.dto';
+import { Prisma } from '@repo/db';
 
 @Injectable()
 export class CompanyService {
@@ -12,40 +14,80 @@ export class CompanyService {
       where: { userId },
     });
 
-    if (!recruiterProfile) {
-      // Should ideally be created on signup, but safeguard
-      throw new BadRequestException('Recruiter profile not found');
-    }
-
-    if (recruiterProfile.companyId) {
+    if (recruiterProfile && recruiterProfile.companyId) {
       throw new BadRequestException('You are already associated with a company');
     }
 
     // Transaction: Create Company -> Link Recruiter
-    return this.prisma.$transaction(async (tx) => {
-      const company = await tx.company.create({
-        data: {
-          ...dto,
-        },
-      });
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const company = await tx.company.create({
+          data: {
+            ...dto,
+          },
+        });
 
-      await tx.recruiterProfile.update({
-        where: { userId },
-        data: { companyId: company.id },
-      });
+        await tx.recruiterProfile.upsert({
+          where: { userId },
+          create: { userId, companyId: company.id },
+          update: { companyId: company.id },
+        });
 
-      return company;
-    });
+        return company;
+      });
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new BadRequestException('Company name already exists');
+      }
+      throw error;
+    }
   }
 
-  async findAll() {
-    return this.prisma.company.findMany({
-      include: {
-        _count: {
-          select: { jobs: true, recruiters: true },
+  async findAll(query: CompanyQueryDto) {
+    const { page = 1, limit = 20, search, industry, location } = query;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.CompanyWhereInput = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (industry) {
+      where.industry = { contains: industry, mode: 'insensitive' };
+    }
+
+    if (location) {
+      where.location = { contains: location, mode: 'insensitive' };
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.company.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          _count: {
+            select: { jobs: true, recruiters: true },
+          },
         },
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.company.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
-    });
+    };
   }
 
   async findOne(id: string) {
@@ -79,6 +121,24 @@ export class CompanyService {
     return this.prisma.company.update({
       where: { id },
       data: dto,
+    });
+  }
+
+  async remove(id: string, userId: string) {
+    const recruiterProfile = await this.prisma.recruiterProfile.findUnique({
+      where: { userId },
+    });
+
+    if (!recruiterProfile || recruiterProfile.companyId !== id) {
+      throw new BadRequestException('You are not authorized to delete this company');
+    }
+
+    // Check if there are other recruiters? Optional. For now assuming deletion is absolute.
+    // Note: This might fail if there are jobs or other recruiters linked (Constraint error).
+    // Ideally we should check or cascade. But for simple MVP, we let Prisma throw if constraints exist.
+
+    return this.prisma.company.delete({
+      where: { id },
     });
   }
 }

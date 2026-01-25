@@ -19,4 +19,22 @@ export interface ICreateCompany {
   location?: string;
 }
 
-export interface IUpdateCompany extends Partial<ICreateCompany> {}
+export type IUpdateCompany = Partial<ICreateCompany>;
+
+export interface ICompanyQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  industry?: string;
+  location?: string;
+}
+
+export interface IPaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

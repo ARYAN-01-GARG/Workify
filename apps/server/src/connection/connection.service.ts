@@ -81,4 +81,29 @@ export class ConnectionService {
       },
     });
   }
+
+  async remove(connectionId: string, userId: string) {
+    const connection = await this.prisma.connection.findUnique({
+      where: { id: connectionId },
+    });
+
+    if (!connection) {
+      throw new NotFoundException('Connection not found');
+    }
+
+    // Sender can cancel if PENDING
+    // Receiver can reject (using updateStatus), but if they want to "delete" it, maybe?
+    // Usually delete is for canceling a sent request.
+    if (connection.senderId !== userId) {
+      throw new BadRequestException('Only the sender can cancel this request');
+    }
+
+    if (connection.status !== ConnectionStatus.PENDING) {
+      throw new BadRequestException('Cannot cancel a non-pending request');
+    }
+
+    return this.prisma.connection.delete({
+      where: { id: connectionId },
+    });
+  }
 }

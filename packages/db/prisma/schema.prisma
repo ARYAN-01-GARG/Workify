@@ -114,6 +114,9 @@ model Company {
   description String?
   website     String?
   logoUrl     String?
+  industry    String?
+  size        String? // e.g., "1-10", "11-50"
+  location    String? // HQ Location
   
   recruiters  RecruiterProfile[]
   jobs        Job[]

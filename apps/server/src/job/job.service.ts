@@ -7,11 +7,17 @@ import { ApplicationQueryDto } from './dto/application-query.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@repo/db';
 
+import { Logger } from 'nestjs-pino';
+
 @Injectable()
 export class JobService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly prisma: PrismaService
+  ) {}
 
   async create(userId: string, createJobDto: CreateJobDto) {
+    this.logger.log({ userId, jobTitle: createJobDto.title }, 'Creating new job');
     // 1. Get Recruiter Profile to link Company
     const recruiterProfile = await this.prisma.recruiterProfile.findUnique({
       where: { userId },
@@ -38,7 +44,9 @@ export class JobService {
   }
 
   async findAll(query: JobSearchDto) {
-    const { query: searchQuery, location, type, workMode, experienceLevel } = query;
+    this.logger.debug({ query }, 'Searching jobs');
+    const { query: searchQuery, location, type, workMode, experienceLevel, page = 1, limit = 20 } = query;
+    const skip = (page - 1) * limit;
 
     const where: Prisma.JobWhereInput = {
       status: 'OPEN',
@@ -60,21 +68,36 @@ export class JobService {
     if (workMode) where.workMode = workMode;
     if (experienceLevel) where.experienceLevel = experienceLevel;
 
-    return this.prisma.job.findMany({
-      where,
-      include: {
-        company: {
-          select: {
-            id: true,
-            name: true,
-            logoUrl: true,
+    const [data, total] = await Promise.all([
+      this.prisma.job.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          company: {
+            select: {
+              id: true,
+              name: true,
+              logoUrl: true,
+            },
           },
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.job.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    };
   }
 
   async findOne(id: string) {
@@ -100,6 +123,7 @@ export class JobService {
   }
 
   async update(userId: string, id: string, updateJobDto: UpdateJobDto) {
+    this.logger.log({ userId, jobId: id }, 'Updating job');
     const job = await this.findOne(id);
 
     if (job.postedById !== userId) {
@@ -134,6 +158,7 @@ export class JobService {
   }
 
   async apply(userId: string, jobId: string, coverLetter?: string) {
+    this.logger.log({ userId, jobId }, 'Applying for job');
     // Check if job exists
     const job = await this.prisma.job.findUnique({ where: { id: jobId } });
     if (!job) throw new NotFoundException('Job not found');

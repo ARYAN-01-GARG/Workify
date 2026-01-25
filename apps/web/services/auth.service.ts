@@ -13,26 +13,26 @@ interface AuthResponse {
 
 export class AuthService {
   static async handleGoogleAuth(idToken: string) {
-    return await ApiClient.post<AuthResponse>('/api/auth/google', { idToken });
+    return await ApiClient.post<AuthResponse>('/auth/google', { idToken });
   }
 
   static async me() {
-    return await ApiClient.get<AuthContextType>('/api/user/profile');
+    return await ApiClient.get<AuthContextType>('/user/profile');
   }
 
   static async login(email: string, password: string) {
-    return await ApiClient.post<AuthResponse>('/api/auth/login', { email, password });
+    return await ApiClient.post<AuthResponse>('/auth/login', { email, password });
   }
 
   static async register(data: any) {
-    return await ApiClient.post<AuthResponse>('/api/auth/register', data);
+    return await ApiClient.post<AuthResponse>('/auth/register', data);
   }
 
   static async sendOtp(email: string) {
-    return await ApiClient.post<{ message: string }>('/api/auth/send-otp', { email });
+    return await ApiClient.post<{ message: string }>('/auth/send-otp', { email });
   }
 
   static async verifyOtp(email: string, otp: string) {
-    return await ApiClient.post<AuthResponse>('/api/auth/verify-otp', { email, otp });
+    return await ApiClient.post<AuthResponse>('/auth/verify-otp', { email, otp });
   }
 }

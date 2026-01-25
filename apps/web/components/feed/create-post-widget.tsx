@@ -1,22 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Image, Send, Loader2, Link as LinkIcon } from 'lucide-react';
+import { Image, Calendar, Briefcase } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
 import { Button } from '@repo/ui/components/button';
 import { Card, CardContent } from '@repo/ui/components/card';
-import { Input } from '@repo/ui/components/input';
 import { useSession } from 'next-auth/react';
-import { toast } from 'sonner';
-import { useCreatePost } from '@/hooks/use-posts';
-
-const createPostSchema = z.object({
-  content: z.string().min(1, 'Post content cannot be empty'),
-  mediaUrls: z.array(z.string()).optional(),
-});
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@repo/ui/components/dialog';
+import { CreatePostForm } from './create-post-form';
 
 interface CreatePostWidgetProps {
   onPostCreated?: () => void;
@@ -24,86 +15,74 @@ interface CreatePostWidgetProps {
 
 export function CreatePostWidget({ onPostCreated }: CreatePostWidgetProps) {
   const { data: session } = useSession();
-  const { mutate: createPost, isPending: isLoading } = useCreatePost();
   const user = session?.user;
-
-  const form = useForm<z.infer<typeof createPostSchema>>({
-    resolver: zodResolver(createPostSchema as any),
-    defaultValues: {
-      content: '',
-      mediaUrls: [],
-    },
-  });
-
-  const onSubmit = async (data: z.infer<typeof createPostSchema>) => {
-    createPost(data, {
-      onSuccess: () => {
-        form.reset();
-        toast.success('Post created successfully!');
-        onPostCreated?.();
-      },
-      onError: (error: any) => {
-        toast.error('Failed to create post');
-        console.error(error);
-      },
-    });
-  };
+  const [open, setOpen] = useState(false);
 
   if (!user) return null;
 
   return (
     <Card className='bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-6 overflow-hidden'>
       <CardContent className='p-4 sm:p-5'>
-        <div className='flex gap-4'>
-          <Avatar className='h-11 w-11 border-2 border-slate-800 shrink-0'>
+        <div className='flex gap-4 items-center'>
+          <Avatar className='h-12 w-12 border-2 border-slate-800 shrink-0 cursor-pointer hover:border-violet-500/50 transition-colors'>
             <AvatarImage src={user.avatarUrl!} alt={user.name!} />
             <AvatarFallback className='bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-bold'>
               {user.name?.charAt(0) || 'U'}
             </AvatarFallback>
           </Avatar>
 
-          <form onSubmit={form.handleSubmit(onSubmit)} className='flex-1 space-y-4'>
-            <div className='relative group'>
-              <Input
-                {...form.register('content')}
-                placeholder='Start a post...'
-                className='bg-slate-950/50 border-slate-700/50 text-white placeholder:text-slate-500 rounded-2xl h-14 px-5 focus-visible:ring-2 focus-visible:ring-violet-500/50 focus-visible:border-violet-500/50 transition-all duration-300 hover:bg-slate-950 group-hover:border-slate-600'
-              />
-            </div>
-
-            <div className='flex items-center justify-between pl-1'>
-              <div className='flex gap-2'>
-                <Button
-                  type='button'
-                  variant='ghost'
-                  size='sm'
-                  className='text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 gap-2 h-9 rounded-lg transition-colors'
-                >
-                  <Image className='h-4.5 w-4.5' />
-                  <span className='hidden sm:inline font-medium'>Media</span>
-                </Button>
-                <Button
-                  type='button'
-                  variant='ghost'
-                  size='sm'
-                  className='text-slate-400 hover:text-green-400 hover:bg-green-400/10 gap-2 h-9 rounded-lg transition-colors'
-                >
-                  <LinkIcon className='h-4.5 w-4.5' />
-                  <span className='hidden sm:inline font-medium'>Link</span>
-                </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <div className='flex-1 cursor-pointer'>
+                <div className='bg-slate-950/50 border border-slate-700/50 text-slate-400 rounded-full h-12 px-5 flex items-center hover:bg-slate-900 hover:border-slate-600 hover:text-slate-300 transition-all duration-200 group'>
+                  <span className='font-medium'>Start a post, {user.name?.split(' ')[0]}...</span>
+                </div>
               </div>
+            </DialogTrigger>
+            <DialogContent className='sm:max-w-[600px] bg-slate-950 border-slate-800 text-slate-200 p-0 overflow-hidden gap-0'>
+              <DialogHeader className='p-4 border-b border-slate-800 flex flex-row items-center justify-between space-y-0'>
+                <DialogTitle className='text-lg font-semibold text-white'>Create a post</DialogTitle>
+              </DialogHeader>
+              <div className='p-4'>
+                <CreatePostForm
+                  onSuccess={() => {
+                    setOpen(false);
+                    onPostCreated?.();
+                  }}
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-              <Button
-                type='submit'
-                size='sm'
-                className='bg-white text-slate-950 hover:bg-slate-200 gap-2 px-6 rounded-full font-bold shadow-lg shadow-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-all'
-                disabled={isLoading || !form.formState.isDirty}
-              >
-                {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : <Send className='h-4 w-4' />}
-                Post
-              </Button>
-            </div>
-          </form>
+        <div className='flex items-center justify-between pt-3 mt-3 border-t border-slate-800/50 px-2'>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='text-slate-400 hover:text-blue-400 gap-2 h-9 rounded-lg transition-colors flex-1'
+            onClick={() => setOpen(true)}
+          >
+            <Image className='h-5 w-5 text-blue-500/80' />
+            <span className='font-medium text-xs sm:text-sm'>Media</span>
+          </Button>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='text-slate-400 hover:text-orange-400 gap-2 h-9 rounded-lg transition-colors flex-1'
+            onClick={() => setOpen(true)}
+          >
+            <Calendar className='h-5 w-5 text-orange-500/80' />
+            <span className='font-medium text-xs sm:text-sm'>Event</span>
+          </Button>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='text-slate-400 hover:text-pink-400 gap-2 h-9 rounded-lg transition-colors flex-1'
+            onClick={() => setOpen(true)}
+          >
+            <Briefcase className='h-5 w-5 text-pink-500/80' />
+            <span className='font-medium text-xs sm:text-sm'>Job</span>
+          </Button>
         </div>
       </CardContent>
     </Card>

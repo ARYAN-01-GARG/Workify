@@ -5,6 +5,7 @@ import { config } from 'src/common/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { MailModule } from 'src/mail/mail.module';
 
 @Module({
@@ -17,7 +18,7 @@ import { MailModule } from 'src/mail/mail.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [JwtModule],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard],
+  exports: [JwtModule, PassportModule, JwtAuthGuard],
 })
 export class AuthModule {}

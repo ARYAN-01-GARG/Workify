@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
 import { Button } from '@repo/ui/components/button';
 import { Camera, Edit2, MapPin, Link as LinkIcon, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
-import { UserProfile } from '@/hooks/use-profile';
+import type { UserProfile } from '@/types';
 
 interface ProfileHeaderProps {
   user: UserProfile;
@@ -20,6 +20,12 @@ export function ProfileHeader({ user, isOwnProfile, onEditClick }: ProfileHeader
     (user.recruiterProfile?.company?.name ? `Recruiter at ${user.recruiterProfile.company.name}` : user.role);
 
   const connectionCount = (user._count?.sentRequests || 0) + (user._count?.receivedRequests || 0);
+
+  // Get location from user data (if available)
+  const location = user.location;
+
+  // Get website from user data (if available)
+  const website = user.website;
 
   return (
     <div className='bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-2xl overflow-hidden shadow-lg shadow-black/20'>
@@ -92,16 +98,25 @@ export function ProfileHeader({ user, isOwnProfile, onEditClick }: ProfileHeader
           {user.bio && <p className='text-slate-300 text-sm'>{user.bio}</p>}
 
           <div className='flex flex-wrap gap-4 text-sm text-slate-500'>
-            <div className='flex items-center gap-1'>
-              <MapPin className='h-4 w-4' />
-              <span>San Francisco, CA</span>
-            </div>
-            <div className='flex items-center gap-1'>
-              <LinkIcon className='h-4 w-4' />
-              <a href='#' className='text-violet-400 hover:underline'>
-                portfolio.dev
-              </a>
-            </div>
+            {location && (
+              <div className='flex items-center gap-1'>
+                <MapPin className='h-4 w-4' />
+                <span>{location}</span>
+              </div>
+            )}
+            {website && (
+              <div className='flex items-center gap-1'>
+                <LinkIcon className='h-4 w-4' />
+                <a
+                  href={website.startsWith('http') ? website : `https://${website}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-violet-400 hover:underline'
+                >
+                  {website.replace(/^https?:\/\//, '')}
+                </a>
+              </div>
+            )}
             <div className='flex items-center gap-1'>
               <Calendar className='h-4 w-4' />
               <span>Joined {format(new Date(user.createdAt), 'MMMM yyyy')}</span>

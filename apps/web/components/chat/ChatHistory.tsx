@@ -1,6 +1,12 @@
 'use client';
 
-import type { ChatType } from '@repo/shared-types/types';
+// import type { ChatType } from '@repo/shared-types/types';
+export interface ChatType {
+  id: string;
+  createdAt: string | Date;
+  title?: string;
+  [key: string]: any;
+}
 import type { GetChatsResponse } from '@/services';
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, useSidebar } from '@repo/ui/components/sidebar';
 import { isToday, isYesterday, subMonths, subWeeks } from 'date-fns';
@@ -160,11 +166,14 @@ export function ChatHistory() {
       },
     );
 
-    observer.observe(loadMoreRef.current);
+    const currentElement = loadMoreRef.current;
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+      if (currentElement) {
+        observer.unobserve(currentElement);
       }
     };
   }, [hasReachedEnd, isValidating, setSize]);

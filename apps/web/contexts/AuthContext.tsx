@@ -14,38 +14,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { status } = useSession();
 
-  const logOut = () => {
-    signOut({
-      callbackUrl: '/login',
-    });
-  };
-
-  const fetchUser = async () => {
-    try {
-      const resp = await AuthService.me();
-
-      if (!resp) {
-        toast.error('Failed to fetch user');
-        logOut();
-      }
-      const currentUser = resp ?? null;
-      const currentUserRole = currentUser?.role ?? '';
-      if (!currentUser || !currentUserRole) {
-        toast.error('Failed to fetch user');
-        logOut();
-      }
-      setUser(currentUser);
-    } catch (_error) {
-      toast.error('Failed to fetch user');
+  useEffect(() => {
+    const logOut = () => {
       signOut({
         callbackUrl: '/login',
       });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
-  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const resp = await AuthService.me();
+
+        if (!resp) {
+          toast.error('Failed to fetch user');
+          logOut();
+        }
+        const currentUser = resp ?? null;
+        const currentUserRole = currentUser?.role ?? '';
+        if (!currentUser || !currentUserRole) {
+          toast.error('Failed to fetch user');
+          logOut();
+        }
+        setUser(currentUser);
+      } catch {
+        toast.error('Failed to fetch user');
+        signOut({
+          callbackUrl: '/login',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (status === 'authenticated') {
       fetchUser();
     }

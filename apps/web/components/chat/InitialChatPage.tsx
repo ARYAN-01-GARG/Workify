@@ -28,7 +28,7 @@ const InitialChatPage = () => {
     if (searchParams.get('query')) {
       setQuery(searchParams.get('query') || '');
     }
-  }, [searchParams]);
+  }, [searchParams, setQuery]);
 
   return <Greeting query={query} setQuery={setQuery} isSubmitting={isCreatingChat} handleSubmit={handleSubmit} />;
 };

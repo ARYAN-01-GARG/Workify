@@ -36,7 +36,7 @@ export const getContentType = (extension: FileExtension | undefined | null) => {
 };
 
 export const getExtension = (contentType: FileContentType) => {
-  return Array.from(fileExtensions.entries()).find(([_, value]) => value === contentType)?.[0] || 'txt';
+  return Array.from(fileExtensions.entries()).find(([, value]) => value === contentType)?.[0] || 'txt';
 };
 
 export const saveFile = (content: string, name: string, extension: FileExtension) => {

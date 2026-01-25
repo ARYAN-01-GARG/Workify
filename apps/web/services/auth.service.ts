@@ -1,7 +1,7 @@
 import type { AuthContextType } from '@repo/shared-types/types';
 import { ApiClient } from '@/lib/api-client';
 
-interface LoginResponse {
+interface AuthResponse {
   token: string;
   user: {
     id: string;
@@ -13,10 +13,26 @@ interface LoginResponse {
 
 export class AuthService {
   static async handleGoogleAuth(idToken: string) {
-    return await ApiClient.post<LoginResponse>('/api/auth/google', { idToken });
+    return await ApiClient.post<AuthResponse>('/auth/google', { idToken });
   }
 
   static async me() {
-    return await ApiClient.get<AuthContextType>('/api/auth/me');
+    return await ApiClient.get<AuthContextType>('/user/profile');
+  }
+
+  static async login(email: string, password: string) {
+    return await ApiClient.post<AuthResponse>('/auth/login', { email, password });
+  }
+
+  static async register(data: any) {
+    return await ApiClient.post<AuthResponse>('/auth/register', data);
+  }
+
+  static async sendOtp(email: string) {
+    return await ApiClient.post<{ message: string }>('/auth/send-otp', { email });
+  }
+
+  static async verifyOtp(email: string, otp: string) {
+    return await ApiClient.post<AuthResponse>('/auth/verify-otp', { email, otp });
   }
 }

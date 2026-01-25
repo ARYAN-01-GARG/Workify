@@ -1,12 +1,6 @@
 'use client';
 
-// import type { ChatType } from '@repo/shared-types/types';
-export interface ChatType {
-  id: string;
-  createdAt: string | Date;
-  title?: string;
-  [key: string]: any;
-}
+import type { ChatType } from '@repo/shared-types/types';
 import type { GetChatsResponse } from '@/services';
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, useSidebar } from '@repo/ui/components/sidebar';
 import { isToday, isYesterday, subMonths, subWeeks } from 'date-fns';

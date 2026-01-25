@@ -17,9 +17,56 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
-        candidateProfile: true,
+        candidateProfile: {
+          include: {
+            education: true,
+            experience: true,
+          },
+        },
         recruiterProfile: {
           include: { company: true },
+        },
+        _count: {
+          select: {
+            posts: true,
+            sentRequests: true,
+            receivedRequests: true,
+          },
+        },
+      },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async getPublicProfile(userId: string) {
+    this.logger.debug({ userId }, 'Fetching public user profile');
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        bio: true,
+        about: true,
+        avatarUrl: true,
+        role: true,
+        createdAt: true,
+        candidateProfile: {
+          include: {
+            education: true,
+            experience: true,
+          },
+        },
+        recruiterProfile: {
+          include: { company: true },
+        },
+        _count: {
+          select: {
+            posts: true,
+            sentRequests: true,
+            receivedRequests: true,
+          },
         },
       },
     });

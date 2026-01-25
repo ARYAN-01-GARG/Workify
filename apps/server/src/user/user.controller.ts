@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from './dto/update-profile.dto';
@@ -23,6 +23,18 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'User not found' })
   async getProfile(@Req() req: RequestWithUser) {
     return this.userService.getProfile(req.user.id);
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get user profile by ID',
+    description: 'Returns the public profile of a user by their ID.',
+  })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User profile retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getPublicProfile(@Param('id') userId: string) {
+    return this.userService.getPublicProfile(userId);
   }
 
   @Patch('profile/candidate')

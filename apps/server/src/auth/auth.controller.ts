@@ -1,7 +1,7 @@
 import { AuthService } from './auth.service';
-import type { GoogleAuthDto } from './dto/auth.dto';
+import { GoogleAuthDto, LoginDto, RegisterDto } from './dto/auth.dto';
 import { SendOtpDto, VerifyOtpDto } from './dto/otp.dto';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { Public } from './decorators/public.decorator';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -9,6 +9,30 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('register')
+  @Public()
+  @ApiOperation({
+    summary: 'Register with OTP and Password',
+    description: 'Verifies OTP, creates user with password, and returns token.',
+  })
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request (Invalid OTP, User exists)' })
+  async register(@Body() body: RegisterDto) {
+    return this.authService.register(body);
+  }
+
+  @Post('login')
+  @Public()
+  @ApiOperation({
+    summary: 'Login with Email and Password',
+    description: 'Authenticates user with email and password.',
+  })
+  @ApiResponse({ status: 200, description: 'Login successful' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  async login(@Body() body: LoginDto) {
+    return this.authService.login(body);
+  }
 
   @Post('send-otp')
   @Public()
@@ -42,7 +66,8 @@ export class AuthController {
   })
   @ApiResponse({ status: 201, description: 'Returns JWT token and user' })
   @ApiResponse({ status: 401, description: 'Invalid Google ID token' })
-  async googleAuth(@Body() body: GoogleAuthDto) {
-    return this.authService.handleGoogleAuth(body.idToken);
+  async googleAuth(@Req() req: any, @Body() body: GoogleAuthDto) {
+    const token = body?.idToken || req.body?.idToken;
+    return this.authService.handleGoogleAuth(token);
   }
 }

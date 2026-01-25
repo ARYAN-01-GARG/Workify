@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,6 +9,7 @@ import { ConnectionModule } from './connection/connection.module';
 import { CompanyModule } from './company/company.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { JobModule } from './job/job.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -38,7 +40,15 @@ import { JobModule } from './job/job.module';
     CompanyModule,
     PrismaModule,
     JobModule,
+    PostModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
   ],
+
   controllers: [AppController],
   providers: [AppService],
 })

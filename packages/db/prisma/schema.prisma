@@ -75,8 +75,14 @@ model User {
   sentRequests     Connection[] @relation("Sender")
   receivedRequests Connection[] @relation("Receiver")
   
+
   // Jobs posted by Recruiter/Admin
   postedJobs       Job[]
+
+  // Social
+  posts            Post[]
+  comments         Comment[]
+  likes            Like[]
 }
 
 model Otp {
@@ -225,4 +231,68 @@ model Connection {
   receiver   User @relation("Receiver", fields: [receiverId], references: [id])
 
   @@unique([senderId, receiverId])
+}
+
+// Social Features
+
+model Post {
+  id        String   @id @default(uuid())
+  content   String
+  mediaUrls String[] // Array of URLs for photos/videos
+  
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  tags      Tag[]
+  likes     Like[]
+  comments  Comment[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  
+  likes     Like[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  // Note: We'll enforce unique likes (one per user per post OR one per user per comment) in application logic 
+  // or via sparse indexes if DB supports it safely, but simplified for now.
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+  posts Post[]
 }

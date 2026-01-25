@@ -1,8 +1,8 @@
 import React from 'react';
-import { AuthProvider } from '@/contexts/AuthContext';
+import MainLayout from '@/components/layout/main-layout';
 
-const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  return <AuthProvider>{children}</AuthProvider>;
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return <MainLayout>{children}</MainLayout>;
 };
 
-export default MainLayout;
+export default Layout;

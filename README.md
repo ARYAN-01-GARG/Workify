@@ -1,128 +1,162 @@
-# Turborepo starter Heizen.
+# Workify Monorepo
 
-This Turborepo starter is maintained by the Turborepo core team.
+A full-stack job board and professional networking platform built with modern technologies.
 
-## Using this example
+## Overview
 
-Run the following command:
+Workify enables job seekers to find opportunities and connect with recruiters, while providing companies with a platform
+to post jobs and manage applications.
 
-```sh
-npx create-turbo@latest
+## Tech Stack
+
+| Layer             | Technology                                 |
+| ----------------- | ------------------------------------------ |
+| **Frontend**      | Next.js 14, React, TypeScript, TailwindCSS |
+| **Backend**       | NestJS, TypeScript, Prisma ORM             |
+| **Database**      | MongoDB                                    |
+| **Auth**          | NextAuth.js, JWT, Google OAuth             |
+| **UI Components** | shadcn/ui, Radix UI                        |
+| **Monorepo**      | Turborepo, pnpm workspaces                 |
+
+## Project Structure
+
+```
+workify-monorepo/
+├── apps/
+│   ├── server/          # NestJS backend API
+│   └── web/             # Next.js frontend
+├── packages/
+│   ├── db/              # Prisma schema and client
+│   ├── shared-types/    # Shared TypeScript types
+│   ├── ui/              # Shared UI components (shadcn/ui)
+│   ├── eslint-config/   # ESLint configurations
+│   └── typescript-config/ # TypeScript configurations
 ```
 
-## What's inside?
+## Getting Started
 
-This Turborepo includes the following packages/apps:
+### Prerequisites
 
-### Apps and Packages
+- Node.js 18+
+- pnpm 8+
+- MongoDB database
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app with a sample ContactForm component using shadcn/ui
-- `@repo/ui`: a React component library with shadcn/ui components shared by applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Installation
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+```bash
+# Install dependencies
+pnpm install
 
-### Utilities
+# Generate Prisma client
+pnpm --filter @repo/db db:generate
+```
 
-This Turborepo has some additional tools already setup for you:
+### Environment Setup
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Create `.env` files in `apps/server` and `apps/web`:
+
+```bash
+# Server (.env)
+cp apps/server/.env.example apps/server/.env
+
+# Web (.env.local)
+cp apps/web/.env.example apps/web/.env.local
+```
+
+### Development
+
+```bash
+# Run all apps in development mode
+pnpm dev
+
+# Run specific app
+pnpm --filter server dev
+pnpm --filter web dev
+```
 
 ### Build
 
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
+```bash
+# Build all apps
 pnpm build
-```
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
+# Build specific app
+pnpm --filter server build
 ```
 
 ### Testing
 
-This project includes unit tests for UI components using Jest and React Testing Library.
-
-#### Running Tests
-
-To run tests for the web application:
-
 ```bash
-# Navigate to the web app directory
-cd apps/web
-
 # Run all tests
 pnpm test
 
-# Run tests in watch mode
-pnpm test:watch
-
-# Run tests with coverage
-pnpm test --coverage
+# Run tests for specific app
+pnpm --filter server test
+pnpm --filter web test
 ```
 
-#### Test Structure
+### Linting
 
-- Tests are located in `apps/web/__tests__/` directory
-- The project includes comprehensive tests for the ContactForm component
-- Tests cover form validation, user interactions, loading states, and accessibility
+```bash
+# Lint all packages
+pnpm lint
 
-#### Example Component
-
-The web app includes a `ContactForm` component built with shadcn/ui that demonstrates:
-
-- Form validation with custom error messages
-- Integration with shadcn/ui components (Button, Input, Label, Textarea, Card)
-- TypeScript interfaces for type safety
-- Comprehensive unit test coverage
-
-The ContactForm component can be found at `apps/web/components/ContactForm.tsx` with its tests at
-`apps/web/__tests__/ContactForm.test.tsx`.
-
-### Remote Caching
-
-> [!TIP] Vercel Remote Cache is free for all plans. Get started today at
-> [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to
-share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't
-have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following
-commands:
-
-```
-cd my-turborepo
-npx turbo login
+# Fix lint issues
+pnpm lint --fix
 ```
 
-This will authenticate the Turborepo CLI with your
-[Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## Apps
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+### Server (`apps/server`)
 
-```
-npx turbo link
-```
+NestJS backend API providing:
 
-## Useful Links
+- Authentication (Email OTP, Google OAuth)
+- User profile management (Candidates & Recruiters)
+- Job posting and application system
+- Social posts with likes and comments
+- Professional connections
+- Company profiles
 
-Learn more about the power of Turborepo:
+**API Docs**: `http://localhost:3001/docs`
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+### Web (`apps/web`)
+
+Next.js frontend with:
+
+- Responsive UI with TailwindCSS
+- Authentication via NextAuth.js
+- Dashboard for candidates and recruiters
+- Job search and filtering
+- Social feed
+
+## Packages
+
+| Package                   | Description                                    |
+| ------------------------- | ---------------------------------------------- |
+| `@repo/db`                | Prisma schema, migrations, and database client |
+| `@repo/shared-types`      | TypeScript types shared between apps           |
+| `@repo/ui`                | Reusable React components with shadcn/ui       |
+| `@repo/eslint-config`     | Shared ESLint configurations                   |
+| `@repo/typescript-config` | Shared TypeScript configurations               |
+
+## Scripts
+
+| Command           | Description                        |
+| ----------------- | ---------------------------------- |
+| `pnpm dev`        | Start all apps in development mode |
+| `pnpm build`      | Build all apps and packages        |
+| `pnpm lint`       | Lint all packages                  |
+| `pnpm test`       | Run tests across all packages      |
+| `pnpm format:fix` | Format code with Prettier          |
+
+## Contributing
+
+1. Create a feature branch from `main`
+2. Make your changes
+3. Run `pnpm lint` and `pnpm build`
+4. Submit a pull request
+
+## License
+
+MIT

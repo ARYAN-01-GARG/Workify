@@ -104,8 +104,8 @@ model RecruiterProfile {
   userId         String @unique
   user           User   @relation(fields: [userId], references: [id])
   
-  companyId      String
-  company        Company @relation(fields: [companyId], references: [id])
+  companyId      String?
+  company        Company? @relation(fields: [companyId], references: [id])
 }
 
 model Company {

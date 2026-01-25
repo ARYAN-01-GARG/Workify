@@ -50,9 +50,10 @@ export class CompanyService {
     const where: Prisma.CompanyWhereInput = {};
 
     if (search) {
+      const sanitizedSearch = this.sanitizeInput(search);
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
+        { name: { contains: sanitizedSearch, mode: 'insensitive' } },
+        { description: { contains: sanitizedSearch, mode: 'insensitive' } },
       ];
     }
 
@@ -133,12 +134,41 @@ export class CompanyService {
       throw new BadRequestException('You are not authorized to delete this company');
     }
 
-    // Check if there are other recruiters? Optional. For now assuming deletion is absolute.
-    // Note: This might fail if there are jobs or other recruiters linked (Constraint error).
-    // Ideally we should check or cascade. But for simple MVP, we let Prisma throw if constraints exist.
+    // Check for dependencies
+    const company = await this.prisma.company.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { jobs: true, recruiters: true },
+        },
+      },
+    });
+
+    if (!company) {
+      throw new NotFoundException('Company not found');
+    }
+
+    if (company._count.jobs > 0) {
+      throw new BadRequestException('Cannot delete company with active jobs. Please delete them first.');
+    }
+
+    if (company._count.recruiters > 1) {
+      throw new BadRequestException('Cannot delete company with other associated recruiters.');
+    }
+
+    // Disconnect current recruiter (self) before deletion to avoid foreign key constraint failure
+    // (Since we made companyId optional, we can set it to null)
+    await this.prisma.recruiterProfile.update({
+      where: { userId },
+      data: { companyId: null },
+    });
 
     return this.prisma.company.delete({
       where: { id },
     });
+  }
+
+  private sanitizeInput(input: string): string {
+    return input.replace(/[<>]/g, '');
   }
 }

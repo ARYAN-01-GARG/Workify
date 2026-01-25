@@ -26,43 +26,45 @@ const UserProfileMenuTrigger = () => {
 
 export const Header = () => {
   return (
-    <header className='sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md supports-[backdrop-filter]:bg-slate-950/60'>
-      <div className='container flex h-16 items-center justify-between mx-auto'>
-        <div className='flex items-center gap-8 pl-0 md:pl-4'>
-          <Link href='/' className='flex items-center space-x-2 group'>
-            <div className='h-9 w-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-all duration-300'>
-              <span className='font-bold text-white text-lg'>W</span>
+    <header className='sticky top-0 z-50 w-full border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-950/60'>
+      <div className='container flex h-16 items-center justify-between mx-auto px-4'>
+        <div className='flex items-center gap-8'>
+          <Link href='/' className='flex items-center space-x-3 group'>
+            <div className='h-10 w-10 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-blue-600 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 group-hover:scale-105 transition-all duration-300 ring-1 ring-white/10'>
+              <span className='font-bold text-white text-xl'>W</span>
             </div>
-            <span className='font-bold text-xl text-white hidden sm:inline-block tracking-tight'>Workify</span>
+            <span className='font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 hidden sm:inline-block tracking-tight'>
+              Workify
+            </span>
           </Link>
           <div className='relative hidden md:block w-96 group'>
-            <Search className='absolute left-3 top-2.5 h-4 w-4 text-slate-500 group-focus-within:text-violet-500 transition-colors' />
+            <Search className='absolute left-3.5 top-2.5 h-4 w-4 text-slate-500 group-focus-within:text-violet-400 transition-colors' />
             <input
               placeholder='Search jobs, companies, people...'
-              className='w-full bg-slate-900/50 border border-slate-700/50 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-violet-500/50 focus:bg-slate-900/80 focus:ring-4 focus:ring-violet-500/10 transition-all duration-300 placeholder:text-slate-600'
+              className='w-full bg-slate-900/50 border border-slate-800 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-violet-500/50 focus:bg-slate-900 focus:ring-4 focus:ring-violet-500/10 transition-all duration-300 placeholder:text-slate-600 shadow-sm'
             />
           </div>
         </div>
 
-        <nav className='flex items-center gap-1 md:gap-2 pr-2 md:pr-4'>
+        <nav className='flex items-center gap-1 md:gap-2'>
           <Button
             variant='ghost'
             size='icon'
-            className='text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-full w-10 h-10'
+            className='text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-full w-10 h-10 transition-all duration-200'
           >
             <MessageSquare className='h-5 w-5' />
           </Button>
           <Button
             variant='ghost'
             size='icon'
-            className='text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-full w-10 h-10 relative'
+            className='text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-full w-10 h-10 relative transition-all duration-200'
           >
             <Bell className='h-5 w-5' />
-            <span className='absolute top-2.5 right-2.5 h-2 w-2 bg-red-500 rounded-full border-2 border-slate-950'></span>
+            <span className='absolute top-2.5 right-2.5 h-2 w-2 bg-red-500 rounded-full border-2 border-slate-950 shadow-sm shadow-red-500/50'></span>
           </Button>
-          <div className='h-8 w-px bg-slate-800 mx-2 hidden sm:block'></div>
+          <div className='h-8 w-px bg-slate-800/60 mx-2 hidden sm:block'></div>
 
-          <div className='flex items-center gap-2 pl-2'>
+          <div className='flex items-center gap-2 pl-1'>
             <UserProfileMenuTrigger />
           </div>
         </nav>

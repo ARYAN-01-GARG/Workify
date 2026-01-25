@@ -1,5 +1,4 @@
 import { ApiClient } from '@/lib/api-client';
-import { Post } from '@/components/feed/post-card';
 
 export interface CreatePostDto {
   content: string;
@@ -12,6 +11,7 @@ export interface PostSearchDto {
   limit?: number;
   search?: string;
   tags?: string[];
+  authorId?: string;
 }
 
 export const PostService = {
@@ -20,10 +20,6 @@ export const PostService = {
   },
 
   async findAll(params?: PostSearchDto) {
-    // ApiClient.get returns the data T.
-    // Assuming backend returns Post[] or { data: Post[], meta: ... }
-    // The previous code expected response.data but ApiClient already unpacks it.
-    // Let's assume ApiClient returns the body directly.
     return ApiClient.get('/posts', params as Record<string, unknown>);
   },
 

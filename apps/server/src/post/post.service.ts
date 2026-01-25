@@ -66,6 +66,10 @@ export class PostService {
       };
     }
 
+    if (query.authorId) {
+      where.authorId = query.authorId;
+    }
+
     // Following Feed Logic
     if (type === 'FOLLOWING' && userId) {
       const connections = await this.prisma.connection.findMany({

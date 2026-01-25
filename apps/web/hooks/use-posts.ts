@@ -26,8 +26,6 @@ export function useToggleLike() {
   return useMutation({
     mutationFn: (id: string) => PostService.toggleLike(id),
     onSuccess: (_, id) => {
-      // We could invalidate specific post or all posts
-      // Invalidate all posts to refresh like counts in feed
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
   });

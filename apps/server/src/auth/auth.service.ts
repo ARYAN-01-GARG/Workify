@@ -1,17 +1,18 @@
 import { JwtService } from '@nestjs/jwt';
 import { Auth } from 'googleapis';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Logger } from 'nestjs-pino';
 import { google } from 'googleapis';
 import { config } from 'src/common/config';
 import { User, UserRole } from '@repo/db';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
   private oauth2Client: Auth.OAuth2Client;
 
   constructor(
+    private readonly logger: Logger,
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService
   ) {
@@ -25,12 +26,14 @@ export class AuthService {
   // --- OTP Flow ---
 
   async sendOtp(email: string) {
+    this.logger.log({ email }, 'Sending OTP');
     let otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Hardcoded OTP for test users
+    // Test OTP bypass - controlled via ENABLE_TEST_OTP environment variable
     const testEmails = ['admin@workify.com', 'recruiter@workify.com', 'candidate@workify.com'];
-    if (testEmails.includes(email)) {
+    if (config.enableTestOtp && testEmails.includes(email)) {
       otp = '123456';
+      this.logger.warn({ email }, 'Using test OTP bypass - this should not be enabled in production');
     }
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -51,6 +54,7 @@ export class AuthService {
   }
 
   async verifyOtp(email: string, otp: string) {
+    this.logger.debug({ email }, 'Verifying OTP');
     const validOtp = await this.prismaService.otp.findFirst({
       where: {
         email,
@@ -98,6 +102,7 @@ export class AuthService {
   // --- Google Flow ---
 
   async handleGoogleAuth(idToken: string) {
+    this.logger.log('Handling Google Auth');
     try {
       const ticket = await this.oauth2Client.verifyIdToken({
         idToken,

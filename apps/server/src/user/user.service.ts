@@ -3,11 +3,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from './dto/update-profile.dto';
 import { Prisma } from '@repo/db';
 
+import { Logger } from 'nestjs-pino';
+
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly prisma: PrismaService
+  ) {}
 
   async getProfile(userId: string) {
+    this.logger.debug({ userId }, 'Fetching user profile');
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -22,6 +28,7 @@ export class UserService {
   }
 
   async updateCandidateProfile(userId: string, dto: UpdateCandidateProfileDto) {
+    this.logger.log({ userId }, 'Updating candidate profile');
     const { name, bio, about, ...profileData } = dto;
 
     // Transaction to ensure atomicity
@@ -82,6 +89,7 @@ export class UserService {
   }
 
   async updateRecruiterProfile(userId: string, dto: UpdateRecruiterProfileDto) {
+    this.logger.log({ userId, companyId: dto.companyId }, 'Updating recruiter profile');
     const { name, bio, about, companyId } = dto;
 
     // Update User common fields

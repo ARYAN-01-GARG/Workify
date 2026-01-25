@@ -5,12 +5,17 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostSearchDto } from './dto/post-search.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { Prisma, UserRole } from '@repo/db';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class PostService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly prisma: PrismaService
+  ) {}
 
   async create(userId: string, createPostDto: CreatePostDto) {
+    this.logger.log({ userId, dto: createPostDto }, 'Creating new post');
     const { tags, ...postData } = createPostDto;
 
     // Process tags: create if not exist
@@ -38,6 +43,7 @@ export class PostService {
   }
 
   async findAll(query: PostSearchDto, userId?: string) {
+    this.logger.debug({ query, userId }, 'Fetching posts feed');
     const { query: searchQuery, tag, limit = 10, cursor, type } = query;
 
     const where: Prisma.PostWhereInput = {
@@ -154,6 +160,7 @@ export class PostService {
   }
 
   async update(userId: string, id: string, updatePostDto: UpdatePostDto) {
+    this.logger.log({ userId, postId: id, dto: updatePostDto }, 'Updating post');
     const post = await this.prisma.post.findUnique({ where: { id } });
     if (!post) throw new NotFoundException('Post not found');
     if (post.authorId !== userId) throw new ForbiddenException('You can only update your own posts');
@@ -163,9 +170,6 @@ export class PostService {
     // Prepare update data
     const updateData: Prisma.PostUpdateInput = { ...data };
 
-    // If tags are being updated, we need to disconnect old and connect new
-    // Simplest strategy: set tags to the new list (needs logic if we want to retain some)
-    // Prisma set: disconnects all others and connects these.
     if (tags) {
       updateData.tags = {
         set: [], // Clear existing
@@ -184,6 +188,7 @@ export class PostService {
   }
 
   async remove(userId: string, id: string) {
+    this.logger.warn({ userId, postId: id }, 'Deleting post');
     const post = await this.prisma.post.findUnique({ where: { id } });
     if (!post) throw new NotFoundException('Post not found');
 
@@ -201,6 +206,7 @@ export class PostService {
   }
 
   async toggleLike(userId: string, postId: string) {
+    this.logger.debug({ userId, postId }, 'Toggling post like');
     const post = await this.prisma.post.findUnique({ where: { id: postId } });
     if (!post) throw new NotFoundException('Post not found');
 
@@ -223,6 +229,7 @@ export class PostService {
   }
 
   async addComment(userId: string, postId: string, createCommentDto: CreateCommentDto) {
+    this.logger.log({ userId, postId, dto: createCommentDto }, 'Adding comment');
     const post = await this.prisma.post.findUnique({ where: { id: postId } });
     if (!post) throw new NotFoundException('Post not found');
 
@@ -249,6 +256,7 @@ export class PostService {
   }
 
   async getComments(userId: string, postId: string, page: number = 1, limit: number = 20, parentId?: string) {
+    this.logger.debug({ userId, postId, page, parentId }, 'Fetching comments');
     const skip = (page - 1) * limit;
     const where: Prisma.CommentWhereInput = { postId, parentId: parentId || null };
 
@@ -295,6 +303,7 @@ export class PostService {
   }
 
   async toggleCommentLike(userId: string, commentId: string) {
+    this.logger.debug({ userId, commentId }, 'Toggling comment like');
     const comment = await this.prisma.comment.findUnique({ where: { id: commentId } });
     if (!comment) throw new NotFoundException('Comment not found');
 
@@ -314,6 +323,7 @@ export class PostService {
   }
 
   async removeComment(userId: string, commentId: string) {
+    this.logger.warn({ userId, commentId }, 'Removing comment');
     const comment = await this.prisma.comment.findUnique({ where: { id: commentId } });
     if (!comment) throw new NotFoundException('Comment not found');
 

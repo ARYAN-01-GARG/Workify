@@ -1,12 +1,17 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConnectionStatus } from '@repo/db';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class ConnectionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly prisma: PrismaService
+  ) {}
 
   async sendRequest(senderId: string, receiverId: string) {
+    this.logger.log({ senderId, receiverId }, 'Sending connection request');
     if (senderId === receiverId) {
       throw new BadRequestException('Cannot send connection request to yourself');
     }
@@ -34,6 +39,7 @@ export class ConnectionService {
   }
 
   async updateStatus(connectionId: string, userId: string, status: ConnectionStatus) {
+    this.logger.log({ userId, connectionId, status }, 'Updating connection status');
     const connection = await this.prisma.connection.findUnique({
       where: { id: connectionId },
     });
@@ -83,6 +89,7 @@ export class ConnectionService {
   }
 
   async remove(connectionId: string, userId: string) {
+    this.logger.warn({ userId, connectionId }, 'Removing connection');
     const connection = await this.prisma.connection.findUnique({
       where: { id: connectionId },
     });

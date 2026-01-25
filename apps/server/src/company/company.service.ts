@@ -4,11 +4,17 @@ import { CreateCompanyDto, UpdateCompanyDto } from './dto/company.dto';
 import { CompanyQueryDto } from './dto/company-query.dto';
 import { Prisma } from '@repo/db';
 
+import { Logger } from 'nestjs-pino';
+
 @Injectable()
 export class CompanyService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly prisma: PrismaService
+  ) {}
 
   async create(userId: string, dto: CreateCompanyDto) {
+    this.logger.log({ userId, companyName: dto.name }, 'Creating company');
     // Check if user is a recruiter (Guard handles role, but we need profile)
     const recruiterProfile = await this.prisma.recruiterProfile.findUnique({
       where: { userId },
@@ -44,6 +50,7 @@ export class CompanyService {
   }
 
   async findAll(query: CompanyQueryDto) {
+    this.logger.debug({ query }, 'Searching companies');
     const { page = 1, limit = 20, search, industry, location } = query;
     const skip = (page - 1) * limit;
 
@@ -110,6 +117,7 @@ export class CompanyService {
   }
 
   async update(id: string, userId: string, dto: UpdateCompanyDto) {
+    this.logger.log({ userId, companyId: id }, 'Updating company');
     // Check permissions: User must be a recruiter for THIS company
     const recruiterProfile = await this.prisma.recruiterProfile.findUnique({
       where: { userId },
@@ -126,6 +134,7 @@ export class CompanyService {
   }
 
   async remove(id: string, userId: string) {
+    this.logger.warn({ userId, companyId: id }, 'Deleting company');
     const recruiterProfile = await this.prisma.recruiterProfile.findUnique({
       where: { userId },
     });

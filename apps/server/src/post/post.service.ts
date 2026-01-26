@@ -66,6 +66,10 @@ export class PostService {
       };
     }
 
+    if (query.authorId) {
+      where.authorId = query.authorId;
+    }
+
     // Following Feed Logic
     if (type === 'FOLLOWING' && userId) {
       const connections = await this.prisma.connection.findMany({
@@ -117,7 +121,7 @@ export class PostService {
     // Enhance posts with likedByCurrentUser flag
     const enhancedData = data.map((post) => ({
       ...post,
-      likedByCurrentUser: userId ? post.likes.length > 0 : false,
+      hasLiked: userId ? post.likes.length > 0 : false,
       likes: undefined,
     }));
 
@@ -154,7 +158,7 @@ export class PostService {
 
     return {
       ...post,
-      likedByCurrentUser: userId ? post.likes.length > 0 : false,
+      hasLiked: userId ? post.likes.length > 0 : false,
       likes: undefined,
     };
   }

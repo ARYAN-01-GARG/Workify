@@ -26,7 +26,32 @@ export class ConnectionService {
     });
 
     if (existing) {
-      throw new BadRequestException('Connection request already exists');
+      if (existing.status === ConnectionStatus.REJECTED) {
+        // Recycle the existing record with atomic update
+        try {
+          return await this.prisma.connection.update({
+            where: {
+              id: existing.id,
+              status: ConnectionStatus.REJECTED, // Ensure status hasn't changed
+            },
+            data: {
+              senderId,
+              receiverId,
+              status: ConnectionStatus.PENDING,
+            },
+          });
+        } catch (error) {
+          // If update fails due to status change, throw error
+          this.logger.warn({ error, connectionId: existing.id }, 'Connection status changed during update');
+          throw new BadRequestException('Connection request already updated');
+        }
+      }
+
+      const message =
+        existing.status === ConnectionStatus.ACCEPTED
+          ? 'You are already connected'
+          : 'Connection request already exists';
+      throw new BadRequestException(message);
     }
 
     return this.prisma.connection.create({
@@ -48,7 +73,6 @@ export class ConnectionService {
       throw new NotFoundException('Connection not found');
     }
 
-    // Only receiver can accept/reject (unless we allow cancelling by sender?)
     if (connection.receiverId !== userId) {
       throw new BadRequestException('Only the receiver can accept or reject this request');
     }
@@ -97,16 +121,17 @@ export class ConnectionService {
     if (!connection) {
       throw new NotFoundException('Connection not found');
     }
+    const isSender = connection.senderId === userId;
+    const isReceiver = connection.receiverId === userId;
 
-    // Sender can cancel if PENDING
-    // Receiver can reject (using updateStatus), but if they want to "delete" it, maybe?
-    // Usually delete is for canceling a sent request.
-    if (connection.senderId !== userId) {
-      throw new BadRequestException('Only the sender can cancel this request');
+    if (!isSender && !isReceiver) {
+      throw new BadRequestException('You are not authorized to remove this connection');
     }
 
-    if (connection.status !== ConnectionStatus.PENDING) {
-      throw new BadRequestException('Cannot cancel a non-pending request');
+    if (connection.status === ConnectionStatus.PENDING) {
+      if (!isSender) {
+        throw new BadRequestException('Only the sender can cancel a pending request');
+      }
     }
 
     return this.prisma.connection.delete({

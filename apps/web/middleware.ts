@@ -4,13 +4,13 @@ import { NextResponse } from 'next/server';
 
 export { default } from 'next-auth/middleware';
 
-export async function proxy(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { nextUrl } = req;
   const { pathname, origin } = nextUrl;
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (!token) {
-    if (pathname === '/') {
+    if (pathname === '/' || pathname.startsWith('/login') || pathname.startsWith('/signup')) {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/login', origin));

@@ -2,19 +2,17 @@ import { DM_Sans, Inter, Lato, Poppins, Space_Grotesk } from 'next/font/google';
 
 export const dmSans = DM_Sans({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900', '1000'],
   display: 'swap',
 });
 
 export const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
 
 export const inter = Inter({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   display: 'swap',
 });
 

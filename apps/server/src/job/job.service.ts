@@ -4,6 +4,7 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JobSearchDto } from './dto/job-search.dto';
 import { ApplicationQueryDto } from './dto/application-query.dto';
+import { ApplyJobDto } from './dto/apply-job.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@repo/db';
 
@@ -45,7 +46,18 @@ export class JobService {
 
   async findAll(query: JobSearchDto) {
     this.logger.debug({ query }, 'Searching jobs');
-    const { query: searchQuery, location, type, workMode, experienceLevel, page = 1, limit = 20 } = query;
+    const {
+      query: searchQuery,
+      location,
+      type,
+      workMode,
+      experienceLevel,
+      skills,
+      datePosted,
+      sortBy,
+      page = 1,
+      limit = 20,
+    } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.JobWhereInput = {
@@ -64,9 +76,44 @@ export class JobService {
       where.location = { contains: location, mode: 'insensitive' };
     }
 
+    if (skills) {
+      const skillsList = skills
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (skillsList.length > 0) {
+        where.skills = { hasSome: skillsList };
+      }
+    }
+
+    if (datePosted && datePosted !== 'ALL') {
+      const now = new Date();
+      const dateFrom = new Date();
+
+      switch (datePosted) {
+        case 'LAST_24_HOURS':
+          dateFrom.setDate(now.getDate() - 1);
+          break;
+        case 'LAST_7_DAYS':
+          dateFrom.setDate(now.getDate() - 7);
+          break;
+        case 'LAST_30_DAYS':
+          dateFrom.setDate(now.getDate() - 30);
+          break;
+      }
+
+      where.createdAt = { gte: dateFrom };
+    }
+
     if (type) where.type = type;
     if (workMode) where.workMode = workMode;
     if (experienceLevel) where.experienceLevel = experienceLevel;
+
+    let orderBy: Prisma.JobOrderByWithRelationInput = { createdAt: 'desc' };
+
+    if (sortBy === 'salary') {
+      orderBy = { salaryMax: 'desc' };
+    }
 
     const [data, total] = await Promise.all([
       this.prisma.job.findMany({
@@ -82,9 +129,7 @@ export class JobService {
             },
           },
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy,
       }),
       this.prisma.job.count({ where }),
     ]);
@@ -157,8 +202,10 @@ export class JobService {
     });
   }
 
-  async apply(userId: string, jobId: string, coverLetter?: string) {
+  async apply(userId: string, jobId: string, dto: ApplyJobDto) {
     this.logger.log({ userId, jobId }, 'Applying for job');
+    const { coverLetter, resumeId } = dto;
+
     // Check if job exists
     const job = await this.prisma.job.findUnique({ where: { id: jobId } });
     if (!job) throw new NotFoundException('Job not found');
@@ -171,6 +218,15 @@ export class JobService {
 
     if (!candidateProfile) {
       throw new ForbiddenException('You must have a candidate profile to apply');
+    }
+
+    // Validate Resume if provided
+    if (resumeId) {
+      const resume = await this.prisma.resume.findUnique({ where: { id: resumeId } });
+      if (!resume) throw new BadRequestException('Resume not found');
+      if (resume.candidateProfileId !== candidateProfile.id) {
+        throw new ForbiddenException('This resume does not belong to you');
+      }
     }
 
     // Check if already applied
@@ -192,6 +248,7 @@ export class JobService {
         jobId,
         candidateProfileId: candidateProfile.id,
         coverLetter,
+        resumeId,
       },
     });
   }
@@ -240,5 +297,59 @@ export class JobService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async getMyApplication(userId: string, jobId: string) {
+    // First get the candidate profile for this user
+    const candidateProfile = await this.prisma.candidateProfile.findUnique({
+      where: { userId },
+    });
+
+    if (!candidateProfile) {
+      return null;
+    }
+
+    // Find the application for this job
+    const application = await this.prisma.application.findUnique({
+      where: {
+        jobId_candidateProfileId: {
+          jobId,
+          candidateProfileId: candidateProfile.id,
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        appliedAt: true,
+      },
+    });
+
+    return application;
+  }
+
+  async getMyAppliedJobs(userId: string) {
+    const candidateProfile = await this.prisma.candidateProfile.findUnique({
+      where: { userId },
+    });
+
+    if (!candidateProfile) return [];
+
+    const applications = await this.prisma.application.findMany({
+      where: { candidateProfileId: candidateProfile.id },
+      include: {
+        job: {
+          include: {
+            company: true,
+          },
+        },
+      },
+      orderBy: { appliedAt: 'desc' },
+    });
+
+    return applications.map((app) => ({
+      ...app.job,
+      applicationStatus: app.status,
+      appliedAt: app.appliedAt,
+    }));
   }
 }

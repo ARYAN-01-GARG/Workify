@@ -1,11 +1,13 @@
 import { JwtService } from '@nestjs/jwt';
 import { Auth } from 'googleapis';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { google } from 'googleapis';
 import { config } from 'src/common/config';
 import { User, UserRole } from '@repo/db';
+import * as bcrypt from 'bcrypt';
+import { LoginDto, RegisterDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,18 +25,108 @@ export class AuthService {
     );
   }
 
-  // --- OTP Flow ---
+  // --- Password Flow ---
+
+  async register(dto: RegisterDto) {
+    this.logger.log({ email: dto.email }, 'Registering user');
+
+    // 1. Verify OTP
+    const validOtp = await this.prismaService.otp.findFirst({
+      where: {
+        email: dto.email,
+        otp: dto.otp,
+        expiresAt: { gt: new Date() },
+      },
+    });
+
+    if (!validOtp) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    // 2. Check if user exists
+    const existingUser = await this.prismaService.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('User already exists');
+    }
+
+    // 3. Hash password
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    // 4. Create User
+    const userRole: UserRole = 'CANDIDATE'; // Default role
+
+    const user = await this.prismaService.user.create({
+      data: {
+        email: dto.email,
+        name: dto.name,
+        password: hashedPassword,
+        role: userRole,
+        isVerified: true,
+      },
+    });
+
+    // 5. Create Profile
+    await this.prismaService.candidateProfile.create({
+      data: { userId: user.id },
+    });
+
+    // 6. Cleanup OTP
+    await this.prismaService.otp.delete({ where: { id: validOtp.id } });
+
+    // 7. Generate Token
+    const token = await this.generateToken(user);
+    const { password, ...result } = user;
+
+    return { token, user: result };
+  }
+
+  async login(dto: LoginDto) {
+    this.logger.log({ email: dto.email }, 'Logging in user');
+    const user = await this.prismaService.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (!user) {
+      // Obfuscate user existence
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!user.password) {
+      // If user exists but no password (e.g. OAuth only), prompt them or handle accordingly.
+      // For now, treat as invalid credentials to avoid enumeration, or maybe allow if we want to prompt "Login with Google"
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isMatch = await bcrypt.compare(dto.password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const token = await this.generateToken(user);
+    const { password, ...result } = user;
+
+    return { token, user: result };
+  }
+
+  async validateUser(email: string, pass: string): Promise<any> {
+    const user = await this.prismaService.user.findUnique({ where: { email } });
+    if (user && user.password && (await bcrypt.compare(pass, user.password))) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
+
+  // --- OTP Flow (Legacy/Alternative) ---
 
   async sendOtp(email: string) {
     this.logger.log({ email }, 'Sending OTP');
-    let otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Test OTP bypass - controlled via ENABLE_TEST_OTP environment variable
-    const testEmails = ['admin@workify.com', 'recruiter@workify.com', 'candidate@workify.com'];
-    if (config.enableTestOtp && testEmails.includes(email)) {
-      otp = '123456';
-      this.logger.warn({ email }, 'Using test OTP bypass - this should not be enabled in production');
-    }
+    // Use static OTP in development for easy testing, random in production
+    const otp =
+      process.env.NODE_ENV === 'development' ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
@@ -48,7 +140,12 @@ export class AuthService {
       },
     });
 
-    this.logger.log(`[MOCK EMAIL] OTP for ${email} is: ${otp}`);
+    // Only log OTP in development environment
+    if (process.env.NODE_ENV === 'development') {
+      this.logger.log(`[DEV OTP] OTP for ${email} is: ${otp}`);
+    } else {
+      this.logger.log({ email }, 'OTP sent successfully');
+    }
 
     return { message: 'OTP sent successfully' };
   }

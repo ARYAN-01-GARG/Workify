@@ -5,3 +5,4 @@ export * from './connection.type';
 export * from './file.type';
 export * from './request-hint.type';
 export * from './post.type';
+export * from './chat.type';

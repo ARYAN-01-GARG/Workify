@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from './dto/update-profile.dto';
@@ -25,6 +25,18 @@ export class UserController {
     return this.userService.getProfile(req.user.id);
   }
 
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get user profile by ID',
+    description: 'Returns the public profile of a user by their ID.',
+  })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User profile retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getPublicProfile(@Req() req: RequestWithUser, @Param('id') userId: string) {
+    return this.userService.getPublicProfile(userId, req.user.id);
+  }
+
   @Patch('profile/candidate')
   @Roles(UserRole.CANDIDATE)
   @ApiOperation({
@@ -47,5 +59,25 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad Request (e.g., Invalid Company ID)' })
   async updateRecruiterProfile(@Req() req: RequestWithUser, @Body() body: UpdateRecruiterProfileDto) {
     return this.userService.updateRecruiterProfile(req.user.id, body);
+  }
+
+  @Patch('profile/avatar')
+  @ApiOperation({
+    summary: 'Update user avatar',
+    description: 'Updates the avatar/profile picture for the current user.',
+  })
+  @ApiResponse({ status: 200, description: 'Avatar updated successfully' })
+  async updateAvatar(@Req() req: RequestWithUser, @Body() body: { avatarUrl: string }) {
+    return this.userService.updateAvatar(req.user.id, body.avatarUrl);
+  }
+
+  @Patch('profile/cover')
+  @ApiOperation({
+    summary: 'Update user cover image',
+    description: 'Updates the cover/banner image for the current user profile.',
+  })
+  @ApiResponse({ status: 200, description: 'Cover image updated successfully' })
+  async updateCover(@Req() req: RequestWithUser, @Body() body: { coverUrl: string }) {
+    return this.userService.updateCover(req.user.id, body.coverUrl);
   }
 }

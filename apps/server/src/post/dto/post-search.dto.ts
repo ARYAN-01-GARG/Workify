@@ -36,4 +36,9 @@ export class PostSearchDto {
   @IsOptional()
   @IsString()
   type?: 'ALL' | 'FOLLOWING' = 'ALL';
+
+  @ApiPropertyOptional({ description: 'Filter by author ID' })
+  @IsOptional()
+  @IsString()
+  authorId?: string;
 }

@@ -6,6 +6,7 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JobSearchDto } from './dto/job-search.dto';
 import { ApplicationQueryDto } from './dto/application-query.dto';
+import { ApplyJobDto } from './dto/apply-job.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard, Roles } from '../common/guards/roles.guard';
 import { RequestWithUser } from '@repo/shared-types';
@@ -31,6 +32,15 @@ export class JobController {
   @ApiResponse({ status: 200, description: 'List of jobs found' })
   findAll(@Query() query: JobSearchDto) {
     return this.jobService.findAll(query);
+  }
+
+  @Get('applied')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.CANDIDATE)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get jobs I have applied to' })
+  getMyAppliedJobs(@Req() req: RequestWithUser) {
+    return this.jobService.getMyAppliedJobs(req.user.id);
   }
 
   @Get(':id')
@@ -70,8 +80,8 @@ export class JobController {
   @ApiOperation({ summary: 'Apply for a job' })
   @ApiResponse({ status: 201, description: 'Application submitted successfully' })
   @ApiResponse({ status: 400, description: 'Already applied or Job closed' })
-  apply(@Req() req: RequestWithUser, @Param('id') id: string, @Body('coverLetter') coverLetter?: string) {
-    return this.jobService.apply(req.user.id, id, coverLetter);
+  apply(@Req() req: RequestWithUser, @Param('id') id: string, @Body() applyJobDto: ApplyJobDto) {
+    return this.jobService.apply(req.user.id, id, applyJobDto);
   }
 
   @Get(':id/applications')
@@ -86,5 +96,15 @@ export class JobController {
   @ApiResponse({ status: 403, description: 'Forbidden - Not the owner' })
   getApplications(@Req() req: RequestWithUser, @Param('id') id: string, @Query() query: ApplicationQueryDto) {
     return this.jobService.getApplications(req.user.id, id, query);
+  }
+
+  @Get(':id/my-application')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.CANDIDATE)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get my application status for a job' })
+  @ApiResponse({ status: 200, description: 'Application details or null if not applied' })
+  getMyApplication(@Req() req: RequestWithUser, @Param('id') id: string) {
+    return this.jobService.getMyApplication(req.user.id, id);
   }
 }

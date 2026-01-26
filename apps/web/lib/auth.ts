@@ -1,5 +1,6 @@
 import type { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { envConfig } from '@/config';
 import { AuthService } from '@/services';
 
@@ -8,8 +9,37 @@ const googleAuthProvider = GoogleProvider({
   clientSecret: envConfig.providers.google.clientSecret,
 });
 
+const credentialsProvider = CredentialsProvider({
+  name: 'Credentials',
+  credentials: {
+    email: { label: 'Email', type: 'email' },
+    password: { label: 'Password', type: 'password' },
+  },
+  async authorize(credentials) {
+    if (!credentials?.email || !credentials?.password) {
+      return null;
+    }
+    try {
+      const resp = await AuthService.login(credentials.email, credentials.password);
+      if (resp) {
+        return {
+          id: resp.user.id,
+          email: resp.user.email,
+          name: resp.user.name,
+          image: resp.user.avatarUrl,
+          token: resp.token,
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error signing in:', error);
+      return null;
+    }
+  },
+});
+
 export const authOptions: AuthOptions = {
-  providers: [googleAuthProvider],
+  providers: [googleAuthProvider, credentialsProvider],
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider === 'google') {
@@ -68,4 +98,5 @@ export const authOptions: AuthOptions = {
     signIn: '/login',
     error: '/login',
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };

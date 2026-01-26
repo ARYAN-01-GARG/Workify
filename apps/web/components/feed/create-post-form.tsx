@@ -3,7 +3,8 @@
 import { useState, useRef } from 'react';
 import { useForm, Resolver } from 'react-hook-form';
 import { z } from 'zod';
-import { Image, X, Loader2, Link as LinkIcon, Video, Send } from 'lucide-react';
+import Image from 'next/image';
+import { Image as ImageIcon, X, Loader2, Link as LinkIcon, Video, Send } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
 import { Button } from '@repo/ui/components/button';
 import { Textarea } from '@repo/ui/components/textarea';
@@ -182,7 +183,14 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 
           {previewUrl && !isUploading ? (
             <div className='relative mt-4 rounded-xl overflow-hidden border border-slate-700 group'>
-              <img src={previewUrl} alt='Preview' className='w-full h-auto max-h-[400px] object-cover' />
+              <Image
+                src={previewUrl}
+                alt='Preview'
+                width={500}
+                height={300}
+                className='w-full h-auto max-h-[400px] object-cover'
+                unoptimized
+              />
               <Button
                 type='button'
                 variant='destructive'
@@ -207,7 +215,7 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
               disabled={isUploading}
               title='Upload image'
             >
-              {isUploading ? <Loader2 className='h-5 w-5 animate-spin' /> : <Image className='h-5 w-5' />}
+              {isUploading ? <Loader2 className='h-5 w-5 animate-spin' /> : <ImageIcon className='h-5 w-5' />}
             </Button>
             <Button
               type='button'

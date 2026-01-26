@@ -2,7 +2,7 @@
  * Post-related types matching Swagger API spec
  */
 
-import type { Author, CursorPaginatedResponse, PaginatedResponse } from './common';
+import type { Author, CursorPaginatedResponse } from './common';
 
 /**
  * Post entity matching backend response

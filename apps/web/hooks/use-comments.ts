@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { PostService } from '@/services/post.service';
-import type { Comment, CreateCommentDto } from '@/types';
+import type { CreateCommentDto } from '@/types';
 
 /**
  * Query key factory for comments
@@ -22,7 +22,8 @@ export function useComments(postId: string) {
     queryKey: commentKeys.list(postId),
     queryFn: ({ pageParam = 1 }) => PostService.getComments(postId, { page: pageParam, limit: 10 }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.page + 1 : undefined),
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.page < lastPage.meta.totalPages ? lastPage.meta.page + 1 : undefined,
     enabled: !!postId,
   });
 }

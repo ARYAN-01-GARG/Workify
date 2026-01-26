@@ -40,4 +40,11 @@ export class ConnectionService {
   static async cancelRequest(connectionId: string): Promise<void> {
     return ApiClient.delete(`/connections/${connectionId}`);
   }
+
+  /**
+   * Remove an existing connection
+   */
+  static async removeConnection(connectionId: string): Promise<void> {
+    return ApiClient.delete(`/connections/${connectionId}`);
+  }
 }

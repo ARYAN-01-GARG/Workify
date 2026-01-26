@@ -2,7 +2,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ConnectionService } from '@/services/connection.service';
-import type { Connection, SendConnectionRequestDto, UpdateConnectionStatusDto } from '@/types';
+import { ConnectionStatus } from '@/types/connection';
+import type { Connection, SendConnectionRequestDto } from '@/types';
 
 /**
  * Query key factory for connections - ensures consistent cache keys
@@ -45,6 +46,9 @@ export function useSendConnectionRequest() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: connectionKeys.lists() });
     },
+    onError: (error) => {
+      console.error('[useSendConnectionRequest] Failed:', error);
+    },
   });
 }
 
@@ -55,9 +59,13 @@ export function useAcceptConnection() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (connectionId: string) => ConnectionService.updateStatus(connectionId, { status: 'ACCEPTED' }),
+    mutationFn: (connectionId: string) =>
+      ConnectionService.updateStatus(connectionId, { status: ConnectionStatus.ACCEPTED }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: connectionKeys.lists() });
+    },
+    onError: (error) => {
+      console.error('[useAcceptConnection] Failed:', error);
     },
   });
 }
@@ -69,9 +77,13 @@ export function useRejectConnection() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (connectionId: string) => ConnectionService.updateStatus(connectionId, { status: 'REJECTED' }),
+    mutationFn: (connectionId: string) =>
+      ConnectionService.updateStatus(connectionId, { status: ConnectionStatus.REJECTED }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: connectionKeys.lists() });
+    },
+    onError: (error) => {
+      console.error('[useRejectConnection] Failed:', error);
     },
   });
 }
@@ -86,6 +98,26 @@ export function useCancelConnectionRequest() {
     mutationFn: (connectionId: string) => ConnectionService.cancelRequest(connectionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: connectionKeys.lists() });
+    },
+    onError: (error) => {
+      console.error('[useCancelConnectionRequest] Failed:', error);
+    },
+  });
+}
+
+/**
+ * Remove an existing connection
+ */
+export function useRemoveConnection() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (connectionId: string) => ConnectionService.removeConnection(connectionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: connectionKeys.lists() });
+    },
+    onError: (error) => {
+      console.error('[useRemoveConnection] Failed:', error);
     },
   });
 }

@@ -16,38 +16,71 @@ interface JobFiltersProps {
   onFilterChange: (filters: JobQueryDto) => void;
 }
 
+interface FilterOptionProps {
+  label: string;
+  value: string;
+  currentValue: string;
+  onClick: (val: string) => void;
+}
+
+const FilterOption = ({ label, value, currentValue, onClick }: FilterOptionProps) => {
+  const isSelected = currentValue === value || (value === 'ALL' && !currentValue);
+
+  return (
+    <div
+      onClick={() => onClick(value)}
+      className={cn(
+        'flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all text-sm',
+        isSelected
+          ? 'bg-primary text-primary-foreground font-medium shadow-sm'
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+      )}
+    >
+      <span>{label}</span>
+      {isSelected && <Check className='h-4 w-4' />}
+    </div>
+  );
+};
+
 export function JobFilters({ filters, onFilterChange }: JobFiltersProps) {
   const [localLocation, setLocalLocation] = useState(filters.location || '');
   const [localSkills, setLocalSkills] = useState(filters.skills || '');
+  const [prevLocation, setPrevLocation] = useState(filters.location);
+  const [prevSkills, setPrevSkills] = useState(filters.skills);
+
+  // Sync state during render (recommended replacement for useEffect syncing)
+  if (filters.location !== prevLocation) {
+    setPrevLocation(filters.location);
+    setLocalLocation(filters.location || '');
+  }
+
+  if (filters.skills !== prevSkills) {
+    setPrevSkills(filters.skills);
+    setLocalSkills(filters.skills || '');
+  }
 
   // Store latest callback in ref for stable access
   const onFilterChangeRef = useRef(onFilterChange);
-  onFilterChangeRef.current = onFilterChange;
+
+  useEffect(() => {
+    onFilterChangeRef.current = onFilterChange;
+  }, [onFilterChange]);
 
   const debouncedLocation = useDebounce(localLocation, 500);
   const debouncedSkills = useDebounce(localSkills, 500);
-
-  // Sync local state when filters are cleared or changed externally
-  useEffect(() => {
-    setLocalLocation(filters.location || '');
-  }, [filters.location]);
-
-  useEffect(() => {
-    setLocalSkills(filters.skills || '');
-  }, [filters.skills]);
 
   // Apply filters when debounced values change
   useEffect(() => {
     if (debouncedLocation !== (filters.location || '')) {
       onFilterChangeRef.current({ ...filters, location: debouncedLocation || undefined });
     }
-  }, [debouncedLocation, filters.location]);
+  }, [debouncedLocation, filters.location, filters]);
 
   useEffect(() => {
     if (debouncedSkills !== (filters.skills || '')) {
       onFilterChangeRef.current({ ...filters, skills: debouncedSkills || undefined });
     }
-  }, [debouncedSkills, filters.skills]);
+  }, [debouncedSkills, filters.skills, filters]);
 
   const handleChange = (key: keyof JobQueryDto, value: string) => {
     onFilterChangeRef.current({ ...filters, [key]: value === 'ALL' ? undefined : value });
@@ -58,35 +91,6 @@ export function JobFilters({ filters, onFilterChange }: JobFiltersProps) {
   };
 
   const activeFiltersCount = Object.values(filters).filter((v) => v !== undefined && v !== '').length;
-
-  const FilterOption = ({
-    label,
-    value,
-    currentValue,
-    onClick,
-  }: {
-    label: string;
-    value: string;
-    currentValue: string;
-    onClick: (val: string) => void;
-  }) => {
-    const isSelected = currentValue === value || (value === 'ALL' && !currentValue);
-
-    return (
-      <div
-        onClick={() => onClick(value)}
-        className={cn(
-          'flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all text-sm',
-          isSelected
-            ? 'bg-primary text-primary-foreground font-medium shadow-sm'
-            : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-        )}
-      >
-        <span>{label}</span>
-        {isSelected && <Check className='h-4 w-4' />}
-      </div>
-    );
-  };
 
   return (
     <div className='space-y-4 p-5 border rounded-xl bg-card text-card-foreground shadow-sm'>

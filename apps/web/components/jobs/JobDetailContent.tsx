@@ -2,7 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components/card';
 import { Badge } from '@repo/ui/components/badge';
-import { Building2, Globe, Users, MapPin, Briefcase, Clock, DollarSign, Target } from 'lucide-react';
+import Image from 'next/image';
+import { Building2, Globe, Users, MapPin, Briefcase, DollarSign, Target } from 'lucide-react';
 import type { Job } from '@/types/job';
 import { cn } from '@repo/ui/lib/utils';
 
@@ -124,10 +125,13 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
             <CardContent className='p-6 space-y-4'>
               <div className='flex items-center gap-4'>
                 {job.company?.logoUrl ? (
-                  <img
+                  <Image
                     src={job.company.logoUrl}
                     alt={job.company.name}
+                    width={56}
+                    height={56}
                     className='w-14 h-14 rounded-xl object-cover ring-2 ring-border'
+                    unoptimized
                   />
                 ) : (
                   <div className='w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center ring-2 ring-border'>

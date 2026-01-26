@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button } from '@repo/ui/components/button';
 import { MoreHorizontal, ArrowUpRight, Plus } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
+import { Avatar, AvatarFallback } from '@repo/ui/components/avatar';
 
 export const TrendingWidget = () => {
   const trends = [

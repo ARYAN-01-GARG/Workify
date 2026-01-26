@@ -5,8 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, Loader2, Sparkles, CheckCircle2, ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Mail, Lock, User, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -26,10 +25,7 @@ const otpSchema = z.object({
   otp: z.string().length(6, { message: 'OTP must be exactly 6 digits' }),
 });
 
-type Step = 'email' | 'otp' | 'details';
-
 export function SignupForm() {
-  const router = useRouter();
   const [step, setStep] = useState<'details' | 'otp'>('details');
   const [loading, setLoading] = useState(false);
   const [signupData, setSignupData] = useState<z.infer<typeof signupSchema> | null>(null);
@@ -76,16 +72,12 @@ export function SignupForm() {
         email: signupData.email,
         password: signupData.password,
         redirect: true,
-        callbackUrl: '/dashboard',
+        callbackUrl: '/feed',
       });
     } catch (error: any) {
       if (error.message?.includes('OTP')) {
         otpForm.setError('otp', { type: 'manual', message: 'Invalid or expired OTP' });
       } else {
-        // If registration failed generally, maybe go back to details?
-        // But preserving state relies on `signupData` which is fine.
-        // We show error on OTP step for now unless it's a "User already exists" which presumably happens at register time?
-        // Actually user existence logic is in register. If user exists, we probably should have checked earlier or fail here.
         otpForm.setError('root', { type: 'manual', message: error.message || 'Registration failed.' });
       }
     } finally {

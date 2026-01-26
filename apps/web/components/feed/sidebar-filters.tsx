@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Home, Compass, MessageSquare, Bell, User, Briefcase, Bookmark, Settings, Filter, Users } from 'lucide-react';
+import { Home, MessageSquare, Bell, User, Briefcase, Bookmark, Settings, Filter, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@repo/ui/components/button';
@@ -41,7 +41,6 @@ export const SidebarFilters = () => {
       <div className='bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-2xl overflow-hidden py-3 shadow-lg shadow-black/20'>
         <SidebarItem href='/feed' icon={Home} label='Feed' active={pathname === '/feed' || pathname === '/'} />
         <SidebarItem href='/connections' icon={Users} label='My Network' active={pathname === '/connections'} />
-        <SidebarItem href='/explore' icon={Compass} label='Explore' active={pathname === '/explore'} />
         <SidebarItem href='/jobs' icon={Briefcase} label='Jobs' active={pathname.startsWith('/jobs')} />
         <SidebarItem href='/messages' icon={MessageSquare} label='Messages' active={pathname.startsWith('/messages')} />
         <SidebarItem

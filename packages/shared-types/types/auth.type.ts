@@ -29,3 +29,11 @@ export interface RequestWithUser extends Request {
     role: string;
   };
 }
+
+export interface IRegisterDto {
+  email: string;
+  name: string;
+  password?: string;
+  otp?: string;
+  avatarUrl?: string; // Sometimes used in registration flow
+}

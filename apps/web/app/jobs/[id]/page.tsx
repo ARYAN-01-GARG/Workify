@@ -6,7 +6,7 @@ import { JobDetailHeader } from '@/components/jobs/JobDetailHeader';
 import { JobDetailContent } from '@/components/jobs/JobDetailContent';
 import { Skeleton } from '@repo/ui/components/skeleton';
 import { Button } from '@repo/ui/components/button';
-import { ArrowLeft, AlertCircle, Briefcase } from 'lucide-react';
+import { ArrowLeft, AlertCircle } from 'lucide-react';
 
 export default function JobDetailPage() {
   const { id } = useParams();

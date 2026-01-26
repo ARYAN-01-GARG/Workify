@@ -1,4 +1,4 @@
-import type { AuthContextType } from '@repo/shared-types/types';
+import type { AuthContextType, IRegisterDto } from '@repo/shared-types/types';
 import { ApiClient } from '@/lib/api-client';
 
 interface AuthResponse {
@@ -24,7 +24,7 @@ export class AuthService {
     return await ApiClient.post<AuthResponse>('/auth/login', { email, password });
   }
 
-  static async register(data: any) {
+  static async register(data: IRegisterDto) {
     return await ApiClient.post<AuthResponse>('/auth/register', data);
   }
 

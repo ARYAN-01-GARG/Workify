@@ -124,8 +124,9 @@ export class AuthService {
 
   async sendOtp(email: string) {
     this.logger.log({ email }, 'Sending OTP');
-    // OTP forced to 123456 per user request
-    const otp = '123456';
+    // Use static OTP in development for easy testing, random in production
+    const otp =
+      process.env.NODE_ENV === 'development' ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
@@ -139,7 +140,12 @@ export class AuthService {
       },
     });
 
-    this.logger.log(`[DEFAULT OTP] OTP for ${email} is: ${otp}`);
+    // Only log OTP in development environment
+    if (process.env.NODE_ENV === 'development') {
+      this.logger.log(`[DEV OTP] OTP for ${email} is: ${otp}`);
+    } else {
+      this.logger.log({ email }, 'OTP sent successfully');
+    }
 
     return { message: 'OTP sent successfully' };
   }

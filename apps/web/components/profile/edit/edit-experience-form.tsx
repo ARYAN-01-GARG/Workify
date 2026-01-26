@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { Button } from '@repo/ui/components/button';
 import { Input } from '@repo/ui/components/input';
 import { Textarea } from '@repo/ui/components/textarea';
@@ -39,9 +39,9 @@ export function EditExperienceForm({ user }: EditExperienceFormProps) {
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<ExperienceFormData>({
@@ -57,7 +57,7 @@ export function EditExperienceForm({ user }: EditExperienceFormProps) {
     },
   });
 
-  const currentlyWorking = watch('currentlyWorking');
+  const currentlyWorking = useWatch({ control, name: 'currentlyWorking' });
 
   const mutation = useMutation({
     mutationFn: (newExperiences: Experience[]) => UserService.updateCandidateProfile({ experience: newExperiences }),

@@ -19,6 +19,8 @@ export type {
   CommentsResponse,
 } from './post';
 
+export type { Resume } from '../services/resume.service';
+
 // User types
 export type {
   Education,

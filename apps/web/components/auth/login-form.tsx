@@ -45,7 +45,7 @@ export function LoginForm() {
       if (result?.error) {
         setError('Invalid email or password');
       } else {
-        router.push('/dashboard');
+        router.push('/feed');
         router.refresh();
       }
     } catch (error) {
@@ -137,7 +137,7 @@ export function LoginForm() {
               <Button
                 variant='outline'
                 className='text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white transition-colors'
-                onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+                onClick={() => signIn('google', { callbackUrl: '/feed' })}
               >
                 <svg className='mr-2 h-4 w-4' viewBox='0 0 24 24'>
                   <path

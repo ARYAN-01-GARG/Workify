@@ -36,7 +36,18 @@ export class UserService {
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return user;
+
+    // Get real connection count
+    const connectionsCount = await this.prisma.connection.count({
+      where: {
+        OR: [
+          { senderId: userId, status: 'ACCEPTED' },
+          { receiverId: userId, status: 'ACCEPTED' },
+        ],
+      },
+    });
+
+    return { ...user, connectionsCount };
   }
 
   async getPublicProfile(userId: string, viewerId?: string) {
@@ -50,6 +61,7 @@ export class UserService {
         bio: true,
         about: true,
         avatarUrl: true,
+        coverUrl: true,
         role: true,
         createdAt: true,
         candidateProfile: {
@@ -72,6 +84,16 @@ export class UserService {
     });
 
     if (!user) throw new NotFoundException('User not found');
+
+    // Get real connection count
+    const connectionsCount = await this.prisma.connection.count({
+      where: {
+        OR: [
+          { senderId: userId, status: 'ACCEPTED' },
+          { receiverId: userId, status: 'ACCEPTED' },
+        ],
+      },
+    });
 
     let connectionStatus = 'NONE';
     let connectionId: string | undefined = undefined;
@@ -96,7 +118,7 @@ export class UserService {
       }
     }
 
-    return { ...user, connectionStatus, connectionId };
+    return { ...user, connectionsCount, connectionStatus, connectionId };
   }
 
   async updateCandidateProfile(userId: string, dto: UpdateCandidateProfileDto) {

@@ -2,6 +2,7 @@
 
 import { useOptimistic, useState, startTransition } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Trash2, EyeOff } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
@@ -201,20 +202,26 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
                     setIsImageOpen(true);
                   }}
                 >
-                  <img
-                    src={post.mediaUrls[0]}
+                  <Image
+                    src={post.mediaUrls[0] || ''}
                     alt='Post content'
+                    width={600}
+                    height={400}
                     className='w-full h-auto max-h-[500px] object-cover group-hover:scale-[1.01] transition-transform duration-500'
+                    unoptimized
                   />
                 </div>
               </DialogTrigger>
               <DialogContent className='sm:max-w-[90vw] h-fit max-h-[90vh] p-0 bg-transparent border-none shadow-none overflow-hidden flex items-center justify-center outline-none'>
                 <DialogTitle className='sr-only'>Post Image</DialogTitle>
                 <div className='relative w-full h-full flex items-center justify-center pointer-events-auto'>
-                  <img
-                    src={post.mediaUrls[0]}
+                  <Image
+                    src={post.mediaUrls[0] || ''}
                     alt='Post content full screen'
+                    width={1920}
+                    height={1080}
                     className='w-auto h-auto max-w-[90vw] max-h-[90vh] object-contain rounded-md'
+                    unoptimized
                   />
                   <button
                     onClick={() => setIsImageOpen(false)}
@@ -246,7 +253,7 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             <Button
               variant='ghost'
               size='sm'
-              className={`flex-1 gap-2 h-9 rounded-lg transition-colors ${optimisticLike.isLiked ? 'text-pink-500 bg-pink-500/10 hover:bg-pink-500/20 hover:text-pink-600' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'}`}
+              className={`flex-1 gap-2 h-9 rounded-lg transition-colors ${optimisticLike.isLiked ? 'text-red-500 bg-red-500/10 hover:bg-red-500/20 hover:text-red-600' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'}`}
               onClick={handleLike}
               disabled={isLikeLoading}
             >

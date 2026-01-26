@@ -27,15 +27,24 @@ export class ConnectionService {
 
     if (existing) {
       if (existing.status === ConnectionStatus.REJECTED) {
-        // Recycle the existing record
-        return this.prisma.connection.update({
-          where: { id: existing.id },
-          data: {
-            senderId,
-            receiverId,
-            status: ConnectionStatus.PENDING,
-          },
-        });
+        // Recycle the existing record with atomic update
+        try {
+          return await this.prisma.connection.update({
+            where: {
+              id: existing.id,
+              status: ConnectionStatus.REJECTED, // Ensure status hasn't changed
+            },
+            data: {
+              senderId,
+              receiverId,
+              status: ConnectionStatus.PENDING,
+            },
+          });
+        } catch (error) {
+          // If update fails due to status change, throw error
+          this.logger.warn({ error, connectionId: existing.id }, 'Connection status changed during update');
+          throw new BadRequestException('Connection request already updated');
+        }
       }
 
       const message =

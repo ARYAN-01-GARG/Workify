@@ -14,6 +14,12 @@ interface PendingRequestCardProps {
   connection: Connection;
 }
 
+/**
+ * Displays a pending connection request card with sender info and accept/reject actions.
+ * Shows when another user has sent a connection request to the current user.
+ *
+ * @param connection - The pending connection request object from the API
+ */
 export function PendingRequestCard({ connection }: PendingRequestCardProps) {
   const sender = connection.sender;
   const { mutate: accept, isPending: isAccepting } = useAcceptConnection();

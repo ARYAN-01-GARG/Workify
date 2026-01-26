@@ -5,7 +5,11 @@
 /**
  * Connection status enum matching @repo/db
  */
-export type ConnectionStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
+export enum ConnectionStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+}
 
 /**
  * User summary in connection responses
@@ -20,14 +24,15 @@ export interface ConnectionUser {
 
 /**
  * Connection entity from backend
+ * Note: createdAt and updatedAt are ISO date strings serialized from DateTime fields
  */
 export interface Connection {
   id: string;
   senderId: string;
   receiverId: string;
   status: ConnectionStatus;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
   sender?: ConnectionUser;
   receiver?: ConnectionUser;
 }
@@ -43,5 +48,5 @@ export interface SendConnectionRequestDto {
  * DTO for updating connection status
  */
 export interface UpdateConnectionStatusDto {
-  status: 'ACCEPTED' | 'REJECTED';
+  status: ConnectionStatus.ACCEPTED | ConnectionStatus.REJECTED;
 }

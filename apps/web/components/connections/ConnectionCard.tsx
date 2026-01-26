@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
 import { Button } from '@repo/ui/components/button';
@@ -24,6 +24,13 @@ interface ConnectionCardProps {
   currentUserId: string;
 }
 
+/**
+ * Displays a connection card with user info and action buttons.
+ * Shows the connected user's avatar, name, bio, and provides options to message or remove the connection.
+ *
+ * @param connection - The connection object from the API containing sender and receiver data
+ * @param currentUserId - ID of the logged-in user to determine which user to display as the connection
+ */
 export function ConnectionCard({ connection, currentUserId }: ConnectionCardProps) {
   const { mutate: removeConnection, isPending: isRemoving } = useRemoveConnection();
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);

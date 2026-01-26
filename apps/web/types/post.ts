@@ -34,11 +34,13 @@ export interface Comment {
   createdAt: string;
   author: Author;
   parentId?: string | null;
-  _count?: {
+  _count: {
     likes: number;
     replies: number;
   };
-  hasLiked?: boolean;
+  hasLiked?: boolean; // From backend: likedByCurrentUser
+  likedByCurrentUser?: boolean; // Alias for hasLiked
+  replies?: Comment[];
 }
 
 /**
@@ -97,4 +99,12 @@ export type PostsResponse = CursorPaginatedResponse<Post>;
 /**
  * Response type for comments list
  */
-export type CommentsResponse = PaginatedResponse<Comment>;
+export interface CommentsResponse {
+  data: Comment[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

@@ -33,4 +33,18 @@ export const UserService = {
   async updateRecruiterProfile(data: UpdateRecruiterProfileDto): Promise<UserProfile> {
     return ApiClient.patch<UserProfile>('/user/profile/recruiter', data);
   },
+
+  /**
+   * Update user avatar/profile picture
+   */
+  async updateAvatar(avatarUrl: string): Promise<{ avatarUrl: string }> {
+    return ApiClient.patch<{ avatarUrl: string }>('/user/profile/avatar', { avatarUrl });
+  },
+
+  /**
+   * Update user cover/banner image
+   */
+  async updateCover(coverUrl: string): Promise<{ coverUrl: string }> {
+    return ApiClient.patch<{ coverUrl: string }>('/user/profile/cover', { coverUrl });
+  },
 };

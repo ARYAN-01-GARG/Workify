@@ -68,6 +68,23 @@ export const PostService = {
    * Get comments for a post with pagination
    */
   async getComments(postId: string, params: CommentQueryParams): Promise<CommentsResponse> {
-    return ApiClient.get<CommentsResponse>(`/posts/${postId}/comments`, params as unknown as Record<string, unknown>);
+    return ApiClient.get<CommentsResponse>(
+      `/posts/${postId}/comments`,
+      params as unknown as Record<string, unknown>
+    );
+  },
+
+  /**
+   * Toggle like on a comment
+   */
+  async toggleCommentLike(commentId: string): Promise<{ liked: boolean }> {
+    return ApiClient.post<{ liked: boolean }>(`/comments/${commentId}/like`);
+  },
+
+  /**
+   * Delete a comment
+   */
+  async deleteComment(commentId: string): Promise<void> {
+    return ApiClient.delete(`/comments/${commentId}`);
   },
 };

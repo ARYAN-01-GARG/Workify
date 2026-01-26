@@ -84,6 +84,7 @@ export interface UserProfile {
   bio?: string;
   about?: string;
   avatarUrl?: string;
+  coverUrl?: string;
   location?: string;
   website?: string;
   role: UserRole;
@@ -95,6 +96,8 @@ export interface UserProfile {
     sentRequests: number;
     receivedRequests: number;
   };
+  connectionStatus?: 'NONE' | 'PENDING_SENT' | 'PENDING_RECEIVED' | 'CONNECTED';
+  connectionId?: string;
 }
 
 /**

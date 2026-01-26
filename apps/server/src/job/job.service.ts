@@ -14,7 +14,7 @@ export class JobService {
   constructor(
     private readonly logger: Logger,
     private readonly prisma: PrismaService
-  ) {}
+  ) { }
 
   async create(userId: string, createJobDto: CreateJobDto) {
     this.logger.log({ userId, jobTitle: createJobDto.title }, 'Creating new job');
@@ -45,7 +45,7 @@ export class JobService {
 
   async findAll(query: JobSearchDto) {
     this.logger.debug({ query }, 'Searching jobs');
-    const { query: searchQuery, location, type, workMode, experienceLevel, page = 1, limit = 20 } = query;
+    const { query: searchQuery, location, type, workMode, experienceLevel, skills, datePosted, sortBy, page = 1, limit = 20 } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.JobWhereInput = {
@@ -64,9 +64,41 @@ export class JobService {
       where.location = { contains: location, mode: 'insensitive' };
     }
 
+    if (skills) {
+      const skillsList = skills.split(',').map(s => s.trim()).filter(Boolean);
+      if (skillsList.length > 0) {
+        where.skills = { hasSome: skillsList };
+      }
+    }
+
+    if (datePosted && datePosted !== 'ALL') {
+      const now = new Date();
+      let dateFrom = new Date();
+
+      switch (datePosted) {
+        case 'LAST_24_HOURS':
+          dateFrom.setDate(now.getDate() - 1);
+          break;
+        case 'LAST_7_DAYS':
+          dateFrom.setDate(now.getDate() - 7);
+          break;
+        case 'LAST_30_DAYS':
+          dateFrom.setDate(now.getDate() - 30);
+          break;
+      }
+
+      where.createdAt = { gte: dateFrom };
+    }
+
     if (type) where.type = type;
     if (workMode) where.workMode = workMode;
     if (experienceLevel) where.experienceLevel = experienceLevel;
+
+    let orderBy: Prisma.JobOrderByWithRelationInput = { createdAt: 'desc' };
+
+    if (sortBy === 'salary') {
+      orderBy = { salaryMax: 'desc' };
+    }
 
     const [data, total] = await Promise.all([
       this.prisma.job.findMany({
@@ -82,9 +114,7 @@ export class JobService {
             },
           },
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy,
       }),
       this.prisma.job.count({ where }),
     ]);
@@ -240,5 +270,33 @@ export class JobService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async getMyApplication(userId: string, jobId: string) {
+    // First get the candidate profile for this user
+    const candidateProfile = await this.prisma.candidateProfile.findUnique({
+      where: { userId },
+    });
+
+    if (!candidateProfile) {
+      return null;
+    }
+
+    // Find the application for this job
+    const application = await this.prisma.application.findUnique({
+      where: {
+        jobId_candidateProfileId: {
+          jobId,
+          candidateProfileId: candidateProfile.id,
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        appliedAt: true,
+      },
+    });
+
+    return application;
   }
 }

@@ -43,4 +43,19 @@ export class JobSearchDto {
   @Max(100)
   @Type(() => Number)
   limit?: number = 20;
+
+  @ApiProperty({ required: false, description: 'Filter by skills (comma separated)' })
+  @IsOptional()
+  @IsString()
+  skills?: string;
+
+  @ApiProperty({ required: false, enum: ['ALL', 'LAST_24_HOURS', 'LAST_7_DAYS', 'LAST_30_DAYS'], description: 'Filter by date posted' })
+  @IsOptional()
+  @IsEnum(['ALL', 'LAST_24_HOURS', 'LAST_7_DAYS', 'LAST_30_DAYS'])
+  datePosted?: 'ALL' | 'LAST_24_HOURS' | 'LAST_7_DAYS' | 'LAST_30_DAYS';
+
+  @ApiProperty({ required: false, enum: ['newest', 'salary'], description: 'Sort order' })
+  @IsOptional()
+  @IsEnum(['newest', 'salary'])
+  sortBy?: 'newest' | 'salary';
 }

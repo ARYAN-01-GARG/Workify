@@ -31,3 +31,12 @@ export type {
   UpdateCandidateProfileDto,
   UpdateRecruiterProfileDto,
 } from './user';
+
+// Connection types
+export type {
+  ConnectionStatus,
+  ConnectionUser,
+  Connection,
+  SendConnectionRequestDto,
+  UpdateConnectionStatusDto,
+} from './connection';

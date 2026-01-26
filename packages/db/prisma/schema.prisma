@@ -63,6 +63,7 @@ model User {
   bio       String?
   about     String?
   avatarUrl String?
+  coverUrl  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

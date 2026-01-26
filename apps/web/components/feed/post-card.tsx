@@ -1,6 +1,7 @@
 'use client';
 
-import { useOptimistic, useState } from 'react';
+import { useOptimistic, useState, startTransition } from 'react';
+import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Trash2, EyeOff } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
@@ -26,6 +27,8 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@repo/ui/comp
 import { toast } from 'sonner';
 import { useToggleLike, useDeletePost } from '@/hooks/use-posts';
 import type { Post } from '@/types';
+import { CommentList } from './comment-list';
+import { CreateCommentForm } from './create-comment-form';
 export type { Post } from '@/types';
 
 interface PostCardProps {
@@ -42,6 +45,7 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   // React 19 useOptimistic for instant UI feedback on likes
   const [optimisticLike, setOptimisticLike] = useOptimistic<LikeState, boolean>(
@@ -61,7 +65,9 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     if (isLikeLoading) return;
 
     const newIsLiked = !optimisticLike.isLiked;
-    setOptimisticLike(newIsLiked);
+    startTransition(() => {
+      setOptimisticLike(newIsLiked);
+    });
 
     toggleLike(post.id, {
       onError: () => {
@@ -108,18 +114,22 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     <>
       <Card className='bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-4 overflow-hidden hover:border-slate-700/80 transition-all duration-300 shadow-sm hover:shadow-md'>
         <CardHeader className='flex flex-row items-start gap-4 p-4 pb-2'>
-          <Avatar className='h-10 w-10 border-2 border-slate-800 cursor-pointer hover:border-violet-500/50 transition-colors'>
-            <AvatarImage src={post.author.avatarUrl || ''} alt={post.author.name} />
-            <AvatarFallback className='bg-slate-800 text-slate-300 font-bold text-xs'>
-              {post.author.name?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <Link href={`/profile/${post.author.id}`}>
+            <Avatar className='h-10 w-10 border-2 border-slate-800 cursor-pointer hover:border-violet-500/50 transition-colors'>
+              <AvatarImage src={post.author.avatarUrl || ''} alt={post.author.name} />
+              <AvatarFallback className='bg-slate-800 text-slate-300 font-bold text-xs'>
+                {post.author.name?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
           <div className='flex-1 min-w-0 pt-0.5'>
             <div className='flex items-start justify-between'>
               <div>
-                <h3 className='text-sm font-bold text-white hover:text-violet-400 cursor-pointer truncate transition-colors'>
-                  {post.author.name}
-                </h3>
+                <Link href={`/profile/${post.author.id}`}>
+                  <h3 className='text-sm font-bold text-white hover:text-violet-400 cursor-pointer truncate transition-colors'>
+                    {post.author.name}
+                  </h3>
+                </Link>
                 <p className='text-xs text-slate-400 truncate'>
                   {post.author.headline || post.author.role || 'Member'}
                 </p>
@@ -247,7 +257,8 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             <Button
               variant='ghost'
               size='sm'
-              className='flex-1 gap-2 h-9 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors'
+              className={`flex-1 gap-2 h-9 rounded-lg transition-colors ${showComments ? 'text-violet-400 bg-violet-400/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'}`}
+              onClick={() => setShowComments(!showComments)}
             >
               <MessageCircle className='h-4 w-4' />
               <span className='text-xs font-medium'>{post._count.comments > 0 ? post._count.comments : 'Comment'}</span>
@@ -273,6 +284,15 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
             </Button>
           </div>
         </CardFooter>
+
+        {showComments && (
+          <div className='bg-slate-950/30 border-t border-slate-800/50 p-4'>
+            <CreateCommentForm postId={post.id} autoFocus />
+            <div className='mt-6'>
+              <CommentList postId={post.id} />
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Delete Confirmation Dialog */}

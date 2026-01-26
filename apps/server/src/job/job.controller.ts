@@ -13,7 +13,7 @@ import { RequestWithUser } from '@repo/shared-types';
 @ApiTags('jobs')
 @Controller('jobs')
 export class JobController {
-  constructor(private readonly jobService: JobService) {}
+  constructor(private readonly jobService: JobService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -86,5 +86,15 @@ export class JobController {
   @ApiResponse({ status: 403, description: 'Forbidden - Not the owner' })
   getApplications(@Req() req: RequestWithUser, @Param('id') id: string, @Query() query: ApplicationQueryDto) {
     return this.jobService.getApplications(req.user.id, id, query);
+  }
+
+  @Get(':id/my-application')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.CANDIDATE)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get my application status for a job' })
+  @ApiResponse({ status: 200, description: 'Application details or null if not applied' })
+  getMyApplication(@Req() req: RequestWithUser, @Param('id') id: string) {
+    return this.jobService.getMyApplication(req.user.id, id);
   }
 }

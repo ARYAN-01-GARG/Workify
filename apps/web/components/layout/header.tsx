@@ -115,16 +115,13 @@ export const Header = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive
-                    ? 'text-white bg-slate-800/50'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
-                  }`}
+                className={`relative flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  isActive ? 'text-white bg-slate-800/50' : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
+                }`}
               >
                 <div className='relative'>
                   <Icon className='h-4 w-4' />
-                  {link.badge && (
-                    <span className='absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full' />
-                  )}
+                  {link.badge && <span className='absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full' />}
                 </div>
                 <span className='hidden lg:inline'>{link.label}</span>
                 {isActive && (
@@ -151,14 +148,13 @@ export const Header = () => {
             <Link
               key={link.href}
               href={link.href}
-              className={`relative flex flex-col items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${isActive ? 'text-violet-400' : 'text-slate-500 hover:text-white'
-                }`}
+              className={`relative flex flex-col items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${
+                isActive ? 'text-violet-400' : 'text-slate-500 hover:text-white'
+              }`}
             >
               <div className='relative'>
                 <Icon className='h-5 w-5' />
-                {link.badge && (
-                  <span className='absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-500 rounded-full' />
-                )}
+                {link.badge && <span className='absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-500 rounded-full' />}
               </div>
               <span>{link.label}</span>
             </Link>

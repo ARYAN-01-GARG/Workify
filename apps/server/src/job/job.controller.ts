@@ -13,7 +13,7 @@ import { RequestWithUser } from '@repo/shared-types';
 @ApiTags('jobs')
 @Controller('jobs')
 export class JobController {
-  constructor(private readonly jobService: JobService) { }
+  constructor(private readonly jobService: JobService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)

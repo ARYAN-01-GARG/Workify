@@ -10,7 +10,7 @@ export class UserService {
   constructor(
     private readonly logger: Logger,
     private readonly prisma: PrismaService
-  ) { }
+  ) {}
 
   async getProfile(userId: string) {
     this.logger.debug({ userId }, 'Fetching user profile');

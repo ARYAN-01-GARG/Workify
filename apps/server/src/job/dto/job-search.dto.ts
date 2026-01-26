@@ -49,7 +49,11 @@ export class JobSearchDto {
   @IsString()
   skills?: string;
 
-  @ApiProperty({ required: false, enum: ['ALL', 'LAST_24_HOURS', 'LAST_7_DAYS', 'LAST_30_DAYS'], description: 'Filter by date posted' })
+  @ApiProperty({
+    required: false,
+    enum: ['ALL', 'LAST_24_HOURS', 'LAST_7_DAYS', 'LAST_30_DAYS'],
+    description: 'Filter by date posted',
+  })
   @IsOptional()
   @IsEnum(['ALL', 'LAST_24_HOURS', 'LAST_7_DAYS', 'LAST_30_DAYS'])
   datePosted?: 'ALL' | 'LAST_24_HOURS' | 'LAST_7_DAYS' | 'LAST_30_DAYS';

@@ -17,10 +17,11 @@ const SidebarItem = ({ icon: Icon, label, href, active }: SidebarItemProps) => (
   <Link href={href} className='block mb-1.5'>
     <Button
       variant='ghost'
-      className={`w-full justify-start gap-3 h-11 px-4 transition-all duration-200 ${active
-        ? 'bg-gradient-to-r from-violet-500/10 to-transparent text-violet-400 border-l-2 border-violet-500 rounded-r-lg rounded-l-none'
-        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-l-2 border-transparent hover:pl-5'
-        }`}
+      className={`w-full justify-start gap-3 h-11 px-4 transition-all duration-200 ${
+        active
+          ? 'bg-gradient-to-r from-violet-500/10 to-transparent text-violet-400 border-l-2 border-violet-500 rounded-r-lg rounded-l-none'
+          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-l-2 border-transparent hover:pl-5'
+      }`}
     >
       <Icon className={`h-5 w-5 ${active ? 'text-violet-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
       <span className='font-medium'>{label}</span>

@@ -134,9 +134,7 @@ export default function ProfilePage() {
         {/* Right Sidebar (1 col) */}
         <div className='lg:col-span-1 space-y-6'>
           {/* Recommended Jobs - only for candidates */}
-          {user.candidateProfile && (
-            <RecommendedJobs skills={user.candidateProfile.skills || []} />
-          )}
+          {user.candidateProfile && <RecommendedJobs skills={user.candidateProfile.skills || []} />}
           <ConnectionRecommendations />
         </div>
       </div>

@@ -144,7 +144,7 @@ export function ProfileHeader({ user, isOwnProfile, onEditClick, onAvatarUpdate,
           style={{
             background: coverUrl
               ? `url(${coverUrl}) center/cover no-repeat`
-              : 'linear-gradient(to right, #7c3aed, #4f46e5, #2563eb)'
+              : 'linear-gradient(to right, #7c3aed, #4f46e5, #2563eb)',
           }}
         >
           {!coverUrl && (
@@ -161,11 +161,7 @@ export function ProfileHeader({ user, isOwnProfile, onEditClick, onAvatarUpdate,
               disabled={isUploadingCover}
               className='absolute top-4 right-4 bg-black/40 hover:bg-black/60 text-white rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity'
             >
-              {isUploadingCover ? (
-                <Loader2 className='h-4 w-4 animate-spin' />
-              ) : (
-                <Camera className='h-4 w-4' />
-              )}
+              {isUploadingCover ? <Loader2 className='h-4 w-4 animate-spin' /> : <Camera className='h-4 w-4' />}
             </Button>
           )}
         </div>
@@ -297,8 +293,8 @@ export function ProfileHeader({ user, isOwnProfile, onEditClick, onAvatarUpdate,
           imageSrc={selectedImageSrc}
           onCropComplete={handleCoverCropComplete}
           aspectRatio={3}
-          cropShape="rect"
-          title="Crop Cover Image"
+          cropShape='rect'
+          title='Crop Cover Image'
         />
       )}
     </>

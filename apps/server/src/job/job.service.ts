@@ -14,7 +14,7 @@ export class JobService {
   constructor(
     private readonly logger: Logger,
     private readonly prisma: PrismaService
-  ) { }
+  ) {}
 
   async create(userId: string, createJobDto: CreateJobDto) {
     this.logger.log({ userId, jobTitle: createJobDto.title }, 'Creating new job');
@@ -45,7 +45,18 @@ export class JobService {
 
   async findAll(query: JobSearchDto) {
     this.logger.debug({ query }, 'Searching jobs');
-    const { query: searchQuery, location, type, workMode, experienceLevel, skills, datePosted, sortBy, page = 1, limit = 20 } = query;
+    const {
+      query: searchQuery,
+      location,
+      type,
+      workMode,
+      experienceLevel,
+      skills,
+      datePosted,
+      sortBy,
+      page = 1,
+      limit = 20,
+    } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.JobWhereInput = {
@@ -65,7 +76,10 @@ export class JobService {
     }
 
     if (skills) {
-      const skillsList = skills.split(',').map(s => s.trim()).filter(Boolean);
+      const skillsList = skills
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
       if (skillsList.length > 0) {
         where.skills = { hasSome: skillsList };
       }

@@ -1,83 +1,66 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { ApiClient } from '@/lib/api-client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { UserService } from '@/services/user.service';
+import type { UserProfile, UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from '@/types';
 
-export interface Education {
-  id?: string;
-  school: string;
-  degree: string;
-  fieldOfStudy?: string;
-  startDate: string;
-  endDate?: string;
-  description?: string;
-}
+// Re-export types for backwards compatibility
+export type { UserProfile, Education, Experience, CandidateProfile, RecruiterProfile } from '@/types';
 
-export interface Experience {
-  id?: string;
-  title: string;
-  companyName: string;
-  employmentType?: string;
-  location?: string;
-  startDate: string;
-  endDate?: string;
-  description?: string;
-  currentlyWorking?: boolean;
-}
+/**
+ * Query key factory for user/profile queries
+ */
+export const profileKeys = {
+  all: ['profile'] as const,
+  me: () => [...profileKeys.all, 'me'] as const,
+  user: (id: string) => [...profileKeys.all, id] as const,
+};
 
-export interface CandidateProfile {
-  id: string;
-  headline?: string;
-  skills?: string[];
-  resumeUrl?: string;
-  education: Education[];
-  experience: Experience[];
-}
-
-export interface RecruiterProfile {
-  id: string;
-  company?: {
-    id: string;
-    name: string;
-    logo?: string;
-  };
-}
-
-export interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  bio?: string;
-  about?: string;
-  avatarUrl?: string;
-  role: 'CANDIDATE' | 'RECRUITER' | 'ADMIN';
-  createdAt: string;
-  candidateProfile?: CandidateProfile;
-  recruiterProfile?: RecruiterProfile;
-  _count?: {
-    posts: number;
-    sentRequests: number;
-    receivedRequests: number;
-  };
-}
-
+/**
+ * Fetch current authenticated user's profile
+ */
 export function useCurrentUserProfile() {
   return useQuery<UserProfile>({
-    queryKey: ['profile', 'me'],
-    queryFn: async () => {
-      const response = await ApiClient.get<UserProfile>('/user/profile');
-      return response;
+    queryKey: profileKeys.me(),
+    queryFn: () => UserService.getProfile(),
+  });
+}
+
+/**
+ * Fetch a user's public profile by ID
+ */
+export function useUserProfile(userId: string) {
+  return useQuery<UserProfile>({
+    queryKey: profileKeys.user(userId),
+    queryFn: () => UserService.getPublicProfile(userId),
+    enabled: !!userId,
+  });
+}
+
+/**
+ * Update candidate profile
+ */
+export function useUpdateCandidateProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateCandidateProfileDto) => UserService.updateCandidateProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: profileKeys.all });
     },
   });
 }
 
-export function useUserProfile(userId: string) {
-  return useQuery<UserProfile>({
-    queryKey: ['profile', userId],
-    queryFn: async () => {
-      const response = await ApiClient.get<UserProfile>(`/user/${userId}`);
-      return response;
+/**
+ * Update recruiter profile
+ */
+export function useUpdateRecruiterProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateRecruiterProfileDto) => UserService.updateRecruiterProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: profileKeys.all });
     },
-    enabled: !!userId,
   });
 }

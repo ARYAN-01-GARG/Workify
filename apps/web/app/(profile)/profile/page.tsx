@@ -8,6 +8,7 @@ import { ProfileExperience } from '@/components/profile/profile-experience';
 import { ProfileEducation } from '@/components/profile/profile-education';
 import { ProfilePosts } from '@/components/profile/profile-posts';
 import { ConnectionRecommendations } from '@/components/profile/connection-recommendations';
+import { RecommendedJobs } from '@/components/profile/recommended-jobs';
 import { Loader2, AlertCircle, Plus, Edit2 } from 'lucide-react';
 import { Button } from '@repo/ui/components/button';
 import { ProfileEditDialog } from '@/components/profile/edit/profile-edit-dialog';
@@ -130,8 +131,10 @@ export default function ProfilePage() {
           <ProfilePosts userId={user.id} />
         </div>
 
-        {/* Right Sidebar (1 col) - Recommendations Only */}
+        {/* Right Sidebar (1 col) */}
         <div className='lg:col-span-1 space-y-6'>
+          {/* Recommended Jobs - only for candidates */}
+          {user.candidateProfile && <RecommendedJobs skills={user.candidateProfile.skills || []} />}
           <ConnectionRecommendations />
         </div>
       </div>

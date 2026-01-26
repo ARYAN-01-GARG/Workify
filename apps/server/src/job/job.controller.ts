@@ -87,4 +87,14 @@ export class JobController {
   getApplications(@Req() req: RequestWithUser, @Param('id') id: string, @Query() query: ApplicationQueryDto) {
     return this.jobService.getApplications(req.user.id, id, query);
   }
+
+  @Get(':id/my-application')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.CANDIDATE)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get my application status for a job' })
+  @ApiResponse({ status: 200, description: 'Application details or null if not applied' })
+  getMyApplication(@Req() req: RequestWithUser, @Param('id') id: string) {
+    return this.jobService.getMyApplication(req.user.id, id);
+  }
 }

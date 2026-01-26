@@ -1,43 +1,50 @@
 import { ApiClient } from '@/lib/api-client';
+import type { UserProfile, UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from '@/types';
 
-export interface Education {
-  id?: string;
-  school: string;
-  degree: string;
-  fieldOfStudy?: string;
-  startDate: string;
-  endDate?: string;
-  description?: string;
-}
-
-export interface Experience {
-  id?: string;
-  title: string;
-  companyName: string;
-  employmentType?: string;
-  location?: string;
-  startDate: string;
-  endDate?: string;
-  currentlyWorking?: boolean;
-  description?: string;
-}
-
-export interface UpdateCandidateProfileDto {
-  name?: string;
-  bio?: string;
-  about?: string;
-  skills?: string[];
-  education?: Education[];
-  experience?: Experience[];
-}
-
+/**
+ * User service - handles all user-related API calls
+ * Always use this service instead of calling ApiClient directly in components
+ */
 export const UserService = {
-  async updateCandidateProfile(data: UpdateCandidateProfileDto) {
-    // Data now matches backend DTO format directly
-    return ApiClient.patch('/user/profile/candidate', data);
+  /**
+   * Get current authenticated user's profile
+   */
+  async getProfile(): Promise<UserProfile> {
+    return ApiClient.get<UserProfile>('/user/profile');
   },
 
-  async updateRecruiterProfile(data: any) {
-    return ApiClient.patch('/user/profile/recruiter', data);
+  /**
+   * Get a user's public profile by ID
+   */
+  async getPublicProfile(id: string): Promise<UserProfile> {
+    return ApiClient.get<UserProfile>(`/user/${id}`);
+  },
+
+  /**
+   * Update candidate profile (for candidates only)
+   */
+  async updateCandidateProfile(data: UpdateCandidateProfileDto): Promise<UserProfile> {
+    return ApiClient.patch<UserProfile>('/user/profile/candidate', data);
+  },
+
+  /**
+   * Update recruiter profile (for recruiters only)
+   */
+  async updateRecruiterProfile(data: UpdateRecruiterProfileDto): Promise<UserProfile> {
+    return ApiClient.patch<UserProfile>('/user/profile/recruiter', data);
+  },
+
+  /**
+   * Update user avatar/profile picture
+   */
+  async updateAvatar(avatarUrl: string): Promise<{ avatarUrl: string }> {
+    return ApiClient.patch<{ avatarUrl: string }>('/user/profile/avatar', { avatarUrl });
+  },
+
+  /**
+   * Update user cover/banner image
+   */
+  async updateCover(coverUrl: string): Promise<{ coverUrl: string }> {
+    return ApiClient.patch<{ coverUrl: string }>('/user/profile/cover', { coverUrl });
   },
 };

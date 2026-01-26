@@ -1,45 +1,87 @@
 import { ApiClient } from '@/lib/api-client';
+import type {
+  Post,
+  PostsResponse,
+  CreatePostDto,
+  UpdatePostDto,
+  Comment,
+  CommentsResponse,
+  PostQueryParams,
+  CommentQueryParams,
+} from '@/types';
 
-export interface CreatePostDto {
-  content: string;
-  mediaUrls?: string[];
-  tags?: string[];
-}
-
-export interface PostSearchDto {
-  page?: number;
-  limit?: number;
-  search?: string;
-  tags?: string[];
-  authorId?: string;
-}
-
+/**
+ * Post service - handles all post-related API calls
+ * Always use this service instead of calling ApiClient directly in components
+ */
 export const PostService = {
-  async create(data: CreatePostDto) {
-    return ApiClient.post('/posts', data);
+  /**
+   * Create a new post
+   */
+  async create(data: CreatePostDto): Promise<Post> {
+    return ApiClient.post<Post>('/posts', data);
   },
 
-  async findAll(params?: PostSearchDto) {
-    return ApiClient.get('/posts', params as Record<string, unknown>);
+  /**
+   * Get paginated posts feed
+   */
+  async findAll(params?: PostQueryParams): Promise<PostsResponse> {
+    return ApiClient.get<PostsResponse>('/posts', params as Record<string, unknown>);
   },
 
-  async findOne(id: string) {
-    return ApiClient.get(`/posts/${id}`);
+  /**
+   * Get a single post by ID
+   */
+  async findOne(id: string): Promise<Post> {
+    return ApiClient.get<Post>(`/posts/${id}`);
   },
 
-  async toggleLike(id: string) {
-    return ApiClient.post(`/posts/${id}/like`);
+  /**
+   * Update a post
+   */
+  async update(id: string, data: UpdatePostDto): Promise<Post> {
+    return ApiClient.patch<Post>(`/posts/${id}`, data);
   },
 
-  async addComment(id: string, content: string) {
-    return ApiClient.post(`/posts/${id}/comments`, { content });
-  },
-
-  async getComments(id: string, page = 1) {
-    return ApiClient.get(`/posts/${id}/comments`, { page });
-  },
-
-  async delete(id: string) {
+  /**
+   * Delete a post
+   */
+  async delete(id: string): Promise<void> {
     return ApiClient.delete(`/posts/${id}`);
+  },
+
+  /**
+   * Toggle like on a post (like/unlike)
+   */
+  async toggleLike(id: string): Promise<{ liked: boolean }> {
+    return ApiClient.post<{ liked: boolean }>(`/posts/${id}/like`);
+  },
+
+  /**
+   * Add a comment to a post
+   */
+  async addComment(postId: string, content: string, parentId?: string): Promise<Comment> {
+    return ApiClient.post<Comment>(`/posts/${postId}/comments`, { content, parentId });
+  },
+
+  /**
+   * Get comments for a post with pagination
+   */
+  async getComments(postId: string, params: CommentQueryParams): Promise<CommentsResponse> {
+    return ApiClient.get<CommentsResponse>(`/posts/${postId}/comments`, params as unknown as Record<string, unknown>);
+  },
+
+  /**
+   * Toggle like on a comment
+   */
+  async toggleCommentLike(commentId: string): Promise<{ liked: boolean }> {
+    return ApiClient.post<{ liked: boolean }>(`/comments/${commentId}/like`);
+  },
+
+  /**
+   * Delete a comment
+   */
+  async deleteComment(commentId: string): Promise<void> {
+    return ApiClient.delete(`/comments/${commentId}`);
   },
 };

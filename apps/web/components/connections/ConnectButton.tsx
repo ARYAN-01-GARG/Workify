@@ -14,6 +14,16 @@ interface ConnectButtonProps {
   size?: 'sm' | 'default' | 'lg';
 }
 
+/**
+ * A button component that manages connection requests between users.
+ * Displays different states: Connect, Pending, Connected, or Respond based on the connection status.
+ *
+ * @param userId - The ID of the user to connect with
+ * @param connectionStatus - Current connection status with the user
+ * @param connectionId - ID of the existing connection (required for cancel/remove actions)
+ * @param className - Additional CSS classes to apply to the button
+ * @param size - Button size variant
+ */
 export function ConnectButton({
   userId,
   connectionStatus = 'NONE',
@@ -42,7 +52,10 @@ export function ConnectButton({
   };
 
   const handleCancel = (): void => {
-    if (!connectionId) return;
+    if (!connectionId) {
+      toast.error('Connection ID not found. Please refresh the page.');
+      return;
+    }
     cancelRequest(connectionId, {
       onSuccess: () => {
         setStatus('NONE');

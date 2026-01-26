@@ -113,7 +113,7 @@ model Resume {
   name      String   // Original filename
   url       String   // S3 URL
   size      Int
-  key       String   // S3 Key for deletion
+  key       String   @unique // S3 Key for deletion
   
   candidateProfileId String
   candidateProfile   CandidateProfile @relation(fields: [candidateProfileId], references: [id], onDelete: Cascade)
@@ -250,6 +250,9 @@ model Connection {
   
   sender     User @relation("Sender", fields: [senderId], references: [id])
   receiver   User @relation("Receiver", fields: [receiverId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([senderId, receiverId])
 }

@@ -15,7 +15,7 @@ export function ProfilePosts({ userId }: ProfilePostsProps) {
     limit: 1,
   });
 
-  const posts = (data as any)?.data || [];
+  const posts = data?.data || [];
 
   if (isLoading) {
     return (

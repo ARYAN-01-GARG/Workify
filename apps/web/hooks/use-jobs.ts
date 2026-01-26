@@ -66,10 +66,28 @@ export function useApplyJob() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => JobService.apply(id),
-    onSuccess: (_, id) => {
+    mutationFn: ({ id, data }: { id: string; data: { coverLetter?: string; resumeId?: string } }) =>
+      JobService.apply(id, data),
+    onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: jobKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: jobKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: ['my-applied-jobs'] });
+      queryClient.invalidateQueries({ queryKey: ['my-application', id] });
     },
+  });
+}
+
+export function useMyAppliedJobs() {
+  return useQuery({
+    queryKey: ['my-applied-jobs'],
+    queryFn: () => JobService.getMyAppliedJobs(),
+  });
+}
+
+export function useMyApplication(jobId: string) {
+  return useQuery({
+    queryKey: ['my-application', jobId],
+    queryFn: () => JobService.getApplicationStatus(jobId),
+    enabled: !!jobId,
   });
 }

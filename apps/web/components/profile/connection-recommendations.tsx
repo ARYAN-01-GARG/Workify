@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
+import { Avatar, AvatarFallback } from '@repo/ui/components/avatar';
 import { Button } from '@repo/ui/components/button';
 import { UserPlus } from 'lucide-react';
 

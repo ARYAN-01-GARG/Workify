@@ -1,14 +1,18 @@
 'use client';
 
 import { JobList } from '@/components/jobs/JobList';
+import { AppliedJobsList } from '@/components/jobs/AppliedJobsList';
 import { Button } from '@repo/ui/components/button';
 import { Plus, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs';
 
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function JobsPage() {
   const user = useAuth();
+  const isCandidate = user?.role === 'CANDIDATE';
+
   return (
     <div className='min-h-screen'>
       {/* Hero Section */}
@@ -46,7 +50,36 @@ export default function JobsPage() {
 
       {/* Main Content */}
       <div className='container mx-auto py-8 px-4 max-w-7xl'>
-        <JobList />
+        {isCandidate ? (
+          <Tabs defaultValue='all' className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <TabsList className='bg-slate-900/50 p-1 border border-slate-800/60'>
+                <TabsTrigger
+                  value='all'
+                  className='px-6 data-[state=active]:bg-violet-600 data-[state=active]:text-white'
+                >
+                  All Jobs
+                </TabsTrigger>
+                <TabsTrigger
+                  value='applied'
+                  className='px-6 data-[state=active]:bg-violet-600 data-[state=active]:text-white'
+                >
+                  Applied Jobs
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value='all' className='space-y-6 focus-visible:outline-none'>
+              <JobList />
+            </TabsContent>
+
+            <TabsContent value='applied' className='space-y-6 focus-visible:outline-none'>
+              <AppliedJobsList />
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <JobList />
+        )}
       </div>
     </div>
   );

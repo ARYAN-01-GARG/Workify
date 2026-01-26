@@ -1,22 +1,43 @@
-'use client';
-
-import React from 'react';
-import { useSession } from 'next-auth/react';
+import { useCurrentUserProfile } from '@/hooks/use-profile';
+import { Skeleton } from '@repo/ui/components/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
 import { Button } from '@repo/ui/components/button';
 import Link from 'next/link';
 
 export const UserProfileWidget = () => {
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { data: user, isLoading } = useCurrentUserProfile();
+
+  if (isLoading) {
+    return (
+      <div className='bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-2xl overflow-hidden p-4 space-y-4'>
+        <Skeleton className='h-20 w-full rounded-xl bg-slate-800' />
+        <div className='flex gap-4 items-end -mt-10 px-2'>
+          <Skeleton className='h-16 w-16 rounded-full bg-slate-800 border-4 border-slate-950' />
+        </div>
+        <div className='space-y-2 px-2'>
+          <Skeleton className='h-4 w-1/2 bg-slate-800' />
+          <Skeleton className='h-3 w-3/4 bg-slate-800' />
+        </div>
+      </div>
+    );
+  }
 
   if (!user) return null;
 
   return (
     <div className='bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-2xl overflow-hidden group hover:border-violet-500/30 transition-all duration-300 shadow-lg shadow-black/20'>
       {/* Cover Image Area */}
-      <div className='h-28 bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 relative overflow-hidden'>
-        <div className='absolute inset-0 bg-[url("https://www.transparenttextures.com/patterns/cubes.png")] opacity-30 mix-blend-overlay'></div>
+      <div
+        className='h-28 relative overflow-hidden'
+        style={{
+          background: user.coverUrl
+            ? `url(${user.coverUrl}) center/cover no-repeat`
+            : 'linear-gradient(to right, #7c3aed, #4f46e5, #2563eb)',
+        }}
+      >
+        {!user.coverUrl && (
+          <div className='absolute inset-0 bg-[url("https://www.transparenttextures.com/patterns/cubes.png")] opacity-30 mix-blend-overlay'></div>
+        )}
         <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent'></div>
       </div>
 
@@ -43,7 +64,9 @@ export const UserProfileWidget = () => {
           <h3 className='font-bold text-white text-lg leading-tight hover:text-violet-400 cursor-pointer transition-colors max-w-full truncate'>
             {user.name}
           </h3>
-          <p className='text-slate-400 text-sm mt-1 line-clamp-1'>Software Engineer | Full Stack Developer</p>
+          <p className='text-slate-400 text-sm mt-1 line-clamp-1'>
+            {user.bio || user.candidateProfile?.headline || user.role}
+          </p>
         </div>
 
         <div className='grid grid-cols-2 gap-3 mb-5'>
@@ -53,7 +76,9 @@ export const UserProfileWidget = () => {
           </div>
           <div className='bg-slate-800/30 border border-slate-700/30 rounded-xl p-3 text-center hover:bg-slate-800/50 hover:border-slate-600 transition-all cursor-pointer group/stat'>
             <p className='text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1'>Connections</p>
-            <p className='text-xl font-bold text-white group-hover/stat:text-violet-400 transition-colors'>500+</p>
+            <p className='text-xl font-bold text-white group-hover/stat:text-violet-400 transition-colors'>
+              {user.connectionsCount || 0}
+            </p>
           </div>
         </div>
 

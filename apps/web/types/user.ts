@@ -98,6 +98,7 @@ export interface UserProfile {
   };
   connectionStatus?: 'NONE' | 'PENDING_SENT' | 'PENDING_RECEIVED' | 'CONNECTED';
   connectionId?: string;
+  connectionsCount?: number;
 }
 
 /**

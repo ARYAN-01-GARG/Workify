@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Image, Calendar, Briefcase } from 'lucide-react';
+import { Image as ImageIcon, Calendar, Briefcase } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
 import { Button } from '@repo/ui/components/button';
 import { Card, CardContent } from '@repo/ui/components/card';
@@ -62,7 +62,7 @@ export function CreatePostWidget({ onPostCreated }: CreatePostWidgetProps) {
             className='text-slate-400 hover:text-blue-400 gap-2 h-9 rounded-lg transition-colors flex-1'
             onClick={() => setOpen(true)}
           >
-            <Image className='h-5 w-5 text-blue-500/80' />
+            <ImageIcon className='h-5 w-5 text-blue-500/80' />
             <span className='font-medium text-xs sm:text-sm'>Media</span>
           </Button>
           <Button

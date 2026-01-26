@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Users, Clock, Loader2, UserX } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components/card';
+import { Card, CardContent } from '@repo/ui/components/card';
 import { useSession } from 'next-auth/react';
 import { useConnections, usePendingConnections } from '@/hooks/use-connections';
 import { ConnectionCard } from '@/components/connections/ConnectionCard';
@@ -66,7 +66,7 @@ export default function ConnectionsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className='grid gap-4 md:grid-cols-2'>
+            <div className='space-y-3'>
               {connections.map((connection) => (
                 <ConnectionCard key={connection.id} connection={connection} currentUserId={currentUserId} />
               ))}

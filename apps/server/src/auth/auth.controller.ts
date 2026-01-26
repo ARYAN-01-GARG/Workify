@@ -1,4 +1,5 @@
 import { AuthService } from './auth.service';
+import { Request } from 'express';
 import { GoogleAuthDto, LoginDto, RegisterDto } from './dto/auth.dto';
 import { SendOtpDto, VerifyOtpDto } from './dto/otp.dto';
 import { Body, Controller, Post, Req } from '@nestjs/common';
@@ -66,7 +67,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 201, description: 'Returns JWT token and user' })
   @ApiResponse({ status: 401, description: 'Invalid Google ID token' })
-  async googleAuth(@Req() req: any, @Body() body: GoogleAuthDto) {
+  async googleAuth(@Req() req: Request, @Body() body: GoogleAuthDto) {
     const token = body?.idToken || req.body?.idToken;
     return this.authService.handleGoogleAuth(token);
   }

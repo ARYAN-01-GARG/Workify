@@ -22,7 +22,15 @@ export class JobService {
     return ApiClient.delete(`/jobs/${id}`);
   }
 
-  static async apply(id: string): Promise<void> {
-    return ApiClient.post(`/jobs/${id}/apply`, {});
+  static async apply(id: string, data: { coverLetter?: string; resumeId?: string }): Promise<void> {
+    return ApiClient.post(`/jobs/${id}/apply`, data);
+  }
+
+  static async getMyAppliedJobs(): Promise<Job[]> {
+    return ApiClient.get<Job[]>('/jobs/applied');
+  }
+
+  static async getApplicationStatus(jobId: string): Promise<{ id: string; status: string; appliedAt: string } | null> {
+    return ApiClient.get<{ id: string; status: string; appliedAt: string } | null>(`/jobs/${jobId}/my-application`);
   }
 }

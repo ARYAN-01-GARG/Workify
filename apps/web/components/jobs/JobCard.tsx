@@ -2,15 +2,17 @@
 
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Badge } from '@repo/ui/components/badge';
 import { Button } from '@repo/ui/components/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@repo/ui/components/card';
-import { MapPin, Building2, Clock, Briefcase, DollarSign, Zap } from 'lucide-react';
+import { MapPin, Building2, Clock, Briefcase, DollarSign, Zap, CheckCircle2 } from 'lucide-react';
 import type { Job, WorkMode, ExperienceLevel } from '@/types/job';
 import { cn } from '@repo/ui/lib/utils';
 
 interface JobCardProps {
   job: Job;
+  isApplied?: boolean;
 }
 
 const workModeColors: Record<WorkMode, string> = {
@@ -27,7 +29,7 @@ const experienceLevelLabels: Record<ExperienceLevel, string> = {
   EXECUTIVE: 'Executive',
 };
 
-export function JobCard({ job }: JobCardProps) {
+export function JobCard({ job, isApplied }: JobCardProps) {
   const router = useRouter();
 
   const formatSalary = (min?: number, max?: number, currency?: string) => {
@@ -51,20 +53,29 @@ export function JobCard({ job }: JobCardProps) {
         'hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5',
         'border-border/50 hover:border-primary/30',
         'bg-gradient-to-br from-card to-card/80',
+        isApplied && 'border-green-500/20 bg-green-500/5',
       )}
       onClick={() => router.push(`/jobs/${job.id}`)}
     >
       {/* Accent gradient bar */}
-      <div className='absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary/70 to-primary/40 opacity-0 group-hover:opacity-100 transition-opacity' />
+      <div
+        className={cn(
+          'absolute top-0 left-0 right-0 h-1 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity',
+          isApplied ? 'from-green-500 via-green-500/70 to-green-500/40' : 'from-primary via-primary/70 to-primary/40',
+        )}
+      />
 
       <CardHeader className='pb-3'>
         <div className='flex justify-between items-start gap-4'>
           <div className='flex gap-4'>
             {job.company?.logoUrl ? (
-              <img
+              <Image
                 src={job.company.logoUrl}
                 alt={job.company.name}
+                width={56}
+                height={56}
                 className='w-14 h-14 rounded-xl object-cover ring-2 ring-border/50 shadow-sm'
+                unoptimized
               />
             ) : (
               <div className='w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center ring-2 ring-border/50 shadow-sm'>
@@ -86,12 +97,20 @@ export function JobCard({ job }: JobCardProps) {
             </div>
           </div>
 
-          {salaryRange && (
-            <div className='flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-500/20'>
-              <DollarSign className='w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400' />
-              <span className='text-sm font-semibold text-emerald-600 dark:text-emerald-400'>{salaryRange}</span>
-            </div>
-          )}
+          <div className='flex flex-col items-end gap-2'>
+            {isApplied && (
+              <div className='flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 shadow-sm'>
+                <CheckCircle2 className='w-3.5 h-3.5' />
+                <span className='text-xs font-semibold'>Applied</span>
+              </div>
+            )}
+            {salaryRange && (
+              <div className='flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-500/20'>
+                <DollarSign className='w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400' />
+                <span className='text-sm font-semibold text-emerald-600 dark:text-emerald-400'>{salaryRange}</span>
+              </div>
+            )}
+          </div>
         </div>
       </CardHeader>
 

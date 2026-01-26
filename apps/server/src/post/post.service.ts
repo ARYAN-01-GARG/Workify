@@ -121,7 +121,7 @@ export class PostService {
     // Enhance posts with likedByCurrentUser flag
     const enhancedData = data.map((post) => ({
       ...post,
-      likedByCurrentUser: userId ? post.likes.length > 0 : false,
+      hasLiked: userId ? post.likes.length > 0 : false,
       likes: undefined,
     }));
 
@@ -158,7 +158,7 @@ export class PostService {
 
     return {
       ...post,
-      likedByCurrentUser: userId ? post.likes.length > 0 : false,
+      hasLiked: userId ? post.likes.length > 0 : false,
       likes: undefined,
     };
   }

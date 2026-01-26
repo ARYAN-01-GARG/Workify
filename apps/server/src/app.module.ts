@@ -12,6 +12,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { JobModule } from './job/job.module';
 import { PostModule } from './post/post.module';
 import { UploadModule } from './upload/upload.module';
+import { ResumeModule } from './resume/resume.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { UploadModule } from './upload/upload.module';
     JobModule,
     PostModule,
     UploadModule,
+    ResumeModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',

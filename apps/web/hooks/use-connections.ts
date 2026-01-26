@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ConnectionService } from '@/services/connection.service';
-import type { Connection, SendConnectionRequestDto, UpdateConnectionStatusDto } from '@/types';
+import type { Connection, SendConnectionRequestDto } from '@/types';
 
 /**
  * Query key factory for connections - ensures consistent cache keys
@@ -84,6 +84,20 @@ export function useCancelConnectionRequest() {
 
   return useMutation({
     mutationFn: (connectionId: string) => ConnectionService.cancelRequest(connectionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: connectionKeys.lists() });
+    },
+  });
+}
+
+/**
+ * Remove an existing connection
+ */
+export function useRemoveConnection() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (connectionId: string) => ConnectionService.removeConnection(connectionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: connectionKeys.lists() });
     },

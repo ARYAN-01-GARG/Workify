@@ -7,7 +7,6 @@ import type {
   PostsResponse,
   CreatePostDto,
   UpdatePostDto,
-  Comment,
   CommentsResponse,
   PostQueryParams,
   CommentQueryParams,

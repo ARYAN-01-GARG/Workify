@@ -17,7 +17,6 @@ import { toast } from 'sonner';
 import { useToggleCommentLike, useDeleteComment } from '@/hooks/use-comments';
 import { CreateCommentForm } from './create-comment-form';
 import type { Comment } from '@/types';
-import { useQueryClient } from '@tanstack/react-query';
 
 interface CommentItemProps {
   comment: Comment;
@@ -27,7 +26,7 @@ interface CommentItemProps {
 
 export function CommentItem({ comment, postId, depth = 0 }: CommentItemProps) {
   const { data: session } = useSession();
-  const queryClient = useQueryClient();
+
   const [isReplying, setIsReplying] = useState(false);
 
   // Optimistic like state
@@ -43,10 +42,9 @@ export function CommentItem({ comment, postId, depth = 0 }: CommentItemProps) {
   );
 
   const { mutate: toggleLike, isPending: isLikeLoading } = useToggleCommentLike();
-  const { mutate: deleteComment, isPending: isDeleting } = useDeleteComment();
+  const { mutate: deleteComment } = useDeleteComment();
 
   const isAuthor = session?.user?.id === comment.author.id;
-  const hasReplies = comment._count.replies > 0 || (comment.replies && comment.replies.length > 0);
 
   const handleLike = () => {
     if (isLikeLoading) return;

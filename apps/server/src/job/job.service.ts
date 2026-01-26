@@ -4,6 +4,7 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JobSearchDto } from './dto/job-search.dto';
 import { ApplicationQueryDto } from './dto/application-query.dto';
+import { ApplyJobDto } from './dto/apply-job.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@repo/db';
 
@@ -87,7 +88,7 @@ export class JobService {
 
     if (datePosted && datePosted !== 'ALL') {
       const now = new Date();
-      let dateFrom = new Date();
+      const dateFrom = new Date();
 
       switch (datePosted) {
         case 'LAST_24_HOURS':
@@ -201,8 +202,10 @@ export class JobService {
     });
   }
 
-  async apply(userId: string, jobId: string, coverLetter?: string) {
+  async apply(userId: string, jobId: string, dto: ApplyJobDto) {
     this.logger.log({ userId, jobId }, 'Applying for job');
+    const { coverLetter, resumeId } = dto;
+
     // Check if job exists
     const job = await this.prisma.job.findUnique({ where: { id: jobId } });
     if (!job) throw new NotFoundException('Job not found');
@@ -215,6 +218,15 @@ export class JobService {
 
     if (!candidateProfile) {
       throw new ForbiddenException('You must have a candidate profile to apply');
+    }
+
+    // Validate Resume if provided
+    if (resumeId) {
+      const resume = await this.prisma.resume.findUnique({ where: { id: resumeId } });
+      if (!resume) throw new BadRequestException('Resume not found');
+      if (resume.candidateProfileId !== candidateProfile.id) {
+        throw new ForbiddenException('This resume does not belong to you');
+      }
     }
 
     // Check if already applied
@@ -236,6 +248,7 @@ export class JobService {
         jobId,
         candidateProfileId: candidateProfile.id,
         coverLetter,
+        resumeId,
       },
     });
   }
@@ -312,5 +325,31 @@ export class JobService {
     });
 
     return application;
+  }
+
+  async getMyAppliedJobs(userId: string) {
+    const candidateProfile = await this.prisma.candidateProfile.findUnique({
+      where: { userId },
+    });
+
+    if (!candidateProfile) return [];
+
+    const applications = await this.prisma.application.findMany({
+      where: { candidateProfileId: candidateProfile.id },
+      include: {
+        job: {
+          include: {
+            company: true,
+          },
+        },
+      },
+      orderBy: { appliedAt: 'desc' },
+    });
+
+    return applications.map((app) => ({
+      ...app.job,
+      applicationStatus: app.status,
+      appliedAt: app.appliedAt,
+    }));
   }
 }

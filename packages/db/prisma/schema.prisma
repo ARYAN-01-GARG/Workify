@@ -105,6 +105,23 @@ model CandidateProfile {
   education      Education[]
   experience     Experience[]
   applications   Application[]
+  resumes        Resume[]
+}
+
+model Resume {
+  id        String   @id @default(uuid())
+  name      String   // Original filename
+  url       String   // S3 URL
+  size      Int
+  key       String   // S3 Key for deletion
+  
+  candidateProfileId String
+  candidateProfile   CandidateProfile @relation(fields: [candidateProfileId], references: [id], onDelete: Cascade)
+  
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Education {
@@ -212,6 +229,9 @@ model Application {
   appliedAt         DateTime          @default(now())
   
   coverLetter       String?
+
+  resumeId          String?
+  resume            Resume?           @relation(fields: [resumeId], references: [id])
   
   @@unique([jobId, candidateProfileId])
 }

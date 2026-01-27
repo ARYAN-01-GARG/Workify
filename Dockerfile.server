@@ -59,8 +59,8 @@ COPY packages/db/package.json ./packages/db/
 COPY packages/shared-types/package.json ./packages/shared-types/
 COPY apps/server/package.json ./apps/server/
 
-# Install only production dependencies
-RUN pnpm install --frozen-lockfile --prod=true && \
+# Install only production dependencies (ignore scripts to skip husky prepare)
+RUN pnpm install --frozen-lockfile --prod=true --ignore-scripts && \
     pnpm store prune
 
 # Copy built application and Prisma files

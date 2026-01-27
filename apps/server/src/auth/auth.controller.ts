@@ -67,7 +67,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 201, description: 'Returns JWT token and user' })
   @ApiResponse({ status: 401, description: 'Invalid Google ID token' })
-  async googleAuth(@Req() req: Request, @Body() body: GoogleAuthDto) {
+  async googleAuth(@Req() req: any, @Body() body: GoogleAuthDto) {
     const token = body?.idToken || req.body?.idToken;
     return this.authService.handleGoogleAuth(token);
   }

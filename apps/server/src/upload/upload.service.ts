@@ -72,7 +72,7 @@ export class UploadService {
         ContentType: file.mimetype,
       });
 
-      await this.s3Client.send(command);
+      await (this.s3Client as any).send(command);
 
       const url = `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${key}`;
 
@@ -115,7 +115,7 @@ export class UploadService {
         Key: key,
       });
 
-      await this.s3Client.send(command);
+      await (this.s3Client as any).send(command);
       this.logger.log(`File deleted successfully: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to delete file: ${error}`);

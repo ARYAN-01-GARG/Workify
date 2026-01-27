@@ -251,7 +251,7 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
-    return this.jwtService.signAsync(payload, {
+    return this.jwtService.signAsync(payload as any, {
       expiresIn: config.jwt.expiresIn || '30d',
     });
   }

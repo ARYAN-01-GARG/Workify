@@ -10,7 +10,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = ctx.getResponse<any>();
 
     // Log the error with structure
     this.logger.error({ err: exception }, 'Exception caught in global filter');

@@ -1,6 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { config } from 'src/common/config';
+import { config } from '../common/config';
 
 /**
  * Service responsible for handling all email-related operations.

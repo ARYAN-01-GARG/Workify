@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { UpdateCandidateProfileDto, UpdateRecruiterProfileDto } from './dto/update-profile.dto';
 import { RequestWithUser } from '@repo/shared-types';
-import { RolesGuard, Roles } from 'src/common/guards/roles.guard';
+import { RolesGuard, Roles } from '../common/guards/roles.guard';
 import { UserRole } from '@repo/db';
 
 @ApiTags('User')

@@ -1,10 +1,10 @@
 import { JwtService } from '@nestjs/jwt';
 import { Auth } from 'googleapis';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Injectable, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { google } from 'googleapis';
-import { config } from 'src/common/config';
+import { config } from '../common/config';
 import { User, UserRole } from '@repo/db';
 import * as bcrypt from 'bcrypt';
 import { LoginDto, RegisterDto } from './dto/auth.dto';

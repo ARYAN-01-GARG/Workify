@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, Roles } from 'src/common/guards/roles.guard';
+import { RolesGuard, Roles } from '../common/guards/roles.guard';
 import { UserRole } from '@repo/db';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto, UpdateCompanyDto } from './dto/company.dto';
 import { CompanyQueryDto } from './dto/company-query.dto';
 import { RequestWithUser } from '@repo/shared-types';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Company')
 @Controller('companies')

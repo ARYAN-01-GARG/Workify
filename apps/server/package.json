@@ -13,6 +13,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "nest build",
+    "vercel-build": "cd ../../ && pnpm run db:generate && cd apps/server && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "nest start --watch",

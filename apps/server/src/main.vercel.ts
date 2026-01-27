@@ -8,7 +8,13 @@ import { AppModule } from './app.module';
 import { config } from './common/config';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
-export default async function (req: any, res: any) {
+let cachedServer: any;
+
+async function bootstrap() {
+  if (cachedServer) {
+    return cachedServer;
+  }
+
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: config.urls.cors,
@@ -63,7 +69,11 @@ export default async function (req: any, res: any) {
   // Initialize the app but DO NOT listen
   await app.init();
 
-  // Create an Express adapter to handle the request
-  const instance = app.getHttpAdapter().getInstance();
-  return instance(req, res);
+  cachedServer = app.getHttpAdapter().getInstance();
+  return cachedServer;
+}
+
+export default async function (req: any, res: any) {
+  const server = await bootstrap();
+  return server(req, res);
 }

@@ -2,6 +2,7 @@
 const nextConfig = {
   transpilePackages: ['@repo/ui'],
   reactStrictMode: false,
+  output: 'standalone',
   images: {
     remotePatterns: [
       {

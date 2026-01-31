@@ -1,0 +1,160 @@
+// This is the current Prisma Schema as of the progress report // Location: packages/db/prisma/schema.prisma
+
+generator client { provider = "prisma-client-js" output = "../generated/prisma" engineType = "library" }
+
+datasource db { provider = "postgresql" }
+
+enum UserRole { ADMIN CANDIDATE RECRUITER }
+
+enum JobType { FULL_TIME PART_TIME CONTRACT INTERNSHIP FREELANCE }
+
+enum WorkMode { REMOTE HYBRID ONSITE }
+
+enum ExperienceLevel { ENTRY MID SENIOR DIRECTOR EXECUTIVE }
+
+enum JobStatus { OPEN CLOSED DRAFT }
+
+enum ApplicationStatus { PENDING REVIEWING SHORTLISTED REJECTED ACCEPTED }
+
+model User { id String @id @default(uuid()) email String @unique password String? // Nullable for OAuth-only initially,
+but we use OTP role UserRole
+
+isVerified Boolean @default(false)
+
+// Common Profile Fields name String bio String? about String? avatarUrl String? coverUrl String?
+
+createdAt DateTime @default(now()) updatedAt DateTime @updatedAt
+
+// Relations candidateProfile CandidateProfile? recruiterProfile RecruiterProfile?
+
+// Connections sentRequests Connection[] @relation("Sender") receivedRequests Connection[] @relation("Receiver")
+
+// Jobs posted by Recruiter/Admin postedJobs Job[]
+
+// Social posts Post[] comments Comment[] likes Like[] }
+
+model Otp { id String @id @default(uuid()) email String otp String expiresAt DateTime createdAt DateTime @default(now())
+}
+
+model CandidateProfile { id String @id @default(uuid()) userId String @unique user User @relation(fields: [userId],
+references: [id])
+
+resumeUrl String? skills String[]
+
+education Education[] experience Experience[] applications Application[] resumes Resume[] }
+
+model Resume { id String @id @default(uuid()) name String // Original filename url String // S3 URL size Int key String
+@unique // S3 Key for deletion
+
+candidateProfileId String candidateProfile CandidateProfile @relation(fields: [candidateProfileId], references: [id],
+onDelete: Cascade)
+
+applications Application[]
+
+createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+
+model Education { id String @id @default(uuid()) school String degree String fieldOfStudy String startDate DateTime
+endDate DateTime? grade String? activities String? description String?
+
+candidateProfileId String candidateProfile CandidateProfile @relation(fields: [candidateProfileId], references: [id]) }
+
+model Experience { id String @id @default(uuid()) title String employmentType String companyName String
+
+// Composite Address location String? // General string city String? state String? country String?
+
+startDate DateTime endDate DateTime? currentlyWorking Boolean @default(false)
+
+description String?
+
+candidateProfileId String candidateProfile CandidateProfile @relation(fields: [candidateProfileId], references: [id]) }
+
+model RecruiterProfile { id String @id @default(uuid()) userId String @unique user User @relation(fields: [userId],
+references: [id])
+
+companyId String? company Company? @relation(fields: [companyId], references: [id]) }
+
+model Company { id String @id @default(uuid()) name String @unique description String? website String? logoUrl String?
+industry String? size String? // e.g., "1-10", "11-50" location String? // HQ Location
+
+recruiters RecruiterProfile[] jobs Job[] }
+
+model Job { id String @id @default(uuid()) title String description String location String
+
+// Salary salaryMin Float? salaryMax Float? currency String @default("USD")
+
+// Requirements skills String[]
+
+// New Fields type JobType @default(FULL_TIME) workMode WorkMode @default(ONSITE) experienceLevel ExperienceLevel
+@default(ENTRY) status JobStatus @default(OPEN)
+
+companyId String company Company @relation(fields: [companyId], references: [id])
+
+postedById String postedBy User @relation(fields: [postedById], references: [id])
+
+applications Application[]
+
+createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+
+model Application { id String @id @default(uuid())
+
+jobId String job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+candidateProfileId String candidateProfile CandidateProfile @relation(fields: [candidateProfileId], references: [id],
+onDelete: Cascade)
+
+status ApplicationStatus @default(PENDING) appliedAt DateTime @default(now())
+
+coverLetter String?
+
+resumeId String? resume Resume? @relation(fields: [resumeId], references: [id])
+
+@@unique([jobId, candidateProfileId]) }
+
+enum ConnectionStatus { PENDING ACCEPTED REJECTED }
+
+model Connection { id String @id @default(uuid()) senderId String receiverId String status ConnectionStatus
+@default(PENDING)
+
+sender User @relation("Sender", fields: [senderId], references: [id]) receiver User @relation("Receiver", fields:
+[receiverId], references: [id])
+
+createdAt DateTime @default(now()) updatedAt DateTime @updatedAt
+
+@@unique([senderId, receiverId]) }
+
+// Social Features
+
+model Post { id String @id @default(uuid()) content String mediaUrls String[] // Array of URLs for photos/videos
+
+authorId String author User @relation(fields: [authorId], references: [id])
+
+tags Tag[] likes Like[] comments Comment[]
+
+createdAt DateTime @default(now()) updatedAt DateTime @updatedAt deletedAt DateTime? }
+
+model Comment { id String @id @default(uuid()) content String
+
+authorId String author User @relation(fields: [authorId], references: [id])
+
+postId String post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+parentId String? parent Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+replies Comment[] @relation("CommentReplies")
+
+likes Like[]
+
+createdAt DateTime @default(now()) updatedAt DateTime @updatedAt deletedAt DateTime? }
+
+model Like { id String @id @default(uuid())
+
+userId String user User @relation(fields: [userId], references: [id])
+
+postId String? post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+commentId String? comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+createdAt DateTime @default(now())
+
+// Note: We'll enforce unique likes (one per user per post OR one per user per comment) via application logic }
+
+model Tag { id String @id @default(uuid()) name String @unique posts Post[] }

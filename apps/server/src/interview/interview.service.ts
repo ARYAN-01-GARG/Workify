@@ -95,19 +95,29 @@ export class InterviewService {
   async update(userId: string, id: string, dto: UpdateInterviewDto) {
     const interview = await this.findOne(userId, id);
 
-    // Update Access: Job Owner, Assigned Reviewer, Admin
-    // Candidate cannot update
+    // General Update Access: Job Owner, Assigned Reviewer, Admin
     const jobOwnerId = interview.application.job.postedById;
+    const isJobOwner = userId === jobOwnerId;
+    const isAssigned = userId === interview.assignedTo;
 
-    if (userId !== jobOwnerId && userId !== interview.assignedTo) {
+    if (!isJobOwner && !isAssigned) {
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
       if (user?.role !== UserRole.ADMIN) {
         throw new ForbiddenException('You are not authorized to update this interview');
       }
     }
 
-    if (dto.feedback && interview.feedback) {
-      throw new BadRequestException('Feedback already submitted');
+    // Feedback Submission Checks
+    // Only the assigned reviewer can submit feedback. Job Owner cannot forge it.
+    if (dto.feedback !== undefined || dto.rating !== undefined) {
+      if (!isAssigned) {
+        throw new ForbiddenException('Only the assigned reviewer can submit feedback');
+      }
+
+      // Prevent overwrite if already submitted
+      if (interview.feedback || interview.rating) {
+        throw new BadRequestException('Feedback already submitted and cannot be changed');
+      }
     }
 
     return this.prisma.interview.update({

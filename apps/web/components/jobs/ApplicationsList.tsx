@@ -1,6 +1,7 @@
 'use client';
 
 import { useApplications } from '@/hooks/use-application';
+import { ApplicationStatus } from '@/types/application';
 import { Card, CardContent } from '@repo/ui/components/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar';
 import { Badge } from '@repo/ui/components/badge';
@@ -48,17 +49,17 @@ export function ApplicationsList({ jobId }: ApplicationsListProps) {
     );
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: ApplicationStatus) => {
     switch (status) {
-      case 'PENDING':
+      case ApplicationStatus.PENDING:
         return 'bg-blue-100 text-blue-800';
-      case 'REVIEWING':
+      case ApplicationStatus.REVIEWING:
         return 'bg-purple-100 text-purple-800';
-      case 'SHORTLISTED':
+      case ApplicationStatus.SHORTLISTED:
         return 'bg-amber-100 text-amber-800';
-      case 'ACCEPTED':
+      case ApplicationStatus.ACCEPTED:
         return 'bg-green-100 text-green-800';
-      case 'REJECTED':
+      case ApplicationStatus.REJECTED:
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';

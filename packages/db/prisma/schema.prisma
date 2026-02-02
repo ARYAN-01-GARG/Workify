@@ -48,6 +48,27 @@ enum ApplicationStatus {
   SHORTLISTED
   REJECTED
   ACCEPTED
+  WITHDRAWN
+}
+
+enum InterviewRoundType {
+  TECHNICAL
+  HR
+  FINAL
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum InterviewResult {
+  PENDING
+  PASSED
+  FAILED
+  ON_HOLD
 }
 
 model User {
@@ -84,6 +105,10 @@ model User {
   posts            Post[]
   comments         Comment[]
   likes            Like[]
+
+  // Interviews
+  assignedInterviews Interview[] @relation("AssignedInterviews")
+  createdInterviews  Interview[] @relation("CreatedInterviews")
 }
 
 model Otp {
@@ -211,6 +236,7 @@ model Job {
   postedBy    User     @relation(fields: [postedById], references: [id])
   
   applications Application[]
+  roundConfigs InterviewRoundConfig[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -232,6 +258,8 @@ model Application {
 
   resumeId          String?
   resume            Resume?           @relation(fields: [resumeId], references: [id])
+
+  interviews        Interview[]
   
   @@unique([jobId, candidateProfileId])
 }
@@ -319,4 +347,51 @@ model Tag {
   id    String @id @default(uuid())
   name  String @unique
   posts Post[]
+}
+
+model Interview {
+  id            String   @id @default(uuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id])
+  
+  roundNumber   Int
+  roundType     InterviewRoundType
+  
+  assignedTo    String
+  assignedToUser User   @relation("AssignedInterviews", fields: [assignedTo], references: [id])
+  
+  assignedBy    String
+  assignedByUser User   @relation("CreatedInterviews", fields: [assignedBy], references: [id])
+  
+  status        InterviewStatus @default(SCHEDULED)
+  result        InterviewResult @default(PENDING)
+  
+  feedback      String?
+  rating        Int?
+  
+  meetLink      String?
+  transcript    String?
+  
+  scheduledAt   DateTime?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([applicationId, roundNumber])
+}
+
+model InterviewRoundConfig {
+  id          String   @id @default(uuid())
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id])
+  
+  roundNumber Int
+  roundType   InterviewRoundType
+  isRequired  Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([jobId, roundNumber])
 }

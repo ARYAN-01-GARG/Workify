@@ -7,6 +7,7 @@ import { UpdateJobDto } from './dto/update-job.dto';
 import { JobSearchDto } from './dto/job-search.dto';
 import { ApplicationQueryDto } from './dto/application-query.dto';
 import { ApplyJobDto } from './dto/apply-job.dto';
+import { UpdateApplicationStatusDto } from './dto/update-application-status.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard, Roles } from '../common/guards/roles.guard';
 import { RequestWithUser } from '@repo/shared-types';
@@ -106,5 +107,32 @@ export class JobController {
   @ApiResponse({ status: 200, description: 'Application details or null if not applied' })
   getMyApplication(@Req() req: RequestWithUser, @Param('id') id: string) {
     return this.jobService.getMyApplication(req.user.id, id);
+  }
+
+  @Get(':id/applications/:appId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get application details' })
+  @ApiResponse({ status: 200, description: 'Application details' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  getApplication(@Req() req: RequestWithUser, @Param('id') jobId: string, @Param('appId') appId: string) {
+    return this.jobService.getApplication(req.user.id, appId);
+  }
+
+  @Patch(':id/applications/:appId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update application status' })
+  @ApiResponse({ status: 200, description: 'Status updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid transition' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  updateApplicationStatus(
+    @Req() req: RequestWithUser,
+    @Param('id') jobId: string,
+    @Param('appId') appId: string,
+    @Body() dto: UpdateApplicationStatusDto
+  ) {
+    return this.jobService.updateApplicationStatus(req.user.id, appId, dto.status);
   }
 }

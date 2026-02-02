@@ -13,6 +13,7 @@ import { JobModule } from './job/job.module';
 import { PostModule } from './post/post.module';
 import { UploadModule } from './upload/upload.module';
 import { ResumeModule } from './resume/resume.module';
+import { InterviewModule } from './interview/interview.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { ResumeModule } from './resume/resume.module';
     PostModule,
     UploadModule,
     ResumeModule,
+    InterviewModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',

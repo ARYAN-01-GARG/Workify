@@ -1,6 +1,12 @@
 export type JobType = 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP' | 'FREELANCE';
+export const JobTypeValues = ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE'] as const;
+
 export type WorkMode = 'REMOTE' | 'HYBRID' | 'ONSITE';
+export const WorkModeValues = ['REMOTE', 'HYBRID', 'ONSITE'] as const;
+
 export type ExperienceLevel = 'ENTRY' | 'MID' | 'SENIOR' | 'DIRECTOR' | 'EXECUTIVE';
+export const ExperienceLevelValues = ['ENTRY', 'MID', 'SENIOR', 'DIRECTOR', 'EXECUTIVE'] as const;
+
 export type JobStatus = 'OPEN' | 'CLOSED' | 'DRAFT';
 
 export interface Company {
@@ -37,6 +43,7 @@ export interface Job {
   };
   createdAt: string;
   updatedAt: string;
+  applicationId?: string;
   _count?: {
     applications: number;
   };

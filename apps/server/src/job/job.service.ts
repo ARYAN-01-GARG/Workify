@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
-import { JobType, WorkMode, ExperienceLevel, UserRole } from '@repo/db';
+import { JobType, WorkMode, ExperienceLevel, UserRole, ApplicationStatus } from '@repo/db';
+import { ApplicationStatusService } from './application-status.service';
+import { InterviewService } from '../interview/interview.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JobSearchDto } from './dto/job-search.dto';
@@ -14,7 +16,9 @@ import { Logger } from 'nestjs-pino';
 export class JobService {
   constructor(
     private readonly logger: Logger,
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly applicationStatusService: ApplicationStatusService,
+    private readonly interviewService: InterviewService
   ) {}
 
   async create(userId: string, createJobDto: CreateJobDto) {
@@ -299,6 +303,61 @@ export class JobService {
     };
   }
 
+  async getApplication(userId: string, applicationId: string) {
+    const application = await this.prisma.application.findUnique({
+      where: { id: applicationId },
+      include: {
+        job: true,
+        candidateProfile: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+        interviews: {
+          orderBy: { roundNumber: 'asc' },
+          include: {
+            assignedToUser: {
+              select: {
+                name: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    if (user.role === UserRole.RECRUITER) {
+      if (application.job.postedById !== userId) {
+        throw new ForbiddenException('You can only view applications for your own jobs');
+      }
+    } else if (user.role === UserRole.CANDIDATE) {
+      if (application.candidateProfile.userId !== userId) {
+        throw new ForbiddenException('You can only view your own application');
+      }
+    } else if (user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('Unauthorized');
+    }
+
+    return application;
+  }
+
   async getMyApplication(userId: string, jobId: string) {
     // First get the candidate profile for this user
     const candidateProfile = await this.prisma.candidateProfile.findUnique({
@@ -348,8 +407,67 @@ export class JobService {
 
     return applications.map((app) => ({
       ...app.job,
+      applicationId: app.id,
       applicationStatus: app.status,
       appliedAt: app.appliedAt,
     }));
+  }
+  async updateApplicationStatus(userId: string, applicationId: string, status: ApplicationStatus) {
+    this.logger.log({ userId, applicationId, status }, 'Updating application status');
+
+    const application = await this.prisma.application.findUnique({
+      where: { id: applicationId },
+      include: { job: true },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    // Authorization Check
+    if (user.role === UserRole.RECRUITER) {
+      if (application.job.postedById !== userId) {
+        throw new ForbiddenException('You can only update applications for your own jobs');
+      }
+    } else if (user.role === UserRole.CANDIDATE) {
+      const candidateProfile = await this.prisma.candidateProfile.findUnique({ where: { userId } });
+      if (!candidateProfile || candidateProfile.id !== application.candidateProfileId) {
+        throw new ForbiddenException('You can only update your own application');
+      }
+    } else if (user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('Unauthorized');
+    }
+
+    // Validate Transition
+    this.applicationStatusService.validateTransition(application.status, status, user.role);
+
+    // Auto-create interview if Shortlisted
+    if (status === ApplicationStatus.SHORTLISTED) {
+      const rounds = await this.prisma.interviewRoundConfig.findMany({
+        where: { jobId: application.jobId },
+        orderBy: { roundNumber: 'asc' },
+        take: 1,
+      });
+
+      if (rounds.length > 0) {
+        // Create Interview Round 1
+        await this.interviewService.create(userId, {
+          applicationId,
+          roundNumber: rounds[0].roundNumber,
+          assignedTo: userId, // Auto-assign to the recruiter
+        });
+      }
+    }
+
+    // Update
+    return this.prisma.application.update({
+      where: { id: applicationId },
+      data: { status },
+    });
   }
 }

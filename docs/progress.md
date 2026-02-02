@@ -37,11 +37,22 @@
   - **Recruiter Dashboard**: Company profile, Posted jobs management.
   - **Connections**: Networking system (`Connection` model) with Pending/Accepted/Rejected states.
 
+### 5. Hiring Pipeline Core (Sprint 2)
+
+- **Status**: ✅ Completed
+- **Details**:
+  - **Interview Management**: `Interview` and `InterviewRoundConfig` models.
+  - **State Machine**: Strict transition logic for Applications (PENDING -> REVIEWING -> SHORTLISTED -> ...).
+  - **Auto-Scheduling**: Automatic creation of interviews upon Shortlisting.
+  - **Frontend UI**:
+    - Job Detail: Interview configuration tab.
+    - Application Detail: Status management, Interview pipeline, Withdraw functionality.
+
 ---
 
 ## 🚧 Pending / In-Progress Features
 
-### 5. Chat System
+### 6. Chat System
 
 - **Status**: ❌ Pending
 - **Current State**:

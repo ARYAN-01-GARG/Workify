@@ -6,10 +6,14 @@ import { AuthModule } from '../auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
+import { InterviewModule } from '../interview/interview.module';
+
+import { ApplicationStatusService } from './application-status.service';
 
 @Module({
-  imports: [PrismaModule, AuthModule, PassportModule],
+  imports: [PrismaModule, AuthModule, PassportModule, InterviewModule],
   controllers: [JobController],
-  providers: [JobService, JwtAuthGuard, RolesGuard],
+  providers: [JobService, ApplicationStatusService, JwtAuthGuard, RolesGuard],
+  exports: [ApplicationStatusService],
 })
 export class JobModule {}

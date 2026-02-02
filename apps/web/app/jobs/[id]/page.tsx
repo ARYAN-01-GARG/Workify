@@ -7,10 +7,15 @@ import { JobDetailContent } from '@/components/jobs/JobDetailContent';
 import { Skeleton } from '@repo/ui/components/skeleton';
 import { Button } from '@repo/ui/components/button';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs';
+import { RoundConfigList } from '@/components/jobs/RoundConfigList';
+import { ApplicationsList } from '@/components/jobs/ApplicationsList';
 
 export default function JobDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  const user = useAuth();
 
   const jobId = Array.isArray(id) ? id[0] : id;
   const { data: job, isLoading, isError } = useJob(jobId!);
@@ -89,7 +94,37 @@ export default function JobDetailPage() {
           </Button>
 
           <JobDetailHeader job={job} />
-          <JobDetailContent job={job} />
+
+          <div className='mt-8'>
+            <Tabs defaultValue='details'>
+              <TabsList className='bg-muted p-1 rounded-lg mb-6'>
+                <TabsTrigger value='details'>Job Details</TabsTrigger>
+                {user?.role === 'RECRUITER' && job.postedById === user?.id && (
+                  <>
+                    <TabsTrigger value='applications'>Applications</TabsTrigger>
+                    <TabsTrigger value='rounds'>Interview Rounds</TabsTrigger>
+                  </>
+                )}
+              </TabsList>
+
+              <TabsContent value='details'>
+                <JobDetailContent job={job} />
+              </TabsContent>
+
+              {user?.role === 'RECRUITER' && job.postedById === user?.id && (
+                <>
+                  <TabsContent value='applications'>
+                    <ApplicationsList jobId={jobId!} />
+                  </TabsContent>
+                  <TabsContent value='rounds'>
+                    <div className='bg-card rounded-xl border p-6 shadow-sm'>
+                      <RoundConfigList jobId={jobId!} canEdit={true} />
+                    </div>
+                  </TabsContent>
+                </>
+              )}
+            </Tabs>
+          </div>
         </div>
       </div>
     </div>

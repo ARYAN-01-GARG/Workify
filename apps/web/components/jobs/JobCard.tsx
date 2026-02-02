@@ -153,16 +153,31 @@ export function JobCard({ job, isApplied }: JobCardProps) {
           <Clock className='w-3.5 h-3.5' />
           Posted {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}
         </div>
-        <Button
-          size='sm'
-          className='rounded-full px-6 shadow-sm'
-          onClick={(e) => {
-            e.stopPropagation();
-            router.push(`/jobs/${job.id}`);
-          }}
-        >
-          View Details
-        </Button>
+        <div className='flex gap-2'>
+          {isApplied && job.applicationId && (
+            <Button
+              size='sm'
+              variant='outline'
+              className='rounded-full px-6 shadow-sm border-green-500/50 text-green-600 hover:text-green-700 hover:bg-green-50'
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/jobs/${job.id}/applications/${job.applicationId}`);
+              }}
+            >
+              View Application
+            </Button>
+          )}
+          <Button
+            size='sm'
+            className='rounded-full px-6 shadow-sm'
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/jobs/${job.id}`);
+            }}
+          >
+            View Details
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
